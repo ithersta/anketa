@@ -1,12 +1,12 @@
-<script>
-    import {onMount} from "svelte";
+<script lang="ts">
+    import { onMount } from "svelte";
+    import { PUBLIC_BASE_URL } from "$env/static/public";
 
     onMount(() => {
-            window.onload = function () {
-                window.YaSendSuggestToken("https://localhost/oauth", {})
-            }
+        window.onload = function () {
+            window.YaSendSuggestToken(PUBLIC_BASE_URL, {})
         }
-    )
+    })
 </script>
 
 <svelte:head>
