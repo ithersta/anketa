@@ -1,26 +1,22 @@
 package com.ithersta.anketa.auth.data.tables
 
 import com.ithersta.anketa.auth.OAuthProvider
-import jakarta.persistence.*
+import org.springframework.data.annotation.Id
+import org.springframework.data.relational.core.mapping.Column
+import org.springframework.data.relational.core.mapping.Table
 import java.io.Serializable
 import java.util.*
 
-@Entity
-@IdClass(OAuthConnectionId::class)
 @Table(name = "oauth_connections")
 class OAuthConnectionEntity(
-    @Id
-    @Column(name = "provider", nullable = false)
-    @Enumerated(EnumType.STRING)
     val provider: OAuthProvider,
-
-    @Id
-    @Column(name = "provider_user_id", nullable = false)
+    @Column("provider_user_id")
     val providerUserId: String,
-
-    @JoinColumn(name = "user_id", nullable = false)
     val userId: UUID,
-)
+) {
+    @Id
+    val id: UUID? = null
+}
 
 class OAuthConnectionId(
     val provider: OAuthProvider? = null,

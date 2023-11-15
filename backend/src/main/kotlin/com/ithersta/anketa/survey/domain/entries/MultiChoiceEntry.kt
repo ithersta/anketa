@@ -10,7 +10,7 @@ data class MultiChoiceEntry(
     val question: String,
     val minSelected: Int,
     val maxSelected: Int,
-    val options: Map<Int, String>,
+    val options: List<String>,
 ) : SurveyEntry, RequiresAnswer {
     @Serializable
     @SerialName("MultiChoice")
@@ -19,7 +19,7 @@ data class MultiChoiceEntry(
     ) : SurveyAnswer
 
     override fun isValid(answer: SurveyAnswer) = answer is Answer &&
-            answer.selectedIds.all { options.containsKey(it) } &&
+            answer.selectedIds.all { it in options.indices } &&
             answer.selectedIds.size in minSelected..maxSelected
 
     override fun isValid() = options.isNotEmpty() &&

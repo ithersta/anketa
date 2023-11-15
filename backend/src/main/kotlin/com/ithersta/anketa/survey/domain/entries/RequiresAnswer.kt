@@ -1,5 +1,8 @@
 package com.ithersta.anketa.survey.domain.entries
 
-interface RequiresAnswer : SurveyEntry {
+import kotlinx.serialization.Serializable
+
+@Serializable
+sealed interface RequiresAnswer : SurveyEntry {
     fun isValid(answer: SurveyAnswer): Boolean
 }

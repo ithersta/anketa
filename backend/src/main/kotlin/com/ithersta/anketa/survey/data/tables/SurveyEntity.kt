@@ -1,32 +1,33 @@
 package com.ithersta.anketa.survey.data.tables
 
-import com.ithersta.anketa.survey.data.converters.SurveyEntryListConverter
+import com.ithersta.anketa.survey.domain.SurveyContent
 import com.ithersta.anketa.survey.domain.entries.SurveyEntry
-import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.Id
+import org.springframework.data.relational.core.mapping.Column
+import org.springframework.data.relational.core.mapping.Table
 import java.time.Instant
 import java.util.*
 
-@Entity
 @Table(name = "surveys")
 class SurveyEntity(
-    @Column(nullable = false)
     val title: String,
-
-    @Column(nullable = false)
-    @Convert(converter = SurveyEntryListConverter::class)
     val entries: List<SurveyEntry>,
 ) {
-    @Column(name = "created_by", nullable = false)
+    @Column("created_by")
     @CreatedBy
     var createdBy: UUID? = null
 
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column("created_at")
     @CreatedDate
     var createdAt: Instant? = null
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     var id: UUID? = null
 }
+
+fun SurveyEntity.toSurveyContent(): SurveyContent = SurveyContent(
+    title = title,
+    entries = entries
+)

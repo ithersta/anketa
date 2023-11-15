@@ -16,7 +16,7 @@ class OAuthController(
     private val yandexOAuthService: YandexOAuthService,
 ) {
     @PostMapping("/oauth/yandex")
-    fun oauthYandex(@RequestBody body: TokenBody): TokenBody {
+    suspend fun oauthYandex(@RequestBody body: TokenBody): TokenBody {
         val token = yandexOAuthService.getToken(body.token)
         return TokenBody(token)
     }

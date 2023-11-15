@@ -6,12 +6,12 @@ import com.ithersta.anketa.survey.domain.entries.SurveyEntry
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Survey(
+data class SurveyContent(
     val title: String,
     val entries: List<SurveyEntry>,
 )
 
-fun Survey.isAnswerValid(answers: Map<Int, SurveyAnswer>): Boolean =
+fun SurveyContent.isAnswerValid(answers: Map<Int, SurveyAnswer>): Boolean =
     entries.asSequence()
         .filterIsInstance<RequiresAnswer>()
         .all {

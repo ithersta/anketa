@@ -1,0 +1,9 @@
+spring:
+  r2dbc:
+    url: "r2dbc:postgresql://localhost:5432/anketa"
+    username: ithersta
+    password: postgres
+  flyway:
+    url: "jdbc:postgresql://localhost:5432/anketa"
+    user: ithersta
+    password: postgres

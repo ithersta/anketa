@@ -25,7 +25,7 @@ class YandexOAuthService(
     private val restTemplate = RestTemplate()
     private val json = Json { ignoreUnknownKeys = true }
 
-    fun getToken(yandexToken: String): String {
+    suspend fun getToken(yandexToken: String): String {
         val providerUserId = getProviderUserId(yandexToken)
         return oAuthService.getToken(OAuthProvider.Yandex, providerUserId)
     }

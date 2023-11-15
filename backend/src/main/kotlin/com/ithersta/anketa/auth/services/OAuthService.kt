@@ -14,12 +14,12 @@ class OAuthService(
     private val userRepository: UserRepository,
     private val jwtService: JwtService,
 ) {
-    fun getToken(provider: OAuthProvider, providerUserId: String): String {
+    suspend fun getToken(provider: OAuthProvider, providerUserId: String): String {
         val connectionId = OAuthConnectionId(provider, providerUserId)
-        val userId = oAuthConnectionRepository.findById(connectionId).orElseGet {
+        val user = oAuthConnectionRepository.findById(connectionId) ?: run {
             val user = userRepository.save(UserEntity())
             oAuthConnectionRepository.save(OAuthConnectionEntity(provider, providerUserId, user.id!!))
-        }.userId
-        return jwtService.generateToken(userId)
+        }
+        return jwtService.generateToken(user.userId)
     }
 }

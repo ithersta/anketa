@@ -1,7 +1,7 @@
 package com.ithersta.anketa.auth.data.repositories
 
 import com.ithersta.anketa.auth.data.tables.UserEntity
-import org.springframework.data.jpa.repository.JpaRepository
-import java.util.UUID
+import org.springframework.data.repository.kotlin.CoroutineCrudRepository
+import java.util.*
 
-interface UserRepository : JpaRepository<UserEntity, UUID>
+interface UserRepository : CoroutineCrudRepository<UserEntity, UUID>

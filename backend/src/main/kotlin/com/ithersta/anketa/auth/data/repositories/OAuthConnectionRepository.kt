@@ -2,6 +2,6 @@ package com.ithersta.anketa.auth.data.repositories
 
 import com.ithersta.anketa.auth.data.tables.OAuthConnectionEntity
 import com.ithersta.anketa.auth.data.tables.OAuthConnectionId
-import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.repository.kotlin.CoroutineCrudRepository
 
-interface OAuthConnectionRepository : JpaRepository<OAuthConnectionEntity, OAuthConnectionId>
+interface OAuthConnectionRepository : CoroutineCrudRepository<OAuthConnectionEntity, OAuthConnectionId>
