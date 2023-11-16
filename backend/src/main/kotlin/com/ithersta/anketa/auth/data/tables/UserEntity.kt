@@ -7,5 +7,5 @@ import java.util.*
 @Table(name = "users")
 class UserEntity(
     @Id
-    val id: UUID? = null,
+    var id: UUID? = null,
 )

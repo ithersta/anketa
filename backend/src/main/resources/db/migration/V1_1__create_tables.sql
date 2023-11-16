@@ -10,7 +10,7 @@ create table oauth_connections (
     provider         varchar not null,
     provider_user_id varchar not null,
     user_id          uuid    not null references users (id),
-    constraint unique (provider, provider_user_id)
+    unique (provider, provider_user_id)
 );
 
 create table surveys (

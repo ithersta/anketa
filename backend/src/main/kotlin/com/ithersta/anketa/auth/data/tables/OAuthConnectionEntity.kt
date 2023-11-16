@@ -12,10 +12,11 @@ class OAuthConnectionEntity(
     val provider: OAuthProvider,
     @Column("provider_user_id")
     val providerUserId: String,
+    @Column("user_id")
     val userId: UUID,
 ) {
     @Id
-    val id: UUID? = null
+    var id: UUID? = null
 }
 
 class OAuthConnectionId(
