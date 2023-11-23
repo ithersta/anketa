@@ -7,3 +7,6 @@ spring:
     url: "jdbc:postgresql://localhost:5432/anketa"
     user: ithersta
     password: postgres
+oauth:
+  yandex:
+    clientId: "4ab33cd575a54a2aa3617fddabff8388"

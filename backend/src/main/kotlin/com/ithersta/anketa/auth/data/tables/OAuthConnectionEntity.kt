@@ -18,10 +18,3 @@ class OAuthConnectionEntity(
     @Id
     var id: UUID? = null
 }
-
-class OAuthConnectionId(
-    val provider: OAuthProvider? = null,
-    val providerUserId: String? = null,
-) : Serializable {
-    constructor() : this(null, null)
-}

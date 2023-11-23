@@ -4,9 +4,11 @@ import com.ithersta.anketa.auth.OAuthProvider
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
+import org.springframework.stereotype.Component
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
 
@@ -17,10 +19,16 @@ private class YandexOAuthResponse(
     val id: String
 )
 
+@Component
+@ConfigurationProperties("oauth.yandex")
+class YandexOauthProperties {
+    var clientId: String = ""
+}
+
 @Service
 class YandexOAuthService(
     private val oAuthService: OAuthService,
-    private val secretService: SecretService,
+    private val yandexOauthProperties: YandexOauthProperties,
 ) {
     private val restTemplate = RestTemplate()
     private val json = Json { ignoreUnknownKeys = true }
@@ -37,7 +45,7 @@ class YandexOAuthService(
         val responseEntity =
             restTemplate.exchange("https://login.yandex.ru/info", HttpMethod.GET, request, String::class.java)
         val response = json.decodeFromString<YandexOAuthResponse>(responseEntity.body!!)
-        require(response.clientId == secretService.secrets.yandexClientId)
+        require(response.clientId == yandexOauthProperties.clientId)
         return response.id
     }
 }

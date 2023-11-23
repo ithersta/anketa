@@ -10,8 +10,6 @@ import java.io.File
 class Secrets(
     @SerialName("jwt_secret")
     val jwtSecret: ByteArray,
-    @SerialName("yandex_client_id")
-    val yandexClientId: String,
 )
 
 @Service

@@ -29,5 +29,10 @@ class SurveyEntity(
 
 fun SurveyEntity.toSurveyContent(): SurveyContent = SurveyContent(
     title = title,
-    entries = entries
+    entries = entries,
+)
+
+fun SurveyContent.toSurveyEntity(): SurveyEntity = SurveyEntity(
+    title = title,
+    entries = entries,
 )

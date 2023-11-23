@@ -15,6 +15,6 @@ class SurveyController(
     private val surveyService: SurveyService,
 ) {
     @GetMapping("/{id}")
-    suspend fun get(@PathVariable id: String): ResponseEntity<SurveyContent> =
-        ResponseEntity.ofNullable(surveyService.getContentById(UUID.fromString(id)))
+    suspend fun get(@PathVariable id: UUID): ResponseEntity<SurveyContent> =
+        ResponseEntity.ofNullable(surveyService.getContentById(id))
 }
