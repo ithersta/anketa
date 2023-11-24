@@ -10,7 +10,7 @@ import java.util.*
 data class PolarChoiceEntry(
     @Serializable(with = UuidSerializer::class)
     override val id: UUID,
-    override val isOptional: Boolean,
+    override val isRequired: Boolean,
     val question: String,
     val range: Int,
 ) : SurveyEntry, RequiresAnswer {

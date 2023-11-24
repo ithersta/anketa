@@ -8,10 +8,12 @@ export const POST: RequestHandler = async ({ cookies, request, fetch }) => {
         headers: { "Content-Type": "application/json" }
     })
     let token = (await response.json()).token
-    cookies.set("Authorization", token, {
-        httpOnly: true,
-        path: "/",
-        secure: true,
-    })
+    if (token) {
+        cookies.set("Authorization", token, {
+            httpOnly: true,
+            path: "/",
+            secure: true,
+        })
+    }
     return new Response()
 }

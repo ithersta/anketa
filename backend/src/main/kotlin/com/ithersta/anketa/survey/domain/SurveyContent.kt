@@ -42,7 +42,7 @@ fun SurveyContent.isAnswerValid(answers: Map<UUID, SurveyAnswer>): Boolean =
         .all { entry ->
             val answer = answers[entry.id]
             if (answer == null) {
-                entry.isOptional
+                !entry.isRequired
             } else {
                 entry.isAnswerValid(answer)
             }

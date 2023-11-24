@@ -10,7 +10,7 @@ import java.util.*
 data class TextFieldEntry(
     @Serializable(with = UuidSerializer::class)
     override val id: UUID,
-    override val isOptional: Boolean,
+    override val isRequired: Boolean,
     val question: String,
     val minLength: Int,
     val maxLength: Int,

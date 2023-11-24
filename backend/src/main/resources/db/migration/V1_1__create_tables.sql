@@ -16,7 +16,5 @@ create table oauth_connections (
 create table surveys (
     id         uuid primary key default uuid_generate_v4(),
     title      varchar   not null,
-    entries    bytea     not null,
-    created_by uuid      not null references users (id),
-    created_at timestamp not null
+    entries    bytea     not null
 );

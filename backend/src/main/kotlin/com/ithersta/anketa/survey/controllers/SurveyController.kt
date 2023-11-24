@@ -1,6 +1,10 @@
 package com.ithersta.anketa.survey.controllers
 
 import com.ithersta.anketa.survey.domain.SurveyContent
+import com.ithersta.anketa.survey.domain.entries.MultiChoiceEntry
+import com.ithersta.anketa.survey.domain.entries.PolarChoiceEntry
+import com.ithersta.anketa.survey.domain.entries.TextEntry
+import com.ithersta.anketa.survey.domain.entries.TextFieldEntry
 import com.ithersta.anketa.survey.services.SurveyService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping

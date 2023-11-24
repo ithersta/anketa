@@ -1,7 +1,13 @@
+@file:OptIn(ExperimentalSerializationApi::class)
+
 package com.ithersta.anketa.survey.data.tables
 
 import com.ithersta.anketa.survey.domain.SurveyContent
 import com.ithersta.anketa.survey.domain.entries.SurveyEntry
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.decodeFromByteArray
+import kotlinx.serialization.encodeToByteArray
+import kotlinx.serialization.protobuf.ProtoBuf
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.Id
@@ -13,26 +19,18 @@ import java.util.*
 @Table(name = "surveys")
 class SurveyEntity(
     val title: String,
-    val entries: List<SurveyEntry>,
+    val entries: ByteArray,
 ) {
-    @Column("created_by")
-    @CreatedBy
-    var createdBy: UUID? = null
-
-    @Column("created_at")
-    @CreatedDate
-    var createdAt: Instant? = null
-
     @Id
     var id: UUID? = null
 }
 
 fun SurveyEntity.toSurveyContent(): SurveyContent = SurveyContent(
     title = title,
-    entries = entries,
+    entries = ProtoBuf.decodeFromByteArray(entries),
 )
 
 fun SurveyContent.toSurveyEntity(): SurveyEntity = SurveyEntity(
     title = title,
-    entries = entries,
+    entries = ProtoBuf.encodeToByteArray(entries),
 )

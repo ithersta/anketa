@@ -4,6 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 sealed interface RequiresAnswer : SurveyEntry {
-    val isOptional: Boolean
+    val isRequired: Boolean
     fun isAnswerValid(answer: SurveyAnswer): Boolean
 }

@@ -10,7 +10,7 @@ import java.util.*
 data class MultiChoiceEntry(
     @Serializable(with = UuidSerializer::class)
     override val id: UUID,
-    override val isOptional: Boolean,
+    override val isRequired: Boolean,
     val question: String,
     val options: List<String>,
     val isAcceptingOther: Boolean,
@@ -31,7 +31,7 @@ data class MultiChoiceEntry(
 
     override fun isAnswerValid(answer: SurveyAnswer) = answer is Answer &&
             answer.selectedIds.all { it in options.indices } &&
-            answer.selectedIds.size in minSelected..maxSelected &&
+            answer.selectedIds.size + (if (answer.other == null) 0 else 1) in minSelected..maxSelected &&
             (answer.other == null || isAcceptingOther)
 
     override fun validate() = buildList {
