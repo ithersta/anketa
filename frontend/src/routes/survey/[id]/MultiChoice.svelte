@@ -1,28 +1,27 @@
 <script lang="ts">
     import * as Card from "$lib/components/ui/card";
+    import { Label } from "$lib/components/ui/label";
+    import { Checkbox, Radio } from "$lib/components/ui/checkbox";
     import { MultiChoice } from "$lib/survey/multichoice";
     import ValidationResult from "./ValidationResult.svelte";
     import UnknownHint from "./UnknownHint.svelte";
+    import { persisted } from "svelte-persisted-store";
+    import type { Writable } from "svelte/store";
+    import * as devalue from "devalue";
+    import type { SurveyAnswer } from "$lib/survey/entries";
 
     export let entry: MultiChoice.Entry
-    export let answer: MultiChoice.Answer = {
-        selected: [],
-        other: undefined,
-    }
-
     export let forceError: boolean
+    export let post: (uuid: string, answer: SurveyAnswer) => void
 
-    let radioAnswer: number | undefined = undefined
-    let checkboxAnswer: (number | undefined)[] = []
+    let selected: Writable<Set<number>> = persisted(`answer-${entry.id}-selected`, new Set(), { serializer: devalue })
+    let other: Writable<string> = persisted(`answer-${entry.id}-other`, "")
+
     let isRadio = MultiChoice.isRadio(entry)
-    $: nullifiedAnswer = (answer.selected.length === 0 && answer.other === undefined) ? undefined : answer
+    $: nullifiedOther = ($other === "") ? undefined : $other
+    $: nullifiedAnswer = ($selected.size === 0 && $other === "") ? undefined : { type: "MultiChoice", selected: Array.from($selected), other: nullifiedOther }
     $: hints = MultiChoice.validate(entry, nullifiedAnswer)
-    $: {
-        answer.selected = [radioAnswer].filter(it => it !== undefined) as number[]
-    }
-    $: {
-        answer.selected = checkboxAnswer.filter(it => it !== undefined) as number[]
-    }
+    $: { post(entry.id, nullifiedAnswer) }
 </script>
 
 <Card.Root>
@@ -30,24 +29,36 @@
         <Card.Title>{entry.question}</Card.Title>
     </Card.Header>
     <Card.Content>
-    {#each entry.options as option, i}
-        <label class="flex items-center space-x-2">
+        <div class="flex-col space-y-2">
+        {#each entry.options as option, i}
             {#if (isRadio)}
-                <input type="radio"
-                       name="radio-{entry.id}"
-                       class="radio"
-                       value={i}
-                       bind:group={radioAnswer}/>
+                <div class="flex items-center space-x-2">
+                    <Radio id="checkbox-{entry.id}-{i}" checked={$selected.has(i)} onCheckedChange={
+                        (_) => {
+                            selected.update((s) => {
+                                s.clear()
+                                s.add(i)
+                                return s
+                            })
+                        }
+                    }/>
+                    <Label for="checkbox-{entry.id}-{i}" class="text-sm font-medium leading-none">{option}</Label>
+                </div>
             {:else}
-                <input type="checkbox"
-                       name="checkbox-{entry.id}"
-                       class="checkbox"
-                       value={i}
-                       bind:group={checkboxAnswer}/>
+                <div class="flex items-center space-x-2">
+                    <Checkbox id="checkbox-{entry.id}-{i}" checked={$selected.has(i)} onCheckedChange={
+                        (checked) => {
+                            selected.update((s) => {
+                                checked ? s.add(i) : s.delete(i)
+                                return s
+                            })
+                        }
+                    }/>
+                    <Label for="checkbox-{entry.id}-{i}" class="text-sm font-medium leading-none">{option}</Label>
+                </div>
             {/if}
-            <span>{option}</span>
-        </label>
-    {/each}
+        {/each}
+        </div>
     </Card.Content>
     <Card.Footer>
         <ValidationResult {hints} {forceError} let:hint>

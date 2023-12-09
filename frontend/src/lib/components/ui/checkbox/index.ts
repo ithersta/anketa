@@ -1,6 +1,6 @@
-import Root from "./checkbox.svelte";
+import Checkbox from "./checkbox.svelte";
+import Radio from "./radio.svelte";
 export {
-	Root,
-	//
-	Root as Checkbox
+	Checkbox,
+	Radio,
 };

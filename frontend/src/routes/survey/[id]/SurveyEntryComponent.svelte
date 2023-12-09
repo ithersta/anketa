@@ -6,16 +6,16 @@
     import PolarChoice from "./PolarChoice.svelte";
 
     export let entry: SurveyEntry
-    export let answer: SurveyAnswer
     export let forceError: boolean
+    export let post: (uuid: string, answer: SurveyAnswer) => void
 </script>
 
 {#if (entry.type === "TextField")}
-    <TextField {entry} {forceError} bind:answer={answer}/>
+    <TextField {entry} {forceError} {post}/>
 {:else if (entry.type === "MultiChoice")}
-    <MultiChoice {entry} {forceError} bind:answer={answer}/>
+    <MultiChoice {entry} {forceError} {post}/>
 {:else if (entry.type === "PolarChoice")}
-    <PolarChoice {entry} {forceError} bind:answer={answer}/>
+    <PolarChoice {entry} {forceError} {post}/>
 {:else if (entry.type === "Text")}
     <Text {entry}/>
 {:else}

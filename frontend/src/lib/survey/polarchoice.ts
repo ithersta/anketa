@@ -1,4 +1,5 @@
 import type { ValidationHint } from "$lib/survey/validation";
+import { requiredHint } from "$lib/survey/validation";
 
 export namespace PolarChoice {
     export type Entry = {
@@ -9,19 +10,16 @@ export namespace PolarChoice {
         range: number,
     }
 
-    export type Answer = number | undefined
+    export type Answer = {
+        type: "PolarChoice",
+        selected: number,
+    } | undefined
 
     export type Hint = {
         type: "Required"
     } & ValidationHint
 
     export function validate(entry: Entry, answer: Answer): Hint[] {
-        return [
-            {
-                type: "Required",
-                isHint: false,
-                isError: answer === undefined && entry.isRequired,
-            }
-        ]
+        return [requiredHint(entry, answer)]
     }
 }

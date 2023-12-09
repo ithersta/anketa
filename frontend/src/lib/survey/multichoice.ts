@@ -1,4 +1,5 @@
 import type { ValidationHint } from "$lib/survey/validation";
+import { requiredHint } from "$lib/survey/validation";
 
 export namespace MultiChoice {
     export type Entry = {
@@ -13,9 +14,10 @@ export namespace MultiChoice {
     }
 
     export type Answer = {
+        type: "MultiChoice",
         selected: number[],
         other: string | undefined,
-    } | undefined
+    }
 
     export type Hint = {
         type: "MinChoiceNotMatched" | "MaxChoiceNotMatched" | "Required",
@@ -25,29 +27,24 @@ export namespace MultiChoice {
         return entry.maxSelected === 1 && entry.minSelected === 1
     }
 
-    export function validate(entry: Entry, answer: Answer): Hint[] {
+    export function validate(entry: Entry, answer: Answer | undefined): Hint[] {
         let selectedCount: number
         if (answer) {
             selectedCount = answer.selected.length + ((answer.other) ? 1 : 0)
         } else {
             selectedCount = 0
         }
-        let isFilled = answer !== undefined || entry.isRequired
         return [
-            {
-                type: "Required",
-                isHint: false,
-                isError: answer === undefined && entry.isRequired,
-            },
+            requiredHint(entry, answer),
             {
                 type: "MinChoiceNotMatched",
                 isHint: entry.minSelected > 1,
-                isError: isFilled && selectedCount < entry.minSelected,
+                isError: answer !== undefined && selectedCount < entry.minSelected,
             },
             {
                 type: "MaxChoiceNotMatched",
                 isHint: entry.maxSelected < entry.options.length && !isRadio(entry),
-                isError: isFilled && selectedCount > entry.maxSelected,
+                isError: selectedCount > entry.maxSelected,
             }
         ]
     }
