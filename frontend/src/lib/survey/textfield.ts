@@ -1,4 +1,5 @@
 import type { ValidationHint } from "$lib/survey/validation";
+import { requiredHint } from "$lib/survey/validation";
 
 export namespace TextField {
     export type Entry = {
@@ -10,21 +11,19 @@ export namespace TextField {
         maxLength: number,
     }
 
-    export type Answer = string | undefined
+    export type Answer = {
+        type: "TextField",
+        text: string,
+    }
 
     export type Hint = {
-        type: "Required" | "MaxLengthExceeded" | "MinLengthNotMatched"
+        type: "MaxLengthExceeded" | "MinLengthNotMatched" | "Required"
     } & ValidationHint
 
-    export function validate(entry: Entry, answer: Answer): Hint[] {
-        let isFilled = answer !== undefined || entry.isRequired
-        let length = answer?.length ?? 0
+    export function validate(entry: Entry, answer: Answer | undefined): Hint[] {
+        let length = answer?.text?.length ?? 0
         return [
-            {
-                type: "Required",
-                isHint: false,
-                isError: answer === undefined && entry.isRequired,
-            },
+            requiredHint(entry, answer),
             {
                 type: "MaxLengthExceeded",
                 isHint: length >= entry.minLength,
@@ -33,8 +32,8 @@ export namespace TextField {
             {
                 type: "MinLengthNotMatched",
                 isHint: length < entry.minLength,
-                isError: isFilled && length < entry.minLength,
-            }
+                isError: answer !== undefined && length < entry.minLength,
+            },
         ]
     }
 }
