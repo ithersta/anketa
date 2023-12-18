@@ -9,7 +9,7 @@ import java.util.*
 @SerialName("Text")
 data class TextEntry(
     @Serializable(with = UuidSerializer::class)
-    override val id: UUID,
+    override var id: UUID,
     val content: String,
 ) : SurveyEntry {
     override fun validate() = emptyList<Nothing>()

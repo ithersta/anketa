@@ -12,12 +12,23 @@ data class SurveyContent(
     val entries: List<SurveyEntry>,
 ) {
     sealed interface ValidationError {
-        object Empty : ValidationError
-        object DuplicateId : ValidationError
+        val message: String
+
+        object Empty : ValidationError {
+            override val message: String
+                get() = "Survey cannot be empty"
+        }
+        object DuplicateId : ValidationError {
+            override val message: String
+                get() = "Survey cannot contain entries with duplicate ids"
+        }
         data class InvalidEntry(
             val id: UUID,
             val errors: List<SurveyEntry.ValidationError>
-        ) : ValidationError
+        ) : ValidationError {
+            override val message: String
+                get() = "id=$id: ${errors.joinToString(separator = "\n") { it.message }}"
+        }
     }
 }
 

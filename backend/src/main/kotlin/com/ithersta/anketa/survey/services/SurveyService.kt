@@ -19,6 +19,7 @@ class SurveyService(
         surveyRepository.findById(id)?.toSurveyContent()
 
     suspend fun add(content: SurveyContent): EitherNel<SurveyContent.ValidationError, UUID?> {
+        content.entries.forEach { it.id = UUID.randomUUID() }
         val errors = content.validate().toNonEmptyListOrNull()
         return if (errors == null) {
             Either.Right(surveyRepository.save(content.toSurveyEntity()).id)
