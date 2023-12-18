@@ -15,7 +15,7 @@ export const handleFetch: HandleFetch = async ({ event, request, fetch }) => {
     }
     let response = await fetch(request)
     if (response.status === 401) {
-        throw redirect(302, "/")
+        redirect(302, "/");
     }
     return response
 }

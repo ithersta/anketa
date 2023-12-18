@@ -34,10 +34,10 @@
             {#if (isRadio)}
                 <div class="flex items-center space-x-2">
                     <Radio id="checkbox-{entry.id}-{i}" checked={$selected.has(i)} onCheckedChange={
-                        (_) => {
+                        (checked) => {
                             selected.update((s) => {
                                 s.clear()
-                                s.add(i)
+                                if (checked) s.add(i)
                                 return s
                             })
                         }
