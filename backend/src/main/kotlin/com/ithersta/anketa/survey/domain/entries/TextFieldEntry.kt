@@ -9,7 +9,7 @@ import java.util.*
 @SerialName("TextField")
 data class TextFieldEntry(
     @Serializable(with = UuidSerializer::class)
-    override val id: UUID,
+    override var id: UUID,
     override val isRequired: Boolean,
     val question: String,
     val minLength: Int,
@@ -22,7 +22,10 @@ data class TextFieldEntry(
     ) : SurveyAnswer
 
     sealed interface ValidationError : SurveyEntry.ValidationError {
-        object MinLengthGreaterThanMaxLength : ValidationError
+        object MinLengthGreaterThanMaxLength : ValidationError {
+            override val message: String
+                get() = "Min length cannot be larger than max length"
+        }
     }
 
     override fun isAnswerValid(answer: SurveyAnswer) = answer is Answer &&

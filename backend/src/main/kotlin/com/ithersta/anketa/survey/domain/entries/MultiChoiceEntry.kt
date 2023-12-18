@@ -9,7 +9,7 @@ import java.util.*
 @SerialName("MultiChoice")
 data class MultiChoiceEntry(
     @Serializable(with = UuidSerializer::class)
-    override val id: UUID,
+    override var id: UUID,
     override val isRequired: Boolean,
     val question: String,
     val options: List<String>,
@@ -25,8 +25,14 @@ data class MultiChoiceEntry(
     ) : SurveyAnswer
 
     sealed interface ValidationError : SurveyEntry.ValidationError {
-        object OptionsEmpty : ValidationError
-        object InvalidOptionsRange : ValidationError
+        object OptionsEmpty : ValidationError {
+            override val message: String
+                get() = "Option list cannot be empty"
+        }
+        object InvalidOptionsRange : ValidationError {
+            override val message: String
+                get() = "Invalid selected options range"
+        }
     }
 
     override fun isAnswerValid(answer: SurveyAnswer) = answer is Answer &&

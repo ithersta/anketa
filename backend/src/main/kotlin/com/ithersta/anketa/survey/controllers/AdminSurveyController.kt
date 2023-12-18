@@ -18,7 +18,8 @@ class AdminSurveyController(
     @PostMapping
     suspend fun add(@RequestBody content: SurveyContent): ResponseEntity<String> {
         return when(val result = surveyService.add(content)) {
-            is Either.Left -> ResponseEntity.badRequest().body(result.left().toString())
+            is Either.Left -> ResponseEntity.badRequest()
+                .body(result.value.joinToString(separator = "\n") { it.message })
             is Either.Right -> ResponseEntity.ok().build()
         }
     }

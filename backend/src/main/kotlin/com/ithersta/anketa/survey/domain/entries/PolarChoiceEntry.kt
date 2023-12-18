@@ -9,7 +9,7 @@ import java.util.*
 @SerialName("PolarChoice")
 data class PolarChoiceEntry(
     @Serializable(with = UuidSerializer::class)
-    override val id: UUID,
+    override var id: UUID,
     override val isRequired: Boolean,
     val question: String,
     val range: Int,
@@ -21,7 +21,10 @@ data class PolarChoiceEntry(
     ) : SurveyAnswer
 
     sealed interface ValidationError : SurveyEntry.ValidationError {
-        data class InvalidRange(val validRanges: IntRange) : ValidationError
+        data class InvalidRange(val validRanges: IntRange) : ValidationError {
+            override val message: String
+                get() = "Invalid range. Valid ranges: $validRanges"
+        }
     }
 
     override fun isAnswerValid(answer: SurveyAnswer) = answer is Answer &&

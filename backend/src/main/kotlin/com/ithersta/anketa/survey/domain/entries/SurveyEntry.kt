@@ -5,8 +5,10 @@ import java.util.*
 
 @Serializable
 sealed interface SurveyEntry {
-    sealed interface ValidationError
+    sealed interface ValidationError {
+        val message: String
+    }
 
-    val id: UUID
+    var id: UUID
     fun validate(): List<ValidationError>
 }
