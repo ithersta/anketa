@@ -5,7 +5,6 @@
     import SurveyEntryComponent from "./SurveyEntryComponent.svelte";
     import { toggleMode } from "mode-watcher";
     import type { SurveyAnswer } from "$lib/survey/entries";
-    import { scale } from 'svelte/transition';
 
     export let data: {
         id: string,
@@ -20,11 +19,11 @@
         } else {
             answers.set(uuid, answer)
         }
+        answersValid = areAnswersValid(data.survey, answers)
     }
     let answersValid = false
     function submit() {
         forceError = true
-        answersValid = areAnswersValid(data.survey, answers)
         if (answersValid) {
             console.log(JSON.stringify(Object.fromEntries(answers)))
             console.log(answers)
@@ -51,7 +50,7 @@
     {/each}
     <div class="flex justify-end py-2 space-x-4 items-center">
         {#if (!answersValid && forceError)}
-            <span class="text-destructive" transition:scale>Исправьте ошибки</span>
+            <span class="text-destructive">Исправьте ошибки</span>
         {/if}
         <Button variant="secondary" on:click={submit}>Отправить</Button>
     </div>
