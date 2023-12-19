@@ -22,7 +22,23 @@ data class MultiChoiceEntry(
     data class Answer(
         val selectedIds: Set<Int>,
         val other: String?
-    ) : SurveyAnswer
+    ) : SurveyAnswer {
+        sealed interface ValidationError : SurveyAnswer.ValidationError {
+            object InvalidType : SurveyAnswer.ValidationError.InvalidType(), ValidationError
+            object InvalidSelection : ValidationError {
+                override val message: String
+                    get() = "Selected answers don't match options"
+            }
+            object InvalidSelectionCount : ValidationError {
+                override val message: String
+                    get() = "Selected answers count doesn't match the range"
+            }
+            object ExtraOtherAnswer : ValidationError {
+                override val message: String
+                    get() = "Other answer isn't accepted but is present"
+            }
+        }
+    }
 
     sealed interface ValidationError : SurveyEntry.ValidationError {
         object OptionsEmpty : ValidationError {
@@ -35,10 +51,22 @@ data class MultiChoiceEntry(
         }
     }
 
-    override fun isAnswerValid(answer: SurveyAnswer) = answer is Answer &&
-            answer.selectedIds.all { it in options.indices } &&
-            answer.selectedIds.size + (if (answer.other == null) 0 else 1) in minSelected..maxSelected &&
-            (answer.other == null || isAcceptingOther)
+    override fun validateAnswer(answer: SurveyAnswer) = buildList {
+        if (answer !is Answer) {
+            add(Answer.ValidationError.InvalidType)
+            return@buildList
+        }
+        if (answer.selectedIds.any { it !in options.indices }) {
+            add(Answer.ValidationError.InvalidSelection)
+        }
+        val selectedCount = answer.selectedIds.size + (if (answer.other == null) 0 else 1)
+        if (selectedCount !in minSelected..maxSelected) {
+            add(Answer.ValidationError.InvalidSelectionCount)
+        }
+        if (answer.other != null && !isAcceptingOther) {
+            add(Answer.ValidationError.ExtraOtherAnswer)
+        }
+    }
 
     override fun validate() = buildList {
         if (options.isEmpty()) {

@@ -19,7 +19,15 @@ data class TextFieldEntry(
     @SerialName("TextField")
     data class Answer(
         val text: String,
-    ) : SurveyAnswer
+    ) : SurveyAnswer {
+        sealed interface ValidationError : SurveyAnswer.ValidationError {
+            object InvalidType : SurveyAnswer.ValidationError.InvalidType(), ValidationError
+            object TextLengthNotInRange : ValidationError {
+                override val message: String
+                    get() = "Text length isn't in the range"
+            }
+        }
+    }
 
     sealed interface ValidationError : SurveyEntry.ValidationError {
         object MinLengthGreaterThanMaxLength : ValidationError {
@@ -28,8 +36,15 @@ data class TextFieldEntry(
         }
     }
 
-    override fun isAnswerValid(answer: SurveyAnswer) = answer is Answer &&
-            answer.text.length in minLength..maxLength
+    override fun validateAnswer(answer: SurveyAnswer) = buildList {
+        if (answer !is Answer) {
+            add(Answer.ValidationError.InvalidType)
+            return@buildList
+        }
+        if (answer.text.length !in minLength..maxLength) {
+            add(Answer.ValidationError.TextLengthNotInRange)
+        }
+    }
 
     override fun validate() = buildList {
         if (minLength > maxLength) {

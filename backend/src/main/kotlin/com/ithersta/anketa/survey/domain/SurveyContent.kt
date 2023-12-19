@@ -1,7 +1,8 @@
 package com.ithersta.anketa.survey.domain
 
-import com.ithersta.anketa.survey.domain.entries.RequiresAnswer
-import com.ithersta.anketa.survey.domain.entries.SurveyAnswer
+import arrow.core.NonEmptyList
+import arrow.core.toNonEmptyListOrNull
+import arrow.core.toNonEmptySetOrNull
 import com.ithersta.anketa.survey.domain.entries.SurveyEntry
 import kotlinx.serialization.Serializable
 import java.util.*
@@ -24,10 +25,10 @@ data class SurveyContent(
         }
         data class InvalidEntry(
             val id: UUID,
-            val errors: List<SurveyEntry.ValidationError>
+            val errors: NonEmptyList<SurveyEntry.ValidationError>
         ) : ValidationError {
             override val message: String
-                get() = "id=$id: ${errors.joinToString(separator = "\n") { it.message }}"
+                get() = "id=$id:\n${errors.joinToString(separator = "\n") { it.message }}"
         }
     }
 }
@@ -40,21 +41,10 @@ fun SurveyContent.validate(): List<SurveyContent.ValidationError> = buildList {
         add(SurveyContent.ValidationError.DuplicateId)
     }
     entries.forEach { entry ->
-        val errors = entry.validate()
-        if (errors.isNotEmpty()) {
+        val errors = entry.validate().toNonEmptyListOrNull()
+        if (errors != null) {
             add(SurveyContent.ValidationError.InvalidEntry(entry.id, errors))
         }
     }
 }
 
-fun SurveyContent.isAnswerValid(answers: Map<UUID, SurveyAnswer>): Boolean =
-    entries.asSequence()
-        .filterIsInstance<RequiresAnswer>()
-        .all { entry ->
-            val answer = answers[entry.id]
-            if (answer == null) {
-                !entry.isRequired
-            } else {
-                entry.isAnswerValid(answer)
-            }
-        }

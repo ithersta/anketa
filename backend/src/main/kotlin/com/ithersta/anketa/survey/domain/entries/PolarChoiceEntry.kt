@@ -18,7 +18,15 @@ data class PolarChoiceEntry(
     @SerialName("PolarChoice")
     data class Answer(
         val selected: Int,
-    ) : SurveyAnswer
+    ) : SurveyAnswer {
+        sealed interface ValidationError : SurveyAnswer.ValidationError {
+            object InvalidType : SurveyAnswer.ValidationError.InvalidType(), ValidationError
+            object SelectionNotInRange : ValidationError {
+                override val message: String
+                    get() = "Selection isn't in the range"
+            }
+        }
+    }
 
     sealed interface ValidationError : SurveyEntry.ValidationError {
         data class InvalidRange(val validRanges: IntRange) : ValidationError {
@@ -27,8 +35,15 @@ data class PolarChoiceEntry(
         }
     }
 
-    override fun isAnswerValid(answer: SurveyAnswer) = answer is Answer &&
-            answer.selected in (-range)..range
+    override fun validateAnswer(answer: SurveyAnswer) = buildList {
+        if (answer !is Answer) {
+            add(Answer.ValidationError.InvalidType)
+            return@buildList
+        }
+        if (answer.selected !in (-range)..range) {
+            add(Answer.ValidationError.SelectionNotInRange)
+        }
+    }
 
     override fun validate() = buildList {
         val validRanges = 1..3
