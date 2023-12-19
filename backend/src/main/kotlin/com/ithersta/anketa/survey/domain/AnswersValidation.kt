@@ -34,8 +34,7 @@ sealed interface AnswerMapValidationError {
 fun SurveyContent.validateAnswers(answers: Map<UUID, SurveyAnswer>): List<AnswerMapValidationError> = buildList {
     val requiresAnswers = entries.filterIsInstance<RequiresAnswer>()
 
-    val extraAnswerIds = answers.keys - requiresAnswers.map { it.id }.toSet()
-    if (extraAnswerIds.isNotEmpty()) {
+    if (!requiresAnswers.map { it.id }.containsAll(answers.keys)) {
         add(AnswerMapValidationError.ExtraAnswers)
         return@buildList
     }
