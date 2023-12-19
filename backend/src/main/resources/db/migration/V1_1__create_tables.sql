@@ -14,7 +14,15 @@ create table oauth_connections (
 );
 
 create table surveys (
-    id         uuid primary key default uuid_generate_v4(),
-    title      varchar   not null,
-    entries    bytea     not null
+    id      uuid primary key default uuid_generate_v4(),
+    title   varchar not null,
+    entries bytea   not null
+);
+
+create table answers (
+    id                uuid primary key default uuid_generate_v4(),
+    survey_id         uuid    not null references surveys (id),
+    author_public_key varchar not null,
+    entries           bytea   not null,
+    unique (survey_id, author_public_key)
 );
