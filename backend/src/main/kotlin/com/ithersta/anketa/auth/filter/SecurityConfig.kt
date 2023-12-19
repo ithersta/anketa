@@ -24,6 +24,7 @@ class SecurityConfig(
             authorizeExchange {
                 authorize("/oauth/**", permitAll)
                 authorize("/survey/**", permitAll)
+                authorize("/answer/**", permitAll)
                 authorize("/**", authenticated)
             }
             csrf { disable() }
