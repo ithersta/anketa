@@ -8,7 +8,7 @@ export namespace MultiChoice {
         isRequired: boolean,
         question: string,
         options: string[],
-        isAcceptingOthers: boolean,
+        isAcceptingOther: boolean,
         minSelected: number,
         maxSelected: number,
     }
@@ -28,6 +28,7 @@ export namespace MultiChoice {
     }
 
     export function validate(entry: Entry, answer: Answer | undefined): Hint[] {
+        if (answer === undefined && !entry.isRequired) return []
         let selectedCount: number
         if (answer) {
             selectedCount = answer.selected.length + ((answer.other) ? 1 : 0)

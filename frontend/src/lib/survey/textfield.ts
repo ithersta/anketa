@@ -21,6 +21,7 @@ export namespace TextField {
     } & ValidationHint
 
     export function validate(entry: Entry, answer: Answer | undefined): Hint[] {
+        if (answer === undefined && !entry.isRequired) return []
         let length = answer?.text?.length ?? 0
         return [
             requiredHint(entry, answer),

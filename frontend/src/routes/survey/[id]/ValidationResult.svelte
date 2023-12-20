@@ -24,7 +24,7 @@
                 </svg>
             {/if}
             {#if hint.type === "Required"}
-                <span>Обязательное поле</span>
+                <span>Обязательный вопрос</span>
             {:else}
                 <slot {hint}/>
             {/if}

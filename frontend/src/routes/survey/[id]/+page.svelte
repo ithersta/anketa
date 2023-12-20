@@ -52,6 +52,6 @@
         {#if (!answersValid && forceError)}
             <span class="text-destructive">Исправьте ошибки</span>
         {/if}
-        <Button variant="secondary" on:click={submit}>Отправить</Button>
+        <Button variant={answersValid ? "default" : "secondary"} on:click={submit}>Отправить</Button>
     </div>
 </div>

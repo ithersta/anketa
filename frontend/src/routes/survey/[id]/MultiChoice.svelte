@@ -1,5 +1,7 @@
 <script lang="ts">
+    import { slide } from 'svelte/transition';
     import * as Card from "$lib/components/ui/card";
+    import { Input } from "$lib/components/ui/input";
     import { Label } from "$lib/components/ui/label";
     import { Checkbox, Radio } from "$lib/components/ui/checkbox";
     import { MultiChoice } from "$lib/survey/multichoice";
@@ -9,6 +11,7 @@
     import type { Writable } from "svelte/store";
     import * as devalue from "devalue";
     import type { SurveyAnswer } from "$lib/survey/entries";
+    import { Check } from "lucide-svelte";
 
     export let entry: MultiChoice.Entry
     export let forceError: boolean
@@ -19,6 +22,10 @@
 
     let isRadio = MultiChoice.isRadio(entry)
     $: nullifiedOther = ($other === "") ? undefined : $other
+    $: { if (nullifiedOther !== undefined && isRadio) selected.update((s) => {
+        s.clear()
+        return s
+    }) }
     $: nullifiedAnswer = ($selected.size === 0 && $other === "") ? undefined : { type: "MultiChoice", selected: Array.from($selected), other: nullifiedOther }
     $: hints = MultiChoice.validate(entry, nullifiedAnswer)
     $: { post(entry.id, nullifiedAnswer) }
@@ -30,34 +37,53 @@
     </Card.Header>
     <Card.Content>
         <div class="flex-col space-y-2">
-        {#each entry.options as option, i}
-            {#if (isRadio)}
-                <div class="flex items-center space-x-2">
-                    <Radio id="checkbox-{entry.id}-{i}" checked={$selected.has(i)} onCheckedChange={
-                        (checked) => {
-                            selected.update((s) => {
-                                s.clear()
-                                if (checked) s.add(i)
-                                return s
-                            })
-                        }
-                    }/>
-                    <Label for="checkbox-{entry.id}-{i}" class="text-sm font-medium leading-none">{option}</Label>
-                </div>
-            {:else}
-                <div class="flex items-center space-x-2">
-                    <Checkbox id="checkbox-{entry.id}-{i}" checked={$selected.has(i)} onCheckedChange={
-                        (checked) => {
-                            selected.update((s) => {
-                                checked ? s.add(i) : s.delete(i)
-                                return s
-                            })
-                        }
-                    }/>
-                    <Label for="checkbox-{entry.id}-{i}" class="text-sm font-medium leading-none">{option}</Label>
+            {#each entry.options as option, i}
+                {#if (isRadio)}
+                    <div class="flex items-center space-x-2">
+                        <Radio id="checkbox-{entry.id}-{i}" checked={$selected.has(i)} onCheckedChange={
+                            (checked) => {
+                                if (checked) other.set("")
+                                selected.update((s) => {
+                                    s.clear()
+                                    if (checked) s.add(i)
+                                    return s
+                                })
+                            }
+                        }/>
+                        <Label for="checkbox-{entry.id}-{i}" class="text-sm font-medium leading-none">{option}</Label>
+                    </div>
+                {:else}
+                    <div class="flex items-center space-x-2">
+                        <Checkbox id="checkbox-{entry.id}-{i}" checked={$selected.has(i)} onCheckedChange={
+                            (checked) => {
+                                selected.update((s) => {
+                                    checked ? s.add(i) : s.delete(i)
+                                    return s
+                                })
+                            }
+                        }/>
+                        <Label for="checkbox-{entry.id}-{i}" class="text-sm font-medium leading-none">{option}</Label>
+                    </div>
+                {/if}
+            {/each}
+            {#if (entry.isAcceptingOther)}
+                <div class="flex items-center">
+                    {#if (nullifiedOther !== undefined)}
+                        <div transition:slide={{axis: 'x'}} class="pe-2">
+                            {#if (isRadio)}
+                                <Radio id="checkbox-{entry.id}-other"
+                                        checked={true}
+                                        onCheckedChange={(checked) => { if (!checked) other.set("") }}/>
+                            {:else}
+                                <Checkbox id="checkbox-{entry.id}-other"
+                                        checked={true}
+                                        onCheckedChange={(checked) => { if (!checked) other.set("") }}/>
+                            {/if}
+                        </div>
+                    {/if}
+                    <Input type="text" placeholder="Другое" class="max-w-xs" bind:value={$other}/>
                 </div>
             {/if}
-        {/each}
         </div>
     </Card.Content>
     <Card.Footer>

@@ -14,7 +14,7 @@
 
     let answer: Writable<string> = persisted(`answer-${entry.id}`, "")
 
-    $: nullifiedAnswer = (($answer?.length ?? 0) === 0) ? undefined : { type: "TextField", selected: $answer }
+    $: nullifiedAnswer = (($answer?.length ?? 0) === 0) ? undefined : { type: "TextField", text: $answer }
     $: hints = TextField.validate(entry, nullifiedAnswer)
     $: { post(entry.id, nullifiedAnswer) }
 </script>

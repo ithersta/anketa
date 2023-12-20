@@ -20,7 +20,7 @@ class AdminSurveyController(
         return when(val result = surveyService.add(content)) {
             is Either.Left -> ResponseEntity.badRequest()
                 .body(result.value.joinToString(separator = "\n") { it.message })
-            is Either.Right -> ResponseEntity.ok().build()
+            is Either.Right -> ResponseEntity.ok(result.value.toString())
         }
     }
 }
