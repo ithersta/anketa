@@ -21,8 +21,8 @@
     let other: Writable<string> = persisted(`answer-${entry.id}-other`, "")
 
     let isRadio = MultiChoice.isRadio(entry)
-    $: nullifiedOther = ($other === "") ? undefined : $other
-    $: { if (nullifiedOther !== undefined && isRadio) selected.update((s) => {
+    $: nullifiedOther = ($other === "") ? null : $other
+    $: { if (nullifiedOther !== null && isRadio) selected.update((s) => {
         s.clear()
         return s
     }) }
@@ -68,7 +68,7 @@
             {/each}
             {#if (entry.isAcceptingOther)}
                 <div class="flex items-center">
-                    {#if (nullifiedOther !== undefined)}
+                    {#if (nullifiedOther !== null)}
                         <div transition:slide={{axis: 'x'}} class="pe-2">
                             {#if (isRadio)}
                                 <Radio id="checkbox-{entry.id}-other"
@@ -92,6 +92,8 @@
                 <span>Выберите не менее {entry.minSelected}</span>
             {:else if (hint.type === "MaxChoiceNotMatched")}
                 <span>Выберите не более {entry.maxSelected}</span>
+            {:else if (hint.type === "OtherMaxLengthExceeded")}
+                <span>Поле «другое»: {$other.length}/{entry.otherMaxLength}</span>
             {:else}
                 <UnknownHint/>
             {/if}

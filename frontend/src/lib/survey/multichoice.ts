@@ -11,16 +11,17 @@ export namespace MultiChoice {
         isAcceptingOther: boolean,
         minSelected: number,
         maxSelected: number,
+        otherMaxLength: number | undefined,
     }
 
     export type Answer = {
         type: "MultiChoice",
         selected: number[],
-        other: string | undefined,
+        other: string | null,
     }
 
     export type Hint = {
-        type: "MinChoiceNotMatched" | "MaxChoiceNotMatched" | "Required",
+        type: "MinChoiceNotMatched" | "MaxChoiceNotMatched" | "OtherMaxLengthExceeded" | "Required",
     } & ValidationHint
 
     export function isRadio(entry: Entry): boolean {
@@ -31,7 +32,7 @@ export namespace MultiChoice {
         if (answer === undefined && !entry.isRequired) return []
         let selectedCount: number
         if (answer) {
-            selectedCount = answer.selected.length + ((answer.other) ? 1 : 0)
+            selectedCount = answer.selected.length + ((answer.other !== null) ? 1 : 0)
         } else {
             selectedCount = 0
         }
@@ -46,6 +47,14 @@ export namespace MultiChoice {
                 type: "MaxChoiceNotMatched",
                 isHint: entry.maxSelected < entry.options.length && !isRadio(entry),
                 isError: selectedCount > entry.maxSelected,
+            },
+            {
+                type: "OtherMaxLengthExceeded",
+                isHint: false,
+                isError: answer !== undefined &&
+                    answer.other !== null &&
+                    entry.otherMaxLength !== undefined &&
+                    answer.other.length > entry.otherMaxLength,
             }
         ]
     }

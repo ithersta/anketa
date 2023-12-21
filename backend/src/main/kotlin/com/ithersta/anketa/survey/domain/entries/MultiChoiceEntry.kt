@@ -1,13 +1,15 @@
 package com.ithersta.anketa.survey.domain.entries
 
 import com.ithersta.anketa.serialization.UuidSerializer
+import kotlinx.serialization.EncodeDefault
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.util.*
 
 @Serializable
 @SerialName("MultiChoice")
-data class MultiChoiceEntry(
+data class MultiChoiceEntry @OptIn(ExperimentalSerializationApi::class) constructor(
     @Serializable(with = UuidSerializer::class)
     override var id: UUID,
     override val isRequired: Boolean,
@@ -16,11 +18,13 @@ data class MultiChoiceEntry(
     val isAcceptingOther: Boolean,
     val minSelected: Int,
     val maxSelected: Int,
+    @EncodeDefault
+    val otherMaxLength: Int = 128,
 ) : SurveyEntry, RequiresAnswer {
     @Serializable
     @SerialName("MultiChoice")
     data class Answer(
-        val selectedIds: Set<Int>,
+        val selected: Set<Int>,
         val other: String?
     ) : SurveyAnswer {
         sealed interface ValidationError : SurveyAnswer.ValidationError {
@@ -36,6 +40,10 @@ data class MultiChoiceEntry(
             object ExtraOtherAnswer : ValidationError {
                 override val message: String
                     get() = "Other answer isn't accepted but is present"
+            }
+            object OtherMaxLengthExceeded : ValidationError {
+                override val message: String
+                    get() = "Max length of other answer exceeded"
             }
         }
     }
@@ -56,15 +64,18 @@ data class MultiChoiceEntry(
             add(Answer.ValidationError.InvalidType)
             return@buildList
         }
-        if (answer.selectedIds.any { it !in options.indices }) {
+        if (answer.selected.any { it !in options.indices }) {
             add(Answer.ValidationError.InvalidSelection)
         }
-        val selectedCount = answer.selectedIds.size + (if (answer.other == null) 0 else 1)
+        val selectedCount = answer.selected.size + (if (answer.other == null) 0 else 1)
         if (selectedCount !in minSelected..maxSelected) {
             add(Answer.ValidationError.InvalidSelectionCount)
         }
         if (answer.other != null && !isAcceptingOther) {
             add(Answer.ValidationError.ExtraOtherAnswer)
+        }
+        if (answer.other != null && answer.other.length > otherMaxLength) {
+            add(Answer.ValidationError.OtherMaxLengthExceeded)
         }
     }
 

@@ -5,12 +5,15 @@
     import SurveyEntryComponent from "./SurveyEntryComponent.svelte";
     import { toggleMode } from "mode-watcher";
     import type { SurveyAnswer } from "$lib/survey/entries";
+    import { signSurveyAnswers } from "$lib/crypto/sign";
+    import SuccessDialog from "./SuccessDialog.svelte";
 
     export let data: {
         id: string,
         survey: SurveyContent,
     }
 
+    let openSuccessDialog = false
     let forceError = false
     let answers: Map<string, SurveyAnswer> = new Map<string, SurveyAnswer>()
     let post = (uuid: string, answer: SurveyAnswer) => {
@@ -22,15 +25,22 @@
         answersValid = areAnswersValid(data.survey, answers)
     }
     let answersValid = false
-    function submit() {
+    async function submit() {
         forceError = true
         if (answersValid) {
-            console.log(JSON.stringify(Object.fromEntries(answers)))
-            console.log(answers)
+            let signedMessage = await signSurveyAnswers(JSON.stringify(Object.fromEntries(answers)))
+            let response = await fetch(`/survey/${data.id}`, {
+                method: "POST",
+                body: JSON.stringify(signedMessage),
+            })
+            if (response.ok) {
+                openSuccessDialog = true
+            }
         }
     }
 </script>
 
+<SuccessDialog bind:dialogOpen={openSuccessDialog}/>
 <div class="max-w-prose mx-auto p-4">
     <div class="flex pt-16">
         <div class="flex-grow">

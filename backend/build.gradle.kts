@@ -33,6 +33,7 @@ dependencies {
     implementation("com.auth0:java-jwt:4.4.0")
     implementation("org.flywaydb:flyway-core:9.22.3")
     implementation("io.arrow-kt:arrow-core:1.2.0")
+    implementation("org.bouncycastle:bcprov-jdk18on:1.77")
     runtimeOnly("org.postgresql:postgresql:42.6.0")
     runtimeOnly("org.postgresql:r2dbc-postgresql:1.0.2.RELEASE")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
