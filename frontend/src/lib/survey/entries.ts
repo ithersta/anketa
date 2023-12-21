@@ -1,30 +1,31 @@
 import { MultiChoice } from "$lib/survey/multichoice";
 import { PolarChoice } from "$lib/survey/polarchoice";
 import { TextField } from "$lib/survey/textfield";
-import type { Text } from "$lib/survey/text";
-import type { ValidationHint } from "$lib/survey/validation";
+import { Text } from "$lib/survey/text";
 
 export type SurveyEntry = MultiChoice.Entry |
     PolarChoice.Entry |
     TextField.Entry |
     Text.Entry
 
+export type SurveyEntryUiState = MultiChoice.UiState |
+    PolarChoice.UiState |
+    TextField.UiState |
+    Text.UiState
+
 export type SurveyAnswer = MultiChoice.Answer |
     PolarChoice.Answer |
     TextField.Answer
 
-export function isValid(entry: SurveyEntry, answer: SurveyAnswer): boolean {
-    let hints: ValidationHint[]
-    if (entry.type === "MultiChoice" && (answer === undefined || answer.type === "MultiChoice")) {
-        hints = MultiChoice.validate(entry, answer)
-    } else if (entry.type === "PolarChoice" && (answer === undefined || answer.type === "PolarChoice")) {
-        hints = PolarChoice.validate(entry, answer)
-    } else if (entry.type === "TextField" && (answer === undefined || answer.type === "TextField")) {
-        hints = TextField.validate(entry, answer)
+export function toUiState(entry: SurveyEntry, prefix: string): SurveyEntryUiState {
+    if (entry.type === "MultiChoice") {
+        return MultiChoice.toUiState(entry, prefix)
+    } else if (entry.type === "PolarChoice") {
+        return PolarChoice.toUiState(entry, prefix)
+    } else if (entry.type === "TextField") {
+        return TextField.toUiState(entry, prefix)
     } else if (entry.type === "Text") {
-        hints = []
-    } else {
-        return false
+        return Text.toUiState(entry)
     }
-    return hints.every((hint) => !hint.isError)
+    throw new Error(`Unknown entry type`)
 }

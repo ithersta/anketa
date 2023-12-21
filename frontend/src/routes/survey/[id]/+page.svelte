@@ -1,36 +1,54 @@
 <script lang="ts">
     import { Button } from "$lib/components/ui/button";
     import { Sun, Moon } from "lucide-svelte";
-    import { areAnswersValid, type SurveyContent } from "$lib/survey/survey";
+    import { type SurveyContent } from "$lib/survey/survey";
     import SurveyEntryComponent from "./SurveyEntryComponent.svelte";
     import { toggleMode } from "mode-watcher";
-    import type { SurveyAnswer } from "$lib/survey/entries";
+    import { type SurveyAnswer, toUiState } from "$lib/survey/entries";
+    import { signSurveyAnswers } from "$lib/crypto/sign";
+    import SuccessDialog from "./SuccessDialog.svelte";
+    import { derived, get, type Readable } from "svelte/store";
 
     export let data: {
         id: string,
         survey: SurveyContent,
     }
 
+    const localStoragePrefix = `answer-${data.id}-`
+    const uiStates = data.survey.entries.map((e) => toUiState(e, localStoragePrefix))
+    const answersValid: Readable<boolean> = derived(
+        uiStates.map((uiState) => uiState.hints),
+        (allHints) => allHints.every((hints) => hints.every((hint) => hint.isError === false))
+    )
+    let openSuccessDialog = false
     let forceError = false
-    let answers: Map<string, SurveyAnswer> = new Map<string, SurveyAnswer>()
-    let post = (uuid: string, answer: SurveyAnswer) => {
-        if (answer === undefined) {
-            answers.delete(uuid)
+
+    async function submit() {
+        if ($answersValid) {
+            const answers: Map<string, SurveyAnswer> = new Map()
+            uiStates.forEach((uiState) => {
+                const answer: SurveyAnswer | undefined = get(uiState.answer)
+                if (answer !== undefined) {
+                    answers.set(uiState.entry.id, answer)
+                }
+            })
+            let signedMessage = await signSurveyAnswers(JSON.stringify(Object.fromEntries(answers)))
+            let response = await fetch(`/survey/${data.id}`, {
+                method: "POST",
+                body: JSON.stringify(signedMessage),
+            })
+            if (response.ok) {
+                openSuccessDialog = true
+                uiStates.forEach((uiState) => uiState.clear())
+                forceError = false
+            }
         } else {
-            answers.set(uuid, answer)
-        }
-        answersValid = areAnswersValid(data.survey, answers)
-    }
-    let answersValid = false
-    function submit() {
-        forceError = true
-        if (answersValid) {
-            console.log(JSON.stringify(Object.fromEntries(answers)))
-            console.log(answers)
+            forceError = true
         }
     }
 </script>
 
+<SuccessDialog bind:dialogOpen={openSuccessDialog}/>
 <div class="max-w-prose mx-auto p-4">
     <div class="flex pt-16">
         <div class="flex-grow">
@@ -43,15 +61,15 @@
             <span class="sr-only">Toggle theme</span>
         </Button>
     </div>
-    {#each data.survey.entries as entry (entry.id)}
+    {#each uiStates as uiState (uiState.entry.id)}
         <div class="py-2">
-            <SurveyEntryComponent {entry} {forceError} {post}/>
+            <SurveyEntryComponent {uiState} {forceError}/>
         </div>
     {/each}
     <div class="flex justify-end py-2 space-x-4 items-center">
-        {#if (!answersValid && forceError)}
+        {#if (!$answersValid && forceError)}
             <span class="text-destructive">Исправьте ошибки</span>
         {/if}
-        <Button variant="secondary" on:click={submit}>Отправить</Button>
+        <Button variant={$answersValid ? "default" : "secondary"} on:click={submit}>Отправить</Button>
     </div>
 </div>

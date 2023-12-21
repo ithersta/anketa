@@ -9,6 +9,11 @@
     $: isValid = hints.every((hint) => hint.isError === false)
     $: displayError = wasValid || forceError
     $: if (isValid) wasValid = true
+    $: {
+        if (!forceError) {
+            wasValid = false
+        }
+    }
 </script>
 
 <div class="flex-col w-full">
@@ -24,7 +29,7 @@
                 </svg>
             {/if}
             {#if hint.type === "Required"}
-                <span>Обязательное поле</span>
+                <span>Обязательный вопрос</span>
             {:else}
                 <slot {hint}/>
             {/if}

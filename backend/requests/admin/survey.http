@@ -1,0 +1,114 @@
+POST {{host}}/admin/survey
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "title": "Анкета",
+  "entries": [
+    {
+      "type": "Text",
+      "id": "f48e19fa-8c53-45a2-aab2-1ef63b032d87",
+      "content": "Текст-пояснение к анкете"
+    },
+    {
+      "type": "TextField",
+      "id": "f48e19fa-8c53-45a2-aab2-1ef63b032d87",
+      "isRequired": true,
+      "question": "Вопрос со свободным ответом",
+      "minLength": 10,
+      "maxLength": 200
+    },
+    {
+      "type": "TextField",
+      "id": "f48e19fa-8c53-45a2-aab2-1ef63b032d87",
+      "isRequired": false,
+      "question": "Необязательный вопрос со свободным ответом",
+      "minLength": 10,
+      "maxLength": 200
+    },
+    {
+      "type": "MultiChoice",
+      "id": "f48e19fa-8c53-45a2-aab2-1ef63b032d87",
+      "isRequired": true,
+      "question": "Вопрос с множественным выбором",
+      "options": [
+        "Спать",
+        "Кушать",
+        "Гулять"
+      ],
+      "isAcceptingOther": false,
+      "minSelected": 1,
+      "maxSelected": 2
+    },
+    {
+      "type": "MultiChoice",
+      "id": "f48e19fa-8c53-45a2-aab2-1ef63b032d87",
+      "isRequired": false,
+      "question": "Необязательный вопрос с множественным выбором",
+      "options": [
+        "Спать",
+        "Кушать",
+        "Гулять"
+      ],
+      "isAcceptingOther": false,
+      "minSelected": 1,
+      "maxSelected": 2
+    },
+    {
+      "type": "MultiChoice",
+      "id": "f48e19fa-8c53-45a2-aab2-1ef63b032d87",
+      "isRequired": true,
+      "question": "Вопрос с множественным выбором и полем «другое»",
+      "options": [
+        "Спать",
+        "Кушать",
+        "Гулять"
+      ],
+      "isAcceptingOther": true,
+      "minSelected": 1,
+      "maxSelected": 2
+    },
+    {
+      "type": "MultiChoice",
+      "id": "f48e19fa-8c53-45a2-aab2-1ef63b032d87",
+      "isRequired": true,
+      "question": "Вопрос с одиночным выбором",
+      "options": [
+        "Спать",
+        "Кушать",
+        "Гулять"
+      ],
+      "isAcceptingOther": false,
+      "minSelected": 1,
+      "maxSelected": 1
+    },
+    {
+      "type": "MultiChoice",
+      "id": "f48e19fa-8c53-45a2-aab2-1ef63b032d87",
+      "isRequired": true,
+      "question": "Вопрос с одиночным выбором и полем «другое»",
+      "options": [
+        "Спать",
+        "Кушать",
+        "Гулять"
+      ],
+      "isAcceptingOther": true,
+      "minSelected": 1,
+      "maxSelected": 1
+    },
+    {
+      "type": "PolarChoice",
+      "id": "f48e19fa-8c53-45a2-aab2-1ef63b032d87",
+      "isRequired": true,
+      "question": "Вопрос анкеты полярных профилей",
+      "range": 3
+    },
+    {
+      "type": "PolarChoice",
+      "id": "f48e19fa-8c53-45a2-aab2-1ef63b032d87",
+      "isRequired": false,
+      "question": "Необязательный вопрос анкета полярных профилей",
+      "range": 2
+    }
+  ]
+}
