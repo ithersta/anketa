@@ -10,5 +10,5 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
         }
     }
 
-    error(response.status);
+    error(response.status)
 }

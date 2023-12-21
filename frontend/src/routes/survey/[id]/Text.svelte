@@ -1,7 +1,7 @@
 <script lang="ts">
     import type { Text } from "$lib/survey/text";
 
-    export let entry: Text.Entry
+    export let uiState: Text.UiState
 </script>
 
-<span>{entry.content}</span>
+<span>{uiState.entry.content}</span>

@@ -9,6 +9,11 @@
     $: isValid = hints.every((hint) => hint.isError === false)
     $: displayError = wasValid || forceError
     $: if (isValid) wasValid = true
+    $: {
+        if (!forceError) {
+            wasValid = false
+        }
+    }
 </script>
 
 <div class="flex-col w-full">

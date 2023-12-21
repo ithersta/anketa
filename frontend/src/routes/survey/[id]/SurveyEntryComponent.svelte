@@ -1,23 +1,22 @@
 <script lang="ts">
-    import type { SurveyAnswer, SurveyEntry } from "$lib/survey/entries";
+    import type { SurveyAnswer, SurveyEntry, SurveyEntryUiState } from "$lib/survey/entries";
     import Text from "./Text.svelte";
     import TextField from "./TextField.svelte";
     import MultiChoice from "./MultiChoice.svelte";
     import PolarChoice from "./PolarChoice.svelte";
 
-    export let entry: SurveyEntry
+    export let uiState: SurveyEntryUiState
     export let forceError: boolean
-    export let post: (uuid: string, answer: SurveyAnswer) => void
 </script>
 
-{#if (entry.type === "TextField")}
-    <TextField {entry} {forceError} {post}/>
-{:else if (entry.type === "MultiChoice")}
-    <MultiChoice {entry} {forceError} {post}/>
-{:else if (entry.type === "PolarChoice")}
-    <PolarChoice {entry} {forceError} {post}/>
-{:else if (entry.type === "Text")}
-    <Text {entry}/>
+{#if (uiState.entry.type === "TextField")}
+    <TextField {uiState} {forceError}/>
+{:else if (uiState.entry.type === "MultiChoice")}
+    <MultiChoice {uiState} {forceError}/>
+{:else if (uiState.entry.type === "PolarChoice")}
+    <PolarChoice {uiState} {forceError}/>
+{:else if (uiState.entry.type === "Text")}
+    <Text {uiState}/>
 {:else}
-    <span class="text-error">Error: Unknown entry kind</span>
+    <span class="text-error">Error: Unknown entry type</span>
 {/if}

@@ -7,28 +7,13 @@
     import { MultiChoice } from "$lib/survey/multichoice";
     import ValidationResult from "./ValidationResult.svelte";
     import UnknownHint from "./UnknownHint.svelte";
-    import { persisted } from "svelte-persisted-store";
-    import type { Writable } from "svelte/store";
-    import * as devalue from "devalue";
-    import type { SurveyAnswer } from "$lib/survey/entries";
     import { Check } from "lucide-svelte";
 
-    export let entry: MultiChoice.Entry
+    export let uiState: MultiChoice.UiState
     export let forceError: boolean
-    export let post: (uuid: string, answer: SurveyAnswer) => void
 
-    let selected: Writable<Set<number>> = persisted(`answer-${entry.id}-selected`, new Set(), { serializer: devalue })
-    let other: Writable<string> = persisted(`answer-${entry.id}-other`, "")
-
+    let { entry, selected, other, hints } = uiState
     let isRadio = MultiChoice.isRadio(entry)
-    $: nullifiedOther = ($other === "") ? null : $other
-    $: { if (nullifiedOther !== null && isRadio) selected.update((s) => {
-        s.clear()
-        return s
-    }) }
-    $: nullifiedAnswer = ($selected.size === 0 && $other === "") ? undefined : { type: "MultiChoice", selected: Array.from($selected), other: nullifiedOther }
-    $: hints = MultiChoice.validate(entry, nullifiedAnswer)
-    $: { post(entry.id, nullifiedAnswer) }
 </script>
 
 <Card.Root>
@@ -68,7 +53,7 @@
             {/each}
             {#if (entry.isAcceptingOther)}
                 <div class="flex items-center">
-                    {#if (nullifiedOther !== null)}
+                    {#if ($other.length > 0)}
                         <div transition:slide={{axis: 'x'}} class="pe-2">
                             {#if (isRadio)}
                                 <Radio id="checkbox-{entry.id}-other"
@@ -87,7 +72,7 @@
         </div>
     </Card.Content>
     <Card.Footer>
-        <ValidationResult {hints} {forceError} let:hint>
+        <ValidationResult hints={$hints} {forceError} let:hint>
             {#if (hint.type === "MinChoiceNotMatched")}
                 <span>Выберите не менее {entry.minSelected}</span>
             {:else if (hint.type === "MaxChoiceNotMatched")}
