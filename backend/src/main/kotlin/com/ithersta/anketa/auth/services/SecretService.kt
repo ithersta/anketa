@@ -1,22 +1,17 @@
 package com.ithersta.anketa.auth.services
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 import org.springframework.stereotype.Service
 import java.io.File
+import java.util.Base64
 
-@Serializable
 class Secrets(
-    @SerialName("jwt_secret")
     val jwtSecret: ByteArray,
 )
 
 @Service
-class SecretService(
-    val path: String = "secrets.json"
-) {
-    val secrets: Secrets by lazy {
-        Json.decodeFromString(File(path).readText())
+class SecretService {
+    val secrets = run {
+        val secretFile = File(System.getenv("JWT_SECRET_FILE"))
+        Secrets(jwtSecret = Base64.getDecoder().decode(secretFile.readText().trim()))
     }
 }

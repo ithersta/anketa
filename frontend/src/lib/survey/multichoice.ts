@@ -98,7 +98,7 @@ export namespace MultiChoice {
             },
             {
                 type: "MaxChoiceNotMatched",
-                isHint: entry.maxSelected < entry.options.length && !isRadio(entry),
+                isHint: entry.maxSelected < (entry.options.length + (entry.isAcceptingOther ? 1 : 0)) && !isRadio(entry),
                 isError: selectedCount > entry.maxSelected,
             },
             {
