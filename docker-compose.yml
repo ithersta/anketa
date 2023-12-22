@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - db:/var/lib/postgresql/data
+
+  api:
+    image: ithersta/projects:anketa-backend
+    secrets:
+      - jwt
+    depends_on:
+      - db
+    environment:
+      - SPRING_R2DBC_URL=r2dbc:postgresql://db:5432/postgres
+      - SPRING_R2DBC_USERNAME=postgres
+      - SPRING_R2DBC_PASSWORD=postgres
+      - SPRING_FLYWAY_URL=jdbc:postgresql://db:5432/postgres
+      - SPRING_FLYWAY_USER=postgres
+      - SPRING_FLYWAY_PASSWORD=postgres
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - JWT_SECRET_FILE=/run/secrets/jwt
+
+  frontend:
+    image: ithersta/projects:anketa-frontend
+    depends_on:
+      - api
+    environment:
+      - ORIGIN=https://anketa.ithersta.com
+      - API_BASE_URL=http://api:8080
+
+  proxy:
+    image: lscr.io/linuxserver/swag:latest
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - URL=anketa.ithersta.com
+      - SUBDOMAINS=api
+      - VALIDATION=dns
+      - DNSPLUGIN=cloudflare
+      - EMAIL=schilyaev.vlad@gmail.com
+    ports:
+      - "443:443"
+    volumes:
+      - /root/swag/config:/config
+
+volumes:
+  db:
+
+secrets:
+  jwt:
+    file: /root/anketa/jwt

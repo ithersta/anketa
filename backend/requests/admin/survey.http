@@ -112,3 +112,95 @@ Content-Type: application/json
     }
   ]
 }
+
+###
+
+POST {{host}}/admin/survey
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "title": "Анкета",
+  "entries": [
+    {
+      "type": "Text",
+      "id": "f48e19fa-8c53-45a2-aab2-1ef63b032d87",
+      "content": "Прив"
+    },
+    {
+      "type": "TextField",
+      "id": "f48e19fa-8c53-45a2-aab2-1ef63b032d87",
+      "isRequired": true,
+      "question": "Каким фруктом ты бы стал?",
+      "minLength": 8,
+      "maxLength": 200
+    },
+    {
+      "type": "MultiChoice",
+      "id": "f48e19fa-8c53-45a2-aab2-1ef63b032d87",
+      "isRequired": false,
+      "question": "Какой цвет тебе больше нравится?",
+      "options": [
+        "Синий",
+        "Зелёный",
+        "Красный",
+        "Жёлтый"
+      ],
+      "isAcceptingOther": true,
+      "minSelected": 1,
+      "maxSelected": 1
+    },
+    {
+      "type": "MultiChoice",
+      "id": "f48e19fa-8c53-45a2-aab2-1ef63b032d87",
+      "isRequired": true,
+      "question": "Какую суперспособность хочешь?",
+      "options": [
+        "Читать мысли",
+        "Писать мысли"
+      ],
+      "isAcceptingOther": false,
+      "minSelected": 1,
+      "maxSelected": 1
+    },
+    {
+      "type": "MultiChoice",
+      "id": "f48e19fa-8c53-45a2-aab2-1ef63b032d87",
+      "isRequired": true,
+      "question": "Что ты съешь завтра утром?",
+      "options": [
+        "Пицца",
+        "Суши",
+        "Торт",
+        "Спагетти",
+        "Бургер",
+        "Мороженое",
+        "Мандарины",
+        "Творог",
+        "Омлет",
+        "Пельмени",
+        "Бутерброд",
+        "Печенье",
+        "Арбуз",
+        "Дыня",
+        "Сыр",
+        "Сметана",
+        "Фисташки",
+        "Гречка",
+        "Рис",
+        "Курица"
+      ],
+      "isAcceptingOther": true,
+      "minSelected": 1,
+      "maxSelected": 10
+    },
+    {
+      "type": "PolarChoice",
+      "id": "f48e19fa-8c53-45a2-aab2-1ef63b032d87",
+      "isRequired": true,
+      "question": "Выбери любимое число",
+      "range": 3
+    }
+  ]
+}
+

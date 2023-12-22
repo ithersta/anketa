@@ -24,6 +24,7 @@
     let forceError = false
 
     async function submit() {
+        forceError = true
         if ($answersValid) {
             const answers: Map<string, SurveyAnswer> = new Map()
             uiStates.forEach((uiState) => {
@@ -42,8 +43,6 @@
                 uiStates.forEach((uiState) => uiState.clear())
                 forceError = false
             }
-        } else {
-            forceError = true
         }
     }
 </script>

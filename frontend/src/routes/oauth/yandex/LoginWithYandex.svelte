@@ -1,6 +1,7 @@
 <script lang="ts">
+    import { mode } from 'mode-watcher';
     import { onMount } from "svelte";
-    import { PUBLIC_BASE_URL, PUBLIC_YANDEX_OAUTH_CLIENT_ID } from "$env/static/public";
+    import { PUBLIC_YANDEX_OAUTH_CLIENT_ID, PUBLIC_BASE_URL } from "$env/static/public";
 
     onMount(() => {
         window.onload = function () {
@@ -13,7 +14,7 @@
                     view: 'button',
                     parentId: 'yandex-button',
                     buttonView: 'main',
-                    buttonTheme: 'light',
+                    buttonTheme: $mode,
                     buttonSize: 'xxl',
                     buttonBorderRadius: 16
                 }
@@ -24,7 +25,8 @@
                 .then(async function (data: {access_token: string}) {
                     let response = await fetch("oauth/yandex", {
                         method: "POST",
-                        body: JSON.stringify({ token: data.access_token })
+                        body: JSON.stringify({ token: data.access_token }),
+                        headers: { "Content-Type": "application/json" },
                     })
                     if (response.ok) {
                         window.location.reload()
