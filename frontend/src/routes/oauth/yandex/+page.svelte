@@ -4,7 +4,7 @@
 
     onMount(() => {
         window.onload = function () {
-            window.YaSendSuggestToken(PUBLIC_BASE_URL, {})
+            window.YaSendSuggestToken(`${PUBLIC_BASE_URL}/oauth`, {})
         }
     })
 </script>

@@ -1,5 +1,5 @@
 <script lang="ts">
-    import LoginWithYandex from "./oauth/yandex/LoginWithYandex.svelte";
+    import LoginWithYandex from "./yandex/LoginWithYandex.svelte";
 </script>
 
 <div class="container max-w-prose">

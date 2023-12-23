@@ -9,4 +9,6 @@ spring:
     password: postgres
 oauth:
   yandex:
-    clientId: "4ab33cd575a54a2aa3617fddabff8388"
+    client-id: "4ab33cd575a54a2aa3617fddabff8388"
+secrets:
+  jwt-secret-file: "test-jwt-secret"
