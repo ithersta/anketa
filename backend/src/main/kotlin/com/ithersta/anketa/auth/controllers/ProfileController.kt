@@ -2,6 +2,7 @@ package com.ithersta.anketa.auth.controllers
 
 import com.ithersta.anketa.auth.domain.Profile
 import com.ithersta.anketa.auth.services.ProfileService
+import com.ithersta.anketa.auth.userId
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.web.bind.annotation.GetMapping
@@ -14,7 +15,6 @@ class ProfileController(
 ) {
     @GetMapping("/profile")
     suspend fun profile(token: UsernamePasswordAuthenticationToken): ResponseEntity<Profile> {
-        val id = token.principal as UUID
-        return ResponseEntity.ofNullable(profileService.get(id))
+        return ResponseEntity.ofNullable(profileService.get(token.userId))
     }
 }
