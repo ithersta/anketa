@@ -11,4 +11,5 @@
 
 <svelte:head>
     <script src="https://yastatic.net/s3/passport-sdk/autofill/v1/sdk-suggest-token-with-polyfills-latest.js"></script>
+    <title>OAuth</title>
 </svelte:head>

@@ -47,6 +47,10 @@
     }
 </script>
 
+<svelte:head>
+    <title>{data.survey.title}</title>
+</svelte:head>
+
 <SuccessDialog bind:dialogOpen={openSuccessDialog}/>
 <div class="max-w-prose mx-auto p-4">
     <div class="flex pt-16">
