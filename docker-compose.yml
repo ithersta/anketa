@@ -23,7 +23,7 @@ services:
       - SPRING_FLYWAY_USER=postgres
       - SPRING_FLYWAY_PASSWORD=postgres
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-      - JWT_SECRET_FILE=/run/secrets/jwt
+      - SECRETS_JWT-SECRET-FILE=/run/secrets/jwt
 
   frontend:
     image: ithersta/projects:anketa-frontend

@@ -6,4 +6,5 @@ import java.util.UUID
 
 interface AnswerRepository : CoroutineCrudRepository<AnswerEntity, UUID> {
     suspend fun deleteBySurveyIdAndAuthorPublicKey(surveyId: UUID, publicKey: String)
+    suspend fun findBySurveyId(surveyId: UUID): List<AnswerEntity>
 }
