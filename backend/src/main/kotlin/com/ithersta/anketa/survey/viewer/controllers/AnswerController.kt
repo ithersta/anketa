@@ -1,7 +1,7 @@
-package com.ithersta.anketa.survey.controllers
+package com.ithersta.anketa.survey.viewer.controllers
 
 import com.ithersta.anketa.crypto.SignedMessage
-import com.ithersta.anketa.survey.services.AnswerService
+import com.ithersta.anketa.survey.viewer.services.AnswerService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping

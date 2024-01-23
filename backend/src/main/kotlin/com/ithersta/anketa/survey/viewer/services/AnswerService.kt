@@ -1,4 +1,4 @@
-package com.ithersta.anketa.survey.services
+package com.ithersta.anketa.survey.viewer.services
 
 import arrow.core.NonEmptyList
 import arrow.core.toNonEmptyListOrNull

@@ -1,6 +1,7 @@
 package com.ithersta.anketa.auth.services
 
 import com.ithersta.anketa.auth.OAuthProvider
+import com.ithersta.anketa.auth.data.tables.UserEntity
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -16,7 +17,11 @@ import org.springframework.web.client.RestTemplate
 private class YandexOAuthResponse(
     @SerialName("client_id")
     val clientId: String,
-    val id: String
+    val id: String,
+    @SerialName("display_name")
+    val displayName: String,
+    @SerialName("default_email")
+    val defaultEmail: String,
 )
 
 @Component
@@ -34,11 +39,13 @@ class YandexOAuthService(
     private val json = Json { ignoreUnknownKeys = true }
 
     suspend fun getToken(yandexToken: String): String {
-        val providerUserId = getProviderUserId(yandexToken)
-        return oAuthService.getToken(OAuthProvider.Yandex, providerUserId)
+        val oAuthResponse = getProviderUserId(yandexToken)
+        return oAuthService.getToken(OAuthProvider.Yandex, oAuthResponse.id) {
+            UserEntity(oAuthResponse.displayName, oAuthResponse.defaultEmail)
+        }
     }
 
-    private fun getProviderUserId(yandexToken: String): String {
+    private fun getProviderUserId(yandexToken: String): YandexOAuthResponse {
         val headers = HttpHeaders()
         headers.set("Authorization", "OAuth $yandexToken")
         val request = HttpEntity<String>(headers)
@@ -46,6 +53,6 @@ class YandexOAuthService(
             restTemplate.exchange("https://login.yandex.ru/info", HttpMethod.GET, request, String::class.java)
         val response = json.decodeFromString<YandexOAuthResponse>(responseEntity.body!!)
         require(response.clientId == yandexOauthProperties.clientId)
-        return response.id
+        return response
     }
 }

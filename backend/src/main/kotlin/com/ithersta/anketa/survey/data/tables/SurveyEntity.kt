@@ -20,6 +20,10 @@ import java.util.*
 class SurveyEntity(
     val title: String,
     val entries: ByteArray,
+    @Column("created_by")
+    val createdBy: UUID?,
+    @Column("created_at")
+    val createdAt: Instant,
 ) {
     @Id
     var id: UUID? = null
@@ -30,7 +34,9 @@ fun SurveyEntity.toSurveyContent(): SurveyContent = SurveyContent(
     entries = ProtoBuf.decodeFromByteArray(entries),
 )
 
-fun SurveyContent.toSurveyEntity(): SurveyEntity = SurveyEntity(
+fun SurveyContent.toSurveyEntity(createdBy: UUID, createdAt: Instant): SurveyEntity = SurveyEntity(
     title = title,
     entries = ProtoBuf.encodeToByteArray(entries),
+    createdBy = createdBy,
+    createdAt = createdAt,
 )

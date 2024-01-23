@@ -4,11 +4,12 @@
 
     onMount(() => {
         window.onload = function () {
-            window.YaSendSuggestToken(PUBLIC_BASE_URL, {})
+            window.YaSendSuggestToken(`${PUBLIC_BASE_URL}/oauth`, {})
         }
     })
 </script>
 
 <svelte:head>
     <script src="https://yastatic.net/s3/passport-sdk/autofill/v1/sdk-suggest-token-with-polyfills-latest.js"></script>
+    <title>OAuth</title>
 </svelte:head>
