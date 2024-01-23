@@ -3,6 +3,7 @@ version: '3.8'
 services:
   db:
     image: postgres
+    restart: unless-stopped
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
@@ -11,6 +12,7 @@ services:
 
   api:
     image: ithersta/projects:anketa-backend
+    restart: unless-stopped
     secrets:
       - jwt
     depends_on:
@@ -27,6 +29,7 @@ services:
 
   frontend:
     image: ithersta/projects:anketa-frontend
+    restart: unless-stopped
     depends_on:
       - api
     environment:
@@ -35,6 +38,7 @@ services:
 
   proxy:
     image: lscr.io/linuxserver/swag:latest
+    restart: unless-stopped
     cap_add:
       - NET_ADMIN
     environment:

@@ -3,9 +3,7 @@
     import { PUBLIC_BASE_URL } from "$env/static/public";
 
     onMount(() => {
-        window.onload = function () {
-            window.YaSendSuggestToken(`${PUBLIC_BASE_URL}/oauth`, {})
-        }
+        window.YaSendSuggestToken(`${PUBLIC_BASE_URL}/oauth`, {})
     })
 </script>
 

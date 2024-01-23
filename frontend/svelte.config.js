@@ -12,9 +12,9 @@ const config = {
                     "'self'",
                     "https://*.yandex.com",
                     "https://*.yandex.ru",
+                    "https://*.yandex.md",
                 ],
                 "script-src": [
-                    "'unsafe-inline'",
                     "'self'",
                     "https://yastatic.net",
                     "https://*.yandex.ru",
