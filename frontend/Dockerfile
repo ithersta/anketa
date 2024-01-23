@@ -1,4 +1,4 @@
-FROM oven/bun:1.0.15 as dependencies
+FROM oven/bun:latest as dependencies
 WORKDIR /usr/src/app
 
 RUN mkdir -p /temp/dep

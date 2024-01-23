@@ -14,6 +14,7 @@ const config = {
                     "https://*.yandex.ru",
                 ],
                 "script-src": [
+                    "'unsafe-inline'",
                     "'self'",
                     "https://yastatic.net",
                     "https://*.yandex.ru",
