@@ -1,8 +1,9 @@
 import type { ValidationHint } from "$lib/survey/validation";
 import { requiredHint } from "$lib/survey/validation";
-import { derived, type Readable, type Writable } from "svelte/store";
+import { derived, type Readable, writable, type Writable } from "svelte/store";
 import { persisted } from "svelte-persisted-store";
 import * as devalue from "devalue";
+import { NilUUID } from "$lib/builder/uuid";
 
 export namespace MultiChoice {
     export type Entry = {
@@ -110,5 +111,67 @@ export namespace MultiChoice {
                     answer.other.length > entry.otherMaxLength,
             }
         ]
+    }
+
+    export namespace Builder {
+        export type Hint = {
+            type: string, // TODO
+        } & ValidationHint
+
+        export type UiState = {
+            type: "MultiChoice",
+            isRequired: Writable<boolean>,
+            question: Writable<string>,
+            options: Writable<string[]>,
+            isAcceptingOther: Writable<boolean>,
+            minSelected: Writable<number>,
+            maxSelected: Writable<number | undefined>,
+            otherMaxLength: Writable<number | undefined>,
+            entry: Readable<Entry>,
+            hints: Readable<Hint[]>,
+        }
+
+        export function toUiState(initial?: Entry): UiState {
+            const isRequired = writable(initial?.isRequired ?? true)
+            const question = writable(initial?.question ?? "")
+            const options = writable(initial?.options ?? [])
+            const isAcceptingOther = writable(initial?.isAcceptingOther ?? false)
+            const minSelected = writable(initial?.minSelected ?? 0)
+            const maxSelected = writable(initial?.maxSelected ?? undefined)
+            const otherMaxLength = writable(initial?.otherMaxLength ?? 100)
+            const entry = derived(
+                [isRequired, question, options, isAcceptingOther, minSelected, maxSelected, otherMaxLength],
+                ([$isRequired, $question, $options, $isAcceptingOther, $minSelected, $maxSelected, $otherMaxLength]) => {
+                    return {
+                        type: "MultiChoice",
+                        id: NilUUID,
+                        isRequired: $isRequired,
+                        question: $question,
+                        options: $options,
+                        isAcceptingOther: $isAcceptingOther,
+                        minSelected: $minSelected,
+                        maxSelected: $maxSelected ?? $options.length,
+                        otherMaxLength: $isAcceptingOther ? $otherMaxLength : undefined,
+                    } satisfies Entry
+                },
+            )
+            const hints = derived(entry, ($entry) => validate($entry))
+            return {
+                type: "MultiChoice",
+                isRequired: isRequired,
+                question: question,
+                options: options,
+                isAcceptingOther: isAcceptingOther,
+                minSelected: minSelected,
+                maxSelected: maxSelected,
+                otherMaxLength: otherMaxLength,
+                entry: entry,
+                hints: hints,
+            }
+        }
+
+        function validate(entry: Entry): Hint[] {
+            // TODO
+        }
     }
 }

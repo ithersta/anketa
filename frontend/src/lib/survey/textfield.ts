@@ -1,7 +1,8 @@
 import type { ValidationHint } from "$lib/survey/validation";
 import { requiredHint } from "$lib/survey/validation";
-import { derived, type Readable, type Writable } from "svelte/store";
+import { derived, type Readable, writable, type Writable } from "svelte/store";
 import { persisted } from "svelte-persisted-store";
+import { NilUUID } from "$lib/builder/uuid";
 
 export namespace TextField {
     export type Entry = {
@@ -19,7 +20,7 @@ export namespace TextField {
     }
 
     export type Hint = {
-        type: "MaxLengthExceeded" | "MinLengthNotMatched" | "Required"
+        type: "MaxLengthExceeded" | "MinLengthNotMatched" | "Required",
     } & ValidationHint
 
     export type UiState = {
@@ -40,12 +41,9 @@ export namespace TextField {
                     type: "TextField",
                     text: $text,
                 } satisfies TextField.Answer
-            }
+            },
         )
-        const hints: Readable<Hint[]> = derived(
-            answer,
-            ($answer) => validate(entry, $answer)
-        )
+        const hints: Readable<Hint[]> = derived(answer, ($answer) => validate(entry, $answer))
         return {
             entry: entry,
             text: text,
@@ -63,7 +61,7 @@ export namespace TextField {
             {
                 type: "MaxLengthExceeded",
                 isHint: length >= entry.minLength,
-                isError: length > entry.maxLength
+                isError: length > entry.maxLength,
             },
             {
                 type: "MinLengthNotMatched",
@@ -71,5 +69,53 @@ export namespace TextField {
                 isError: answer !== undefined && length < entry.minLength,
             },
         ]
+    }
+
+    export namespace Builder {
+        export type Hint = {
+            type: string // TODO
+        } & ValidationHint
+
+        export type UiState = {
+            type: "TextField",
+            isRequired: Writable<boolean>,
+            question: Writable<string>,
+            minLength: Writable<number>,
+            maxLength: Writable<number>,
+            entry: Readable<Entry>,
+            hints: Readable<Hint[]>,
+        }
+
+        export function toUiState(initial?: Entry): UiState {
+            const isRequired = writable(initial?.isRequired ?? true)
+            const question = writable(initial?.question ?? "")
+            const minLength = writable(initial?.minLength ?? 0)
+            const maxLength = writable(initial?.maxLength ?? 500)
+            const entry = derived(
+                [isRequired, question, minLength, maxLength],
+                ([$isRequired, $question, $minLength, $maxLength]) => {
+                    return {
+                        type: "TextField",
+                        id: NilUUID,
+                        isRequired: $isRequired,
+                        question: $question,
+                        minLength: $minLength,
+                        maxLength: $maxLength,
+                    } satisfies Entry
+                },
+            )
+            const hints = derived(entry, ($entry) => validate($entry))
+            return {
+                type: "TextField",
+                isRequired: isRequired,
+                question: question,
+                minLength: minLength,
+                maxLength: maxLength,
+                entry: entry,
+                hints: hints,
+            }
+        }
+
+        function validate(entry: Entry): Hint[] {} // TODO
     }
 }
