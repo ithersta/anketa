@@ -44,12 +44,11 @@
     }
 </script>
 
-<Dialog.Root open={state !== undefined} closeOnEscape={false} closeOnOutsideClick={false}>
-    <Dialog.Content>
-        <Dialog.Header>
-            <Dialog.Title>Новый блок</Dialog.Title>
-        </Dialog.Header>
-        <EntryEditor uiState={state.uiState} {forceError}/>
+<Dialog.Root open={state !== undefined}>
+    <Dialog.Content class="max-w-xl">
+        <div class="flex flex-col space-y-6">
+            <EntryEditor uiState={state.uiState} {forceError}/>
+        </div>
         <Dialog.Footer>
             <Button on:click={save}>
                 {#if state.id}Сохранить{:else}Добавить{/if}

@@ -3,6 +3,7 @@ import { requiredHint } from "$lib/survey/validation";
 import { derived, type Readable, writable, type Writable } from "svelte/store";
 import { persisted } from "svelte-persisted-store";
 import { NilUUID } from "$lib/uuid";
+import { parseIntStrict } from "$lib/parseIntStrict";
 
 export namespace TextField {
     export type Entry = {
@@ -99,8 +100,8 @@ export namespace TextField {
                         id: NilUUID,
                         isRequired: $isRequired,
                         question: $question,
-                        minLength: Number($minLength),
-                        maxLength: Number($maxLength),
+                        minLength: parseIntStrict($minLength),
+                        maxLength: parseIntStrict($maxLength),
                     } satisfies Entry
                 },
             )
