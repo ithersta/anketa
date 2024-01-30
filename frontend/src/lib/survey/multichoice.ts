@@ -115,7 +115,7 @@ export namespace MultiChoice {
 
     export namespace Builder {
         export type Hint = {
-            type: string, // TODO
+            type: "OptionsEmpty" | "InvalidOptionsRange" | "EmptyQuestion",
         } & ValidationHint
 
         export type UiState = {
@@ -171,7 +171,24 @@ export namespace MultiChoice {
         }
 
         function validate(entry: Entry): Hint[] {
-            // TODO
+            return [
+                {
+                    type: "OptionsEmpty",
+                    isError: entry.options.length === 0,
+                    isHint: false,
+                },
+                {
+                    type: "InvalidOptionsRange",
+                    isError: entry.minSelected < 0 || entry.minSelected > entry.maxSelected ||
+                        entry.maxSelected < 1 || entry.maxSelected > entry.options.length,
+                    isHint: false,
+                },
+                {
+                    type: "EmptyQuestion",
+                    isError: entry.question.length === 0,
+                    isHint: false,
+                },
+            ]
         }
     }
 }

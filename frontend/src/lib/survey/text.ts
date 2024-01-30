@@ -62,7 +62,7 @@ export namespace Text {
             return [
                 {
                     type: "CannotBeEmpty",
-                    isError: entry.content.length == 0,
+                    isError: entry.content.length === 0,
                     isHint: false,
                 },
             ]

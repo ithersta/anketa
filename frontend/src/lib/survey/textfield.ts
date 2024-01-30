@@ -73,7 +73,7 @@ export namespace TextField {
 
     export namespace Builder {
         export type Hint = {
-            type: string // TODO
+            type: "MinLengthExceedsMaxLength" | "MinLengthMustBePositive" | "MaxLengthMustBePositive" | "EmptyQuestion",
         } & ValidationHint
 
         export type UiState = {
@@ -116,6 +116,29 @@ export namespace TextField {
             }
         }
 
-        function validate(entry: Entry): Hint[] {} // TODO
+        function validate(entry: Entry): Hint[] {
+            return [
+                {
+                    type: "MinLengthExceedsMaxLength",
+                    isError: entry.maxLength < entry.minLength,
+                    isHint: false,
+                },
+                {
+                    type: "MinLengthMustBePositive",
+                    isError: !Number.isInteger(entry.minLength) || entry.minLength < 0,
+                    isHint: false,
+                },
+                {
+                    type: "MaxLengthMustBePositive",
+                    isError: !Number.isInteger(entry.maxLength) || entry.maxLength < 0,
+                    isHint: false,
+                },
+                {
+                    type: "EmptyQuestion",
+                    isError: entry.question.length === 0,
+                    isHint: false,
+                },
+            ]
+        }
     }
 }

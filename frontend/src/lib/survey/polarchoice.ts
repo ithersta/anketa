@@ -62,7 +62,7 @@ export namespace PolarChoice {
 
     export namespace Builder {
         export type Hint = {
-            type: string, // TODO
+            type: "InvalidRange" | "EmptyQuestion",
         } & ValidationHint
 
         export type UiState = {
@@ -102,7 +102,18 @@ export namespace PolarChoice {
         }
 
         function validate(entry: Entry): Hint[] {
-            // TODO
+            return [
+                {
+                    type: "InvalidRange",
+                    isError: entry.range < 1 || entry.range > 3,
+                    isHint: false,
+                },
+                {
+                    type: "EmptyQuestion",
+                    isError: entry.question.length === 0,
+                    isHint: false,
+                },
+            ]
         }
     }
 }
