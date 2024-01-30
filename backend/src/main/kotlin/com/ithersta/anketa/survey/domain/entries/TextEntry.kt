@@ -12,5 +12,16 @@ data class TextEntry(
     override var id: UUID,
     val content: String,
 ) : SurveyEntry {
-    override fun validate() = emptyList<Nothing>()
+    sealed interface ValidationError : SurveyEntry.ValidationError {
+        object EmptyContent : ValidationError {
+            override val message: String
+                get() = "Content cannot be empty"
+        }
+    }
+
+    override fun validate() = buildList {
+        if (content.isEmpty()) {
+            add(ValidationError.EmptyContent)
+        }
+    }
 }
