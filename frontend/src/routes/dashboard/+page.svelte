@@ -3,12 +3,14 @@
     import { Button } from "$lib/components/ui/button";
     import { goto } from "$app/navigation";
     import { Plus } from "lucide-svelte";
+    import { db } from "$lib/db/db";
 
     export let data
     let surveys = data.surveys
 
-    function gotoBuilder() {
-        goto(`/dashboard/builder/${crypto.randomUUID()}`)
+    async function gotoBuilder() {
+        let id: number = await db.surveyDrafts.add({ title: "Новая анкета" })
+        await goto(`/dashboard/builder/${id}`)
     }
 </script>
 

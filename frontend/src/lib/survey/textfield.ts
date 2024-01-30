@@ -2,7 +2,7 @@ import type { ValidationHint } from "$lib/survey/validation";
 import { requiredHint } from "$lib/survey/validation";
 import { derived, type Readable, writable, type Writable } from "svelte/store";
 import { persisted } from "svelte-persisted-store";
-import { NilUUID } from "$lib/builder/uuid";
+import { NilUUID } from "$lib/uuid";
 
 export namespace TextField {
     export type Entry = {

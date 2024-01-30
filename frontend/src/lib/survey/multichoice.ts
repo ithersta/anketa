@@ -3,7 +3,7 @@ import { requiredHint } from "$lib/survey/validation";
 import { derived, type Readable, writable, type Writable } from "svelte/store";
 import { persisted } from "svelte-persisted-store";
 import * as devalue from "devalue";
-import { NilUUID } from "$lib/builder/uuid";
+import { NilUUID } from "$lib/uuid";
 
 export namespace MultiChoice {
     export type Entry = {

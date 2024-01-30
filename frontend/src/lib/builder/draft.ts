@@ -1,13 +1,13 @@
 import type { SurveyEntry } from "$lib/survey/entries";
 
 export type SurveyDraft = {
-    id: number,
+    id?: number,
     title: string,
-    entries: SurveyDraftEntry[],
 }
 
 export type SurveyDraftEntry = {
-    id: number,
+    id?: number,
+    surveyId: number,
     order: number,
     content: SurveyEntry,
 }

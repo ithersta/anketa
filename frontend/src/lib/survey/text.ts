@@ -1,6 +1,6 @@
 import { derived, readable, type Readable, writable, type Writable } from "svelte/store";
 import type { ValidationHint } from "$lib/survey/validation";
-import { NilUUID } from "$lib/builder/uuid";
+import { NilUUID } from "$lib/uuid";
 
 export namespace Text {
     export type Entry = {
