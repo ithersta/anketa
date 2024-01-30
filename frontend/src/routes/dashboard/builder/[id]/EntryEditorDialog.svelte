@@ -18,6 +18,7 @@
         const hints = get(state.uiState.hints as Readable<ValidationHint[]>)
         if (hints.some((hint) => hint.isError)) {
             forceError = true
+            return
         }
         const entry = get(state.uiState.entry as Readable<SurveyEntry>)
         if (!state.id) {

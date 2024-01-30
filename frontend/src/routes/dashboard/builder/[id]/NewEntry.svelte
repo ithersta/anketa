@@ -7,6 +7,7 @@
     } from "lucide-svelte";
     import type { SurveyEntryBuilderUiState } from "$lib/survey/entries";
     import { Text } from "$lib/survey/text";
+    import { TextField } from "$lib/survey/textfield";
 
     export let openEditor: (uiState: SurveyEntryBuilderUiState) => void
 </script>
@@ -21,7 +22,7 @@
                 <TextIcon class="mr-2 h-4 w-4" />
                 Текст
             </Button>
-            <Button variant="secondary">
+            <Button variant="secondary" on:click={() => openEditor(TextField.Builder.toUiState(undefined))}>
                 <TextCursorInput class="mr-2 h-4 w-4" />
                 Текстовое поле
             </Button>

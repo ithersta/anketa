@@ -42,11 +42,13 @@
     <EntryEditorDialog state={entryEditorState} surveyId={id} close={closeEditor}/>
     <div class="max-w-prose mx-auto p-4">
         <TitleEdit draft={$draft}/>
-        {#each $entries as entry (entry.id)}
+        {#each ($entries || []) as entry (entry.id)}
             <div class="py-2">
                 <SurveyEntryComponent uiState={toUiState(entry.content, "")} forceError={false}/>
             </div>
         {/each}
-        <NewEntry {openEditor}/>
+        <div class="py-2">
+            <NewEntry {openEditor}/>
+        </div>
     </div>
 {/if}

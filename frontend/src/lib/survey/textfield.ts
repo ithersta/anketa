@@ -73,15 +73,15 @@ export namespace TextField {
 
     export namespace Builder {
         export type Hint = {
-            type: "MinLengthExceedsMaxLength" | "MinLengthMustBePositive" | "MaxLengthMustBePositive" | "EmptyQuestion",
+            type: "MinLengthExceedsMaxLength" | "InvalidMinLength" | "InvalidMaxLength" | "EmptyQuestion",
         } & ValidationHint
 
         export type UiState = {
             type: "TextField",
             isRequired: Writable<boolean>,
             question: Writable<string>,
-            minLength: Writable<number>,
-            maxLength: Writable<number>,
+            minLength: Writable<string>,
+            maxLength: Writable<string>,
             entry: Readable<Entry>,
             hints: Readable<Hint[]>,
         }
@@ -89,8 +89,8 @@ export namespace TextField {
         export function toUiState(initial?: Entry): UiState {
             const isRequired = writable(initial?.isRequired ?? true)
             const question = writable(initial?.question ?? "")
-            const minLength = writable(initial?.minLength ?? 0)
-            const maxLength = writable(initial?.maxLength ?? 500)
+            const minLength = writable(initial?.minLength?.toString() ?? "0")
+            const maxLength = writable(initial?.maxLength?.toString() ?? "500")
             const entry = derived(
                 [isRequired, question, minLength, maxLength],
                 ([$isRequired, $question, $minLength, $maxLength]) => {
@@ -99,8 +99,8 @@ export namespace TextField {
                         id: NilUUID,
                         isRequired: $isRequired,
                         question: $question,
-                        minLength: $minLength,
-                        maxLength: $maxLength,
+                        minLength: Number($minLength),
+                        maxLength: Number($maxLength),
                     } satisfies Entry
                 },
             )
@@ -124,12 +124,12 @@ export namespace TextField {
                     isHint: false,
                 },
                 {
-                    type: "MinLengthMustBePositive",
+                    type: "InvalidMinLength",
                     isError: !Number.isInteger(entry.minLength) || entry.minLength < 0,
                     isHint: false,
                 },
                 {
-                    type: "MaxLengthMustBePositive",
+                    type: "InvalidMaxLength",
                     isError: !Number.isInteger(entry.maxLength) || entry.maxLength < 0,
                     isHint: false,
                 },
