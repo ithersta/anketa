@@ -7,6 +7,7 @@
     import type { ValidationHint } from "$lib/survey/validation";
     import type { SurveyEntry } from "$lib/survey/entries";
     import { db } from "$lib/db/db";
+    import { Trash } from "lucide-svelte";
 
     export let close: () => void
     export let surveyId: number
@@ -42,6 +43,12 @@
         forceError = false
         close()
     }
+
+    async function deleteEntry(id: number) {
+        await db.surveyDraftEntries.delete(id)
+        forceError = false
+        close()
+    }
 </script>
 
 <Dialog.Root open={state !== undefined}>
@@ -50,9 +57,18 @@
             <EntryEditor uiState={state.uiState} {forceError}/>
         </div>
         <Dialog.Footer>
-            <Button on:click={save}>
-                {#if state.id}Сохранить{:else}Добавить{/if}
-            </Button>
+            {#if state.id}
+                <Button variant="ghost" size="icon" on:click={() => deleteEntry(state.id)}>
+                    <Trash class="h-4 w-4"/>
+                </Button>
+                <Button on:click={save}>
+                    Сохранить
+                </Button>
+            {:else}
+                <Button on:click={save}>
+                    Добавить
+                </Button>
+            {/if}
         </Dialog.Footer>
     </Dialog.Content>
 </Dialog.Root>
