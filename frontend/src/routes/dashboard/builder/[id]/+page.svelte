@@ -49,7 +49,7 @@
 </svelte:head>
 
 {#if $draft}
-    <EntryEditorDialog state={entryEditorState} surveyId={id} close={closeEditor}/>
+    <EntryEditorDialog bind:state={entryEditorState} surveyId={id} close={closeEditor}/>
     <div class="max-w-prose mx-auto p-4">
         <TitleEdit draft={$draft}/>
         {#each ($entries || []) as entry (entry.id)}

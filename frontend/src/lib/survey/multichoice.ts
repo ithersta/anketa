@@ -4,6 +4,7 @@ import { derived, type Readable, writable, type Writable } from "svelte/store";
 import { persisted } from "svelte-persisted-store";
 import * as devalue from "devalue";
 import { NilUUID } from "$lib/uuid";
+import { parseIntStrict } from "$lib/parseIntStrict";
 
 export namespace MultiChoice {
     export type Entry = {
@@ -115,7 +116,8 @@ export namespace MultiChoice {
 
     export namespace Builder {
         export type Hint = {
-            type: "OptionsEmpty" | "InvalidOptionsRange" | "EmptyQuestion",
+            type: "OptionsEmpty" | "InvalidOptionsRange" | "EmptyQuestion" |
+                "InvalidMinSelected" | "InvalidMaxSelected" | "InvalidOtherMaxLength",
         } & ValidationHint
 
         export type UiState = {
@@ -124,21 +126,21 @@ export namespace MultiChoice {
             question: Writable<string>,
             options: Writable<string[]>,
             isAcceptingOther: Writable<boolean>,
-            minSelected: Writable<number>,
-            maxSelected: Writable<number | undefined>,
-            otherMaxLength: Writable<number | undefined>,
+            minSelected: Writable<string>,
+            maxSelected: Writable<string>,
+            otherMaxLength: Writable<string>,
             entry: Readable<Entry>,
             hints: Readable<Hint[]>,
         }
 
-        export function toUiState(initial?: Entry): UiState {
+        export function toUiState(initial?: Entry, isRadio: boolean = false): UiState {
             const isRequired = writable(initial?.isRequired ?? true)
             const question = writable(initial?.question ?? "")
             const options = writable(initial?.options ?? [])
             const isAcceptingOther = writable(initial?.isAcceptingOther ?? false)
-            const minSelected = writable(initial?.minSelected ?? 0)
-            const maxSelected = writable(initial?.maxSelected ?? undefined)
-            const otherMaxLength = writable(initial?.otherMaxLength ?? 100)
+            const minSelected = writable(initial?.minSelected?.toString() ?? "1")
+            const maxSelected = writable(initial?.maxSelected?.toString() ?? (isRadio ? "1" : ""))
+            const otherMaxLength = writable(initial?.otherMaxLength?.toString() ?? "100")
             const entry = derived(
                 [isRequired, question, options, isAcceptingOther, minSelected, maxSelected, otherMaxLength],
                 ([$isRequired, $question, $options, $isAcceptingOther, $minSelected, $maxSelected, $otherMaxLength]) => {
@@ -149,9 +151,9 @@ export namespace MultiChoice {
                         question: $question,
                         options: $options,
                         isAcceptingOther: $isAcceptingOther,
-                        minSelected: $minSelected,
-                        maxSelected: $maxSelected ?? $options.length,
-                        otherMaxLength: $isAcceptingOther ? $otherMaxLength : undefined,
+                        minSelected: parseIntStrict($minSelected),
+                        maxSelected: $maxSelected.length === 0 ? $options.length : parseIntStrict($maxSelected),
+                        otherMaxLength: $isAcceptingOther ? parseIntStrict($otherMaxLength) : undefined,
                     } satisfies Entry
                 },
             )
@@ -178,9 +180,25 @@ export namespace MultiChoice {
                     isHint: false,
                 },
                 {
+                    type: "InvalidMinSelected",
+                    isError: isNaN(entry.minSelected),
+                    isHint: false,
+                },
+                {
+                    type: "InvalidMaxSelected",
+                    isError: isNaN(entry.maxSelected),
+                    isHint: false,
+                },
+                {
+                    type: "InvalidOtherMaxLength",
+                    isError: entry.otherMaxLength !== undefined && isNaN(entry.otherMaxLength),
+                    isHint: false,
+                },
+                {
                     type: "InvalidOptionsRange",
-                    isError: entry.minSelected < 0 || entry.minSelected > entry.maxSelected ||
-                        entry.maxSelected < 1 || entry.maxSelected > entry.options.length,
+                    isError: entry.options.length !== 0 &&
+                        (entry.minSelected < 0 || entry.minSelected > entry.maxSelected ||
+                        entry.maxSelected < 1 || entry.maxSelected > entry.options.length),
                     isHint: false,
                 },
                 {

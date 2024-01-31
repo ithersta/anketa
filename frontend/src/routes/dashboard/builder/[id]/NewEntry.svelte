@@ -8,6 +8,7 @@
     import type { SurveyEntryBuilderUiState } from "$lib/survey/entries";
     import { Text } from "$lib/survey/text";
     import { TextField } from "$lib/survey/textfield";
+    import { MultiChoice } from "$lib/survey/multichoice";
 
     export let openEditor: (uiState: SurveyEntryBuilderUiState) => void
 </script>
@@ -26,11 +27,11 @@
                 <TextCursorInput class="mr-2 h-4 w-4" />
                 Текстовое поле
             </Button>
-            <Button variant="secondary">
+            <Button variant="secondary" on:click={() => openEditor(MultiChoice.Builder.toUiState(undefined))}>
                 <CheckCheck class="mr-2 h-4 w-4" />
                 Множественный выбор
             </Button>
-            <Button variant="secondary">
+            <Button variant="secondary" on:click={() => openEditor(MultiChoice.Builder.toUiState(undefined, true))}>
                 <CircleDot class="mr-2 h-4 w-4" />
                 Одиночный выбор
             </Button>

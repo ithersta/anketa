@@ -51,7 +51,12 @@
     }
 </script>
 
-<Dialog.Root open={state !== undefined}>
+<Dialog.Root open={state !== undefined} onOpenChange={(isOpen) => {
+    forceError = false
+    if (!isOpen) {
+        state = undefined
+    }
+}}>
     <Dialog.Content class="max-w-xl">
         <div class="flex flex-col space-y-6">
             <EntryEditor uiState={state.uiState} {forceError}/>
