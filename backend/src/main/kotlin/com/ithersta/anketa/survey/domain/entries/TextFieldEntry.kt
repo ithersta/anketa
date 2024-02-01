@@ -34,6 +34,10 @@ data class TextFieldEntry(
             override val message: String
                 get() = "Min length cannot be larger than max length"
         }
+        object InvalidLength : ValidationError {
+            override val message: String
+                get() = "Invalid length constraints"
+        }
     }
 
     override fun validateAnswer(answer: SurveyAnswer) = buildList {
@@ -49,6 +53,9 @@ data class TextFieldEntry(
     override fun validate() = buildList {
         if (minLength > maxLength) {
             add(ValidationError.MinLengthGreaterThanMaxLength)
+        }
+        if (minLength < 0 || maxLength < 0) {
+            add(ValidationError.InvalidLength)
         }
     }
 }

@@ -1,8 +1,10 @@
 import type { ValidationHint } from "$lib/survey/validation";
 import { requiredHint } from "$lib/survey/validation";
-import { derived, type Readable, type Writable } from "svelte/store";
+import { derived, readable, type Readable, writable, type Writable } from "svelte/store";
 import { persisted } from "svelte-persisted-store";
 import * as devalue from "devalue";
+import { NilUUID } from "$lib/uuid";
+import { parseIntStrict } from "$lib/parseIntStrict";
 
 export namespace MultiChoice {
     export type Entry = {
@@ -34,6 +36,17 @@ export namespace MultiChoice {
         answer: Readable<Answer | undefined>,
         hints: Readable<Hint[]>,
         clear: () => void,
+    }
+
+    export function toPreviewUiState(entry: Entry): UiState {
+        return {
+            entry: entry,
+            selected: writable(new Set()),
+            other: writable(""),
+            answer: readable(undefined),
+            hints: readable(validate(entry, undefined)),
+            clear: () => {},
+        }
     }
 
     export function toUiState(entry: Entry, prefix: string): UiState {
@@ -110,5 +123,113 @@ export namespace MultiChoice {
                     answer.other.length > entry.otherMaxLength,
             }
         ]
+    }
+
+    export namespace Builder {
+        export type Hint = {
+            type: "OptionsEmpty" | "InvalidOptionsRange" | "EmptyQuestion" |
+                "InvalidMinSelected" | "InvalidMaxSelected" | "InvalidOtherMaxLength",
+        } & ValidationHint
+
+        export type UiState = {
+            type: "MultiChoice",
+            isRequired: Writable<boolean>,
+            question: Writable<string>,
+            options: Writable<{ id: number, text: string }[]>,
+            isAcceptingOther: Writable<boolean>,
+            minSelected: Writable<string>,
+            maxSelected: Writable<string>,
+            otherMaxLength: Writable<string>,
+            entry: Readable<Entry>,
+            hints: Readable<Hint[]>,
+        }
+
+        export function toUiState(initial?: Entry, isRadio: boolean = false): UiState {
+            const isRequired = writable(initial?.isRequired ?? true)
+            const question = writable(initial?.question ?? "")
+            const options = writable(
+                initial?.options?.map((o, index) => ({ id: index, text: o })) ?? []
+            )
+            const isAcceptingOther = writable(initial?.isAcceptingOther ?? false)
+            const minSelected = writable(initial?.minSelected?.toString() ?? "1")
+            let initialMaxSelected: string
+            if (initial) {
+                if (initial.maxSelected === initial.options.length) {
+                    initialMaxSelected = ""
+                } else {
+                    initialMaxSelected = initial.maxSelected.toString()
+                }
+            } else {
+                initialMaxSelected = isRadio ? "1" : ""
+            }
+            const maxSelected = writable(initialMaxSelected)
+            const otherMaxLength = writable(initial?.otherMaxLength?.toString() ?? "100")
+            const entry = derived(
+                [isRequired, question, options, isAcceptingOther, minSelected, maxSelected, otherMaxLength],
+                ([$isRequired, $question, $options, $isAcceptingOther, $minSelected, $maxSelected, $otherMaxLength]) => {
+                    return {
+                        type: "MultiChoice",
+                        id: NilUUID,
+                        isRequired: $isRequired,
+                        question: $question,
+                        options: $options.map(o => o.text),
+                        isAcceptingOther: $isAcceptingOther,
+                        minSelected: parseIntStrict($minSelected),
+                        maxSelected: $maxSelected.length === 0 ? $options.length : parseIntStrict($maxSelected),
+                        otherMaxLength: $isAcceptingOther ? parseIntStrict($otherMaxLength) : undefined,
+                    } satisfies Entry
+                },
+            )
+            const hints = derived(entry, ($entry) => validate($entry))
+            return {
+                type: "MultiChoice",
+                isRequired: isRequired,
+                question: question,
+                options: options,
+                isAcceptingOther: isAcceptingOther,
+                minSelected: minSelected,
+                maxSelected: maxSelected,
+                otherMaxLength: otherMaxLength,
+                entry: entry,
+                hints: hints,
+            }
+        }
+
+        function validate(entry: Entry): Hint[] {
+            return [
+                {
+                    type: "OptionsEmpty",
+                    isError: entry.options.length === 0,
+                    isHint: false,
+                },
+                {
+                    type: "InvalidMinSelected",
+                    isError: isNaN(entry.minSelected),
+                    isHint: false,
+                },
+                {
+                    type: "InvalidMaxSelected",
+                    isError: isNaN(entry.maxSelected),
+                    isHint: false,
+                },
+                {
+                    type: "InvalidOtherMaxLength",
+                    isError: entry.otherMaxLength !== undefined && isNaN(entry.otherMaxLength),
+                    isHint: false,
+                },
+                {
+                    type: "InvalidOptionsRange",
+                    isError: entry.options.length !== 0 &&
+                        (entry.minSelected < 0 || entry.minSelected > entry.maxSelected ||
+                        entry.maxSelected < 1 || entry.maxSelected > entry.options.length),
+                    isHint: false,
+                },
+                {
+                    type: "EmptyQuestion",
+                    isError: entry.question.length === 0,
+                    isHint: false,
+                },
+            ]
+        }
     }
 }

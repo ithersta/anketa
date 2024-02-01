@@ -3,12 +3,20 @@
     import { Button } from "$lib/components/ui/button";
     import { goto } from "$app/navigation";
     import { Plus } from "lucide-svelte";
+    import { db } from "$lib/db/db";
+    import { liveQuery } from "dexie";
 
     export let data
     let surveys = data.surveys
+    const drafts = liveQuery(async () => {
+        return db.surveyDrafts
+            .orderBy("id")
+            .toArray();
+    })
 
-    function gotoBuilder() {
-        goto(`/dashboard/builder/${crypto.randomUUID()}`)
+    async function gotoBuilder() {
+        let id: number = await db.surveyDrafts.add({ title: "Новая анкета" })
+        await goto(`/dashboard/builder/${id}`)
     }
 </script>
 
@@ -32,6 +40,12 @@
         </Table.Row>
     </Table.Header>
     <Table.Body>
+        {#each $drafts || [] as draft (draft.id)}
+            <Table.Row class="cursor-pointer" on:click={() => {goto(`/dashboard/builder/${draft.id}`)}}>
+                <Table.Cell>{draft.title}</Table.Cell>
+                <Table.Cell>Черновик</Table.Cell>
+            </Table.Row>
+        {/each}
         {#each surveys as survey (survey.id)}
             <Table.Row class="cursor-pointer" on:click={() => {goto(`/dashboard/survey/${survey.id}`)}}>
                 <Table.Cell>{survey.title}</Table.Cell>
