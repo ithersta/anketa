@@ -124,7 +124,7 @@ export namespace MultiChoice {
             type: "MultiChoice",
             isRequired: Writable<boolean>,
             question: Writable<string>,
-            options: Writable<string[]>,
+            options: Writable<{ id: number, text: string }[]>,
             isAcceptingOther: Writable<boolean>,
             minSelected: Writable<string>,
             maxSelected: Writable<string>,
@@ -136,10 +136,22 @@ export namespace MultiChoice {
         export function toUiState(initial?: Entry, isRadio: boolean = false): UiState {
             const isRequired = writable(initial?.isRequired ?? true)
             const question = writable(initial?.question ?? "")
-            const options = writable(initial?.options ?? [])
+            const options = writable(
+                initial?.options?.map((o, index) => ({ id: index, text: o })) ?? []
+            )
             const isAcceptingOther = writable(initial?.isAcceptingOther ?? false)
             const minSelected = writable(initial?.minSelected?.toString() ?? "1")
-            const maxSelected = writable(initial?.maxSelected?.toString() ?? (isRadio ? "1" : ""))
+            let initialMaxSelected: string
+            if (initial) {
+                if (initial.maxSelected === initial.options.length) {
+                    initialMaxSelected = ""
+                } else {
+                    initialMaxSelected = initial.maxSelected.toString()
+                }
+            } else {
+                initialMaxSelected = isRadio ? "1" : ""
+            }
+            const maxSelected = writable(initialMaxSelected)
             const otherMaxLength = writable(initial?.otherMaxLength?.toString() ?? "100")
             const entry = derived(
                 [isRequired, question, options, isAcceptingOther, minSelected, maxSelected, otherMaxLength],
@@ -149,7 +161,7 @@ export namespace MultiChoice {
                         id: NilUUID,
                         isRequired: $isRequired,
                         question: $question,
-                        options: $options,
+                        options: $options.map(o => o.text),
                         isAcceptingOther: $isAcceptingOther,
                         minSelected: parseIntStrict($minSelected),
                         maxSelected: $maxSelected.length === 0 ? $options.length : parseIntStrict($maxSelected),

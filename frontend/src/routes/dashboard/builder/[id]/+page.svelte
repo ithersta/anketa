@@ -55,7 +55,9 @@
         {#each ($entries || []) as entry (entry.id)}
             <div class="py-2 flex flex-row space-x-2" transition:slide>
                 <div class="pointer-events-none cursor-default flex-grow">
-                    <SurveyEntryComponent uiState={toUiState(entry.content, "draft")} forceError={false}/>
+                    <SurveyEntryComponent
+                            uiState={toUiState(entry.content, "draft")}
+                            forceError={false}/>
                 </div>
                 <div class="flex flex-col">
                     <Button variant="ghost" size="icon" on:click={() => openEditorExisting(entry)}>
@@ -64,7 +66,7 @@
                 </div>
             </div>
         {/each}
-        <div class="py-2">
+        <div class="py-2 pe-12">
             <NewEntry {openEditor}/>
         </div>
     </div>

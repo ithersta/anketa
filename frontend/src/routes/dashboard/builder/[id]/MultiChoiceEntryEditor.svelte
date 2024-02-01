@@ -10,7 +10,7 @@
     import { MultiChoice } from "$lib/survey/multichoice";
     import { Checkbox } from "$lib/components/ui/checkbox";
     import { Button } from "$lib/components/ui/button";
-    import { CheckIcon, Cross, Delete, Pencil, Plus, XIcon } from "lucide-svelte";
+    import { Plus, XIcon } from "lucide-svelte";
 
     export let uiState: MultiChoice.Builder.UiState
     export let forceError: boolean
@@ -29,15 +29,17 @@
     function addOption() {
         if (newOption.length === 0) return
         options.update(o => {
-            o.push(newOption)
+            const id = o.length === 0 ? 0 : o[o.length - 1].id + 1
+            o.push({ id: id, text: newOption })
             return o
         })
         newOption = ""
     }
 
-    function deleteOption(i: number) {
+    function deleteOption(id: number) {
         options.update(o => {
-            o.splice(i, 1)
+            const index = o.findLastIndex(value => value.id === id)
+            o.splice(index, 1)
             return o
         })
     }
@@ -56,17 +58,17 @@
     <Label for="question">Вопрос</Label>
     <Textarea bind:value={$question} id="question"></Textarea>
 </div>
-<div class="grid w-full gap-2">
-    <Label>Варианты ответа</Label>
-    {#each $options as option, i}
-        <div class="flex flex-row gap-2 items-center">
-            <Label class="flex-grow">{option}</Label>
-            <Button variant="ghost" size="icon" on:click={() => deleteOption(i)}>
+<div class="grid w-full">
+    <Label class="pb-2">Варианты ответа</Label>
+    {#each $options as option (option.id)}
+        <div class="flex flex-row gap-2 items-center py-1" transition:slide>
+            <Label class="flex-grow">{option.text}</Label>
+            <Button variant="ghost" size="icon" on:click={() => deleteOption(option.id)}>
                 <XIcon class="h-4 w-4"/>
             </Button>
         </div>
     {/each}
-    <div class="flex flex-row gap-2">
+    <div class="flex flex-row gap-2 pt-2">
         <form on:submit={addOption}>
             <Input class="flex-grow" bind:value={newOption}/>
         </form>
