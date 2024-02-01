@@ -19,7 +19,7 @@
         <Card.Title>Добавить блок</Card.Title>
     </Card.Header>
     <Card.Content>
-        <div class="grid grid-cols-2 gap-2">
+        <div class="grid grid-cols-1 gap-2 md:grid-cols-2">
             <Button variant="secondary" on:click={() => openEditor(Text.Builder.toUiState(undefined))}>
                 <TextIcon class="mr-2 h-4 w-4" />
                 Текст
