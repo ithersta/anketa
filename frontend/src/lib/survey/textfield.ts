@@ -1,9 +1,10 @@
 import type { ValidationHint } from "$lib/survey/validation";
 import { requiredHint } from "$lib/survey/validation";
-import { derived, type Readable, writable, type Writable } from "svelte/store";
+import { derived, readable, type Readable, writable, type Writable } from "svelte/store";
 import { persisted } from "svelte-persisted-store";
 import { NilUUID } from "$lib/uuid";
 import { parseIntStrict } from "$lib/parseIntStrict";
+import { read } from "$app/server";
 
 export namespace TextField {
     export type Entry = {
@@ -30,6 +31,16 @@ export namespace TextField {
         answer: Readable<Answer | undefined>,
         hints: Readable<Hint[]>,
         clear: () => void,
+    }
+
+    export function toPreviewUiState(entry: Entry): UiState {
+        return {
+            entry: entry,
+            text: writable(""),
+            answer: readable(undefined),
+            hints: readable(validate(entry, undefined)),
+            clear: () => {},
+        }
     }
 
     export function toUiState(entry: Entry, prefix: string): UiState {

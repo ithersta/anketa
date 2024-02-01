@@ -7,8 +7,7 @@
 
     export let uiState: Text.Builder.UiState
     export let forceError: boolean
-    const content = uiState.content
-    const hints = uiState.hints
+    const { content, hints } = uiState
 </script>
 
 <Dialog.Header>

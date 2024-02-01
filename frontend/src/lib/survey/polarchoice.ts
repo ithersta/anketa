@@ -1,9 +1,10 @@
 import type { ValidationHint } from "$lib/survey/validation";
 import { requiredHint } from "$lib/survey/validation";
-import { derived, type Readable, writable, type Writable } from "svelte/store";
+import { derived, readable, type Readable, writable, type Writable } from "svelte/store";
 import { persisted } from "svelte-persisted-store";
 import * as devalue from "devalue";
 import { NilUUID } from "$lib/uuid";
+import { parseIntStrict } from "$lib/parseIntStrict";
 
 export namespace PolarChoice {
     export type Entry = {
@@ -29,6 +30,16 @@ export namespace PolarChoice {
         answer: Readable<Answer | undefined>,
         hints: Readable<Hint[]>,
         clear: () => void,
+    }
+
+    export function toPreviewUiState(entry: Entry): UiState {
+        return {
+            entry: entry,
+            selected: writable(undefined),
+            answer: readable(undefined),
+            hints: readable(validate(entry, undefined)),
+            clear: () => {},
+        }
     }
 
     export function toUiState(entry: Entry, prefix: string): UiState {
@@ -69,7 +80,7 @@ export namespace PolarChoice {
             type: "PolarChoice",
             isRequired: Writable<boolean>,
             question: Writable<string>,
-            range: Writable<number>,
+            range: Writable<string>,
             entry: Readable<Entry>,
             hints: Readable<Hint[]>,
         }
@@ -77,7 +88,7 @@ export namespace PolarChoice {
         export function toUiState(initial?: Entry): UiState {
             const isRequired = writable(initial?.isRequired ?? true)
             const question = writable(initial?.question ?? "")
-            const range = writable(initial?.range ?? 2)
+            const range = writable(initial?.range?.toString() ?? "2")
             const entry = derived(
                 [isRequired, question, range],
                 ([$isRequired, $question, $range]) => {
@@ -86,7 +97,7 @@ export namespace PolarChoice {
                         id: NilUUID,
                         isRequired: $isRequired,
                         question: $question,
-                        range: $range,
+                        range: parseIntStrict($range),
                     } satisfies Entry
                 },
             )
@@ -105,7 +116,7 @@ export namespace PolarChoice {
             return [
                 {
                     type: "InvalidRange",
-                    isError: entry.range < 1 || entry.range > 3,
+                    isError: isNaN(entry.range) || entry.range < 1 || entry.range > 3,
                     isHint: false,
                 },
                 {

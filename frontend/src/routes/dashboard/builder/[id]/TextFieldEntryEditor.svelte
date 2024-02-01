@@ -10,11 +10,7 @@
 
     export let uiState: TextField.Builder.UiState
     export let forceError: boolean
-    const question = uiState.question
-    const minLength = uiState.minLength
-    const maxLength = uiState.maxLength
-    const hints = uiState.hints
-    const isRequired = uiState.isRequired
+    const { question, minLength, maxLength, hints, isRequired } = uiState
 </script>
 
 <Dialog.Header>

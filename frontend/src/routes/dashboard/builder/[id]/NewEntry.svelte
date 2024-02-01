@@ -9,6 +9,7 @@
     import { Text } from "$lib/survey/text";
     import { TextField } from "$lib/survey/textfield";
     import { MultiChoice } from "$lib/survey/multichoice";
+    import { PolarChoice } from "$lib/survey/polarchoice";
 
     export let openEditor: (uiState: SurveyEntryBuilderUiState) => void
 </script>
@@ -35,7 +36,7 @@
                 <CircleDot class="mr-2 h-4 w-4" />
                 Одиночный выбор
             </Button>
-            <Button variant="secondary">
+            <Button variant="secondary" on:click={() => openEditor(PolarChoice.Builder.toUiState(undefined))}>
                 <Ruler class="mr-2 h-4 w-4" />
                 Анкета полярных профилей
             </Button>

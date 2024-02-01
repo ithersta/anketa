@@ -14,15 +14,11 @@
 
     export let uiState: MultiChoice.Builder.UiState
     export let forceError: boolean
-    const question = uiState.question
-    const minSelected = uiState.minSelected
-    const maxSelected = uiState.maxSelected
-    const options = uiState.options
-    const isAcceptingOther = uiState.isAcceptingOther
-    const otherMaxLength = uiState.otherMaxLength
-    const hints = uiState.hints
-    const isRequired = uiState.isRequired
-    const entry = uiState.entry
+    const {
+        question, minSelected, maxSelected,
+        options, isAcceptingOther, otherMaxLength,
+        hints, isRequired, entry
+    } = uiState
 
     let newOption = ""
 

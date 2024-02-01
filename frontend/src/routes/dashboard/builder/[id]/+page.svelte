@@ -8,7 +8,7 @@
     import TitleEdit from "./TitleEdit.svelte";
     import type { EntryEditorDialogState } from "./EntryEditorDialogState";
     import EntryEditorDialog from "./EntryEditorDialog.svelte";
-    import { type SurveyEntryBuilderUiState, toBuilderUiState, toUiState } from "$lib/survey/entries";
+    import { type SurveyEntryBuilderUiState, toBuilderUiState, toPreviewUiState, toUiState } from "$lib/survey/entries";
     import SurveyEntryComponent from "../../../survey/[id]/SurveyEntryComponent.svelte";
     import { Pencil, Trash } from "lucide-svelte";
     import type { SurveyDraftEntry } from "$lib/builder/draft";
@@ -52,11 +52,11 @@
     <EntryEditorDialog bind:state={entryEditorState} surveyId={id} close={closeEditor}/>
     <div class="max-w-prose mx-auto p-4">
         <TitleEdit draft={$draft}/>
-        {#each ($entries || []) as entry (entry.id)}
+        {#each ($entries || []) as entry (JSON.stringify(entry))}
             <div class="py-2 flex flex-row space-x-2" transition:slide>
                 <div class="pointer-events-none cursor-default flex-grow">
                     <SurveyEntryComponent
-                            uiState={toUiState(entry.content, "draft")}
+                            uiState={toPreviewUiState(entry.content)}
                             forceError={false}/>
                 </div>
                 <div class="flex flex-col">

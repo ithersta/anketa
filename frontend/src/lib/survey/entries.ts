@@ -22,6 +22,19 @@ export type SurveyEntryBuilderUiState = MultiChoice.Builder.UiState |
     TextField.Builder.UiState |
     Text.Builder.UiState
 
+export function toPreviewUiState(entry: SurveyEntry): SurveyEntryUiState {
+    if (entry.type === "MultiChoice") {
+        return MultiChoice.toPreviewUiState(entry)
+    } else if (entry.type === "PolarChoice") {
+        return PolarChoice.toPreviewUiState(entry)
+    } else if (entry.type === "TextField") {
+        return TextField.toPreviewUiState(entry)
+    } else if (entry.type === "Text") {
+        return Text.toUiState(entry)
+    }
+    throw new Error("Unknown entry type")
+}
+
 export function toUiState(entry: SurveyEntry, prefix: string): SurveyEntryUiState {
     if (entry.type === "MultiChoice") {
         return MultiChoice.toUiState(entry, prefix)
