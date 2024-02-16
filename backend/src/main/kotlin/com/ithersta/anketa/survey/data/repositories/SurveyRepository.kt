@@ -5,5 +5,5 @@ import org.springframework.data.repository.kotlin.CoroutineCrudRepository
 import java.util.*
 
 interface SurveyRepository : CoroutineCrudRepository<SurveyEntity, UUID> {
-    suspend fun findByCreatedBy(createdBy: UUID): List<SurveyEntity>
+    suspend fun findByCreatedByOrderByCreatedAtDesc(createdBy: UUID): List<SurveyEntity>
 }
