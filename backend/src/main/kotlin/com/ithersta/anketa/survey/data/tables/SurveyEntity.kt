@@ -3,13 +3,10 @@
 package com.ithersta.anketa.survey.data.tables
 
 import com.ithersta.anketa.survey.domain.SurveyContent
-import com.ithersta.anketa.survey.domain.entries.SurveyEntry
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.encodeToByteArray
 import kotlinx.serialization.protobuf.ProtoBuf
-import org.springframework.data.annotation.CreatedBy
-import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table

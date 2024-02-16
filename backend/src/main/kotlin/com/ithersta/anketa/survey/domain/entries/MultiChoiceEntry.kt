@@ -33,14 +33,17 @@ data class MultiChoiceEntry @OptIn(ExperimentalSerializationApi::class) construc
                 override val message: String
                     get() = "Selected answers don't match options"
             }
+
             object InvalidSelectionCount : ValidationError {
                 override val message: String
                     get() = "Selected answers count doesn't match the range"
             }
+
             object ExtraOtherAnswer : ValidationError {
                 override val message: String
                     get() = "Other answer isn't accepted but is present"
             }
+
             object OtherMaxLengthExceeded : ValidationError {
                 override val message: String
                     get() = "Max length of other answer exceeded"
@@ -53,6 +56,7 @@ data class MultiChoiceEntry @OptIn(ExperimentalSerializationApi::class) construc
             override val message: String
                 get() = "Option list cannot be empty"
         }
+
         object InvalidOptionsRange : ValidationError {
             override val message: String
                 get() = "Invalid selected options range"

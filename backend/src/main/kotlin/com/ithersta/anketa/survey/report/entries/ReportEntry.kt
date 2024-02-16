@@ -2,7 +2,7 @@ package com.ithersta.anketa.survey.report.entries
 
 import com.ithersta.anketa.survey.domain.entries.SurveyEntry
 import kotlinx.serialization.Serializable
-import java.util.UUID
+import java.util.*
 
 @Serializable
 sealed interface ReportEntry {

@@ -2,7 +2,6 @@ package com.ithersta.anketa.survey.domain
 
 import arrow.core.NonEmptyList
 import arrow.core.toNonEmptyListOrNull
-import arrow.core.toNonEmptySetOrNull
 import com.ithersta.anketa.survey.domain.entries.SurveyEntry
 import kotlinx.serialization.Serializable
 import java.util.*
@@ -19,10 +18,12 @@ data class SurveyContent(
             override val message: String
                 get() = "Survey cannot be empty"
         }
+
         object DuplicateId : ValidationError {
             override val message: String
                 get() = "Survey cannot contain entries with duplicate ids"
         }
+
         data class InvalidEntry(
             val id: UUID,
             val errors: NonEmptyList<SurveyEntry.ValidationError>

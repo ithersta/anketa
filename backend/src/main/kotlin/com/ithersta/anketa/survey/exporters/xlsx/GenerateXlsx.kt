@@ -3,7 +3,6 @@ package com.ithersta.anketa.survey.exporters.xlsx
 import com.ithersta.anketa.survey.domain.AnswerMap
 import com.ithersta.anketa.survey.domain.SurveyContent
 import com.ithersta.anketa.survey.domain.entries.*
-import org.apache.poi.ss.usermodel.CellStyle
 import org.apache.poi.ss.usermodel.CellType
 import org.apache.poi.xssf.usermodel.XSSFCellStyle
 import org.apache.poi.xssf.usermodel.XSSFRow
@@ -65,6 +64,7 @@ fun SurveyAnswer.toCellText(entry: RequiresAnswer) = when (this) {
             if (other != null) yield(other)
         }.joinToString(separator = "\r\n")
     }
+
     is PolarChoiceEntry.Answer -> selected.toString()
     is TextFieldEntry.Answer -> text
 }

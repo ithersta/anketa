@@ -33,7 +33,7 @@ fun generateSummary(
     reportEntry: ReportEntry,
     surveyEntry: SurveyEntry?,
     answers: List<SurveyAnswer?>,
-) : ReportEntrySummary {
+): ReportEntrySummary {
     return when (reportEntry) {
         is MultiChoiceReportEntry -> generateMultiChoiceReportSummary(reportEntry, surveyEntry, answers)
         is PolarChoiceReportEntry -> generatePolarChoiceReportSummary(reportEntry, surveyEntry, answers)

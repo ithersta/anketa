@@ -5,7 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm
 import org.springframework.stereotype.Service
 import java.time.Duration
 import java.time.Instant
-import java.util.UUID
+import java.util.*
 
 private const val ID_CLAIM = "id"
 

@@ -34,6 +34,7 @@ data class TextFieldEntry(
             override val message: String
                 get() = "Min length cannot be larger than max length"
         }
+
         object InvalidLength : ValidationError {
             override val message: String
                 get() = "Invalid length constraints"

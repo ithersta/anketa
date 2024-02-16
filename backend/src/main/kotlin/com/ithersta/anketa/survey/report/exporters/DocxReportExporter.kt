@@ -8,7 +8,7 @@ import org.apache.poi.xwpf.usermodel.XWPFDocument
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 
-class DocxReportExporter: ReportExporter {
+class DocxReportExporter : ReportExporter {
     override fun generateFile(dividedReport: DividedReport): ByteArray {
         return generateFile(dividedReport, this::class.java.getResourceAsStream("/template.docx")!!)
     }
