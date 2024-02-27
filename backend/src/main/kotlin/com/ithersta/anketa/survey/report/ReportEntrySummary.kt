@@ -14,6 +14,7 @@ sealed interface ReportEntrySummary {
         val options: List<Option>,
         val answerCount: Int,
         val noAnswerCount: Int,
+        val isSingleChoice: Boolean,
     ) : ReportEntrySummary {
         class Option(
             val text: String,
@@ -106,6 +107,7 @@ private fun generatePolarChoiceReportSummary(
         options = options,
         answerCount = answers.size,
         noAnswerCount = noAnswerCount,
+        isSingleChoice = true,
     )
 }
 
@@ -143,5 +145,6 @@ private fun generateMultiChoiceReportSummary(
         options = options,
         answerCount = answers.size,
         noAnswerCount = noAnswerCount,
+        isSingleChoice = surveyEntry.maxSelected == 1,
     )
 }

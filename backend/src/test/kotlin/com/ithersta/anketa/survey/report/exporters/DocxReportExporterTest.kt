@@ -30,8 +30,30 @@ class DocxReportExporterTest {
                             text = "Нет",
                             count = 42,
                         )
-                    )
-                )
+                    ),
+                    isSingleChoice = true,
+                ),
+                ReportEntrySummary.MultiChoice(
+                    question = "Как настроение?",
+                    formattedText = "Отвтеили",
+                    answerCount = 208,
+                    noAnswerCount = 2,
+                    options = listOf(
+                        ReportEntrySummary.MultiChoice.Option(
+                            text = "Отлично",
+                            count = 120,
+                        ),
+                        ReportEntrySummary.MultiChoice.Option(
+                            text = "Хорошо",
+                            count = 42,
+                        ),
+                        ReportEntrySummary.MultiChoice.Option(
+                            text = "Нормально",
+                            count = 44,
+                        )
+                    ),
+                    isSingleChoice = false,
+                ),
             )
         )
         File("Sample.docx").writeBytes(docxReportExporter.generateFile(dividedReport))

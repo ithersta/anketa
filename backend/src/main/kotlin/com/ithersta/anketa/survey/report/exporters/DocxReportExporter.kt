@@ -4,6 +4,7 @@ import com.ithersta.anketa.survey.report.DividedReport
 import com.ithersta.anketa.survey.report.ReportEntrySummary
 import org.apache.poi.ss.util.CellRangeAddress
 import org.apache.poi.xddf.usermodel.chart.*
+import org.apache.poi.xwpf.usermodel.XWPFChart
 import org.apache.poi.xwpf.usermodel.XWPFDocument
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
@@ -36,40 +37,65 @@ class DocxReportExporter : ReportExporter {
 
     private fun XWPFDocument.writeMultiChoiceSummary(summary: ReportEntrySummary.MultiChoice) {
         val paragraph = createParagraph()
-        paragraph.createRun().apply {
-            setText(summary.question)
-            style = "heading 1"
+        paragraph.createRun().setText(summary.question)
+        paragraph.style = "1"
+        if (summary.isSingleChoice) {
+            createBarChart(summary)
+        } else {
+            createPieChart(summary)
         }
-        createChart(summary)
     }
 
-    private fun XWPFDocument.createChart(summary: ReportEntrySummary.MultiChoice) {
-        val chart = createChart(XDDFChart.DEFAULT_WIDTH * 12, XDDFChart.DEFAULT_HEIGHT * 7)
-
+    private fun XDDFChartData.addSeries(chart: XWPFChart, summary: ReportEntrySummary.MultiChoice): XDDFChartData.Series {
         val numOfPoints = summary.options.size
-
         val categoryDataRange = chart.formatRange(CellRangeAddress(1, numOfPoints, 0, 0))
         val valuesDataRange = chart.formatRange(CellRangeAddress(1, numOfPoints, 1, 1))
         val categoriesData = XDDFDataSourcesFactory.fromArray(
             summary.options.map { it.text }.toTypedArray(),
             categoryDataRange,
-            0
+            0,
         )
         val valuesData = XDDFDataSourcesFactory.fromArray(
             summary.options.map { it.count }.toTypedArray(),
             valuesDataRange,
-            1
+            1,
         )
         valuesData.formatCode = "General"
-        val pieChart = chart.createData(ChartTypes.PIE, null, null) as XDDFPieChartData
-        pieChart.addSeries(categoriesData, valuesData)
+        return addSeries(categoriesData, valuesData)
+    }
+
+    private fun XWPFDocument.createBarChart(summary: ReportEntrySummary.MultiChoice) {
+        val chart = createChart(XDDFChart.DEFAULT_WIDTH * 12, XDDFChart.DEFAULT_HEIGHT * 7)
+
+        val leftAxis = chart.createCategoryAxis(AxisPosition.LEFT)
+        val bottomAxis = chart.createValueAxis(AxisPosition.BOTTOM)
+        val barChart = chart.createData(ChartTypes.BAR, leftAxis, bottomAxis) as XDDFBarChartData
+        val series = barChart.addSeries(chart, summary)
+        series.setTitle(summary.question)
+        barChart.setVaryColors(false)
+        barChart.barDirection = BarDirection.BAR
+        chart.plot(barChart)
         val ctChart = chart.ctChart
         val plotArea = ctChart.plotArea
-        val pieChartArray = plotArea.getPieChartArray(plotArea.sizeOfPieChartArray() - 1)
+        val barChartArray = plotArea.getBarChartArray(0)
+        val style = barChartArray.addNewDLbls()
+        style.addNewShowPercent()
+        style.addNewShowVal()
+        style.addNewShowCatName()
+        style.addNewShowSerName().setVal(false)
+    }
+
+    private fun XWPFDocument.createPieChart(summary: ReportEntrySummary.MultiChoice) {
+        val chart = createChart(XDDFChart.DEFAULT_WIDTH * 12, XDDFChart.DEFAULT_HEIGHT * 7)
+        val pieChart = chart.createData(ChartTypes.PIE, null, null) as XDDFPieChartData
+        pieChart.addSeries(chart, summary)
+        val ctChart = chart.ctChart
+        val plotArea = ctChart.plotArea
+        val pieChartArray = plotArea.getPieChartArray(0)
         val style = pieChartArray.addNewDLbls()
         style.addNewShowPercent()
         style.addNewShowVal()
-        style.addNewShowCatName().setVal(false)
+        style.addNewShowCatName()
         style.addNewShowSerName().setVal(false)
         val legend = chart.orAddLegend
         legend.position = LegendPosition.LEFT
@@ -87,9 +113,7 @@ class DocxReportExporter : ReportExporter {
 
     private fun XWPFDocument.writeTextFieldSummary(summary: ReportEntrySummary.TextField) {
         val paragraph = createParagraph()
-        paragraph.createRun().apply {
-            setText(summary.question)
-            style = "heading 1"
-        }
+        paragraph.createRun().setText(summary.question)
+        paragraph.style = "1"
     }
 }
