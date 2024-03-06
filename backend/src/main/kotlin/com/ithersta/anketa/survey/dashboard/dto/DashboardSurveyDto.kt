@@ -3,7 +3,7 @@ package com.ithersta.anketa.survey.dashboard.dto
 import com.ithersta.anketa.serialization.UuidSerializer
 import com.ithersta.anketa.survey.data.tables.SurveyEntity
 import kotlinx.serialization.Serializable
-import java.util.UUID
+import java.util.*
 
 @Serializable
 class DashboardSurveyDto(

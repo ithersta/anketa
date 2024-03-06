@@ -1,20 +1,16 @@
 package com.ithersta.anketa.crypto
 
 import kotlinx.serialization.Serializable
-import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo
 import org.bouncycastle.jce.ECNamedCurveTable
 import org.bouncycastle.jce.ECPointUtil
 import org.bouncycastle.jce.provider.BouncyCastleProvider
 import org.bouncycastle.jce.spec.ECNamedCurveSpec
-import org.bouncycastle.jce.spec.ECPublicKeySpec
 import org.slf4j.LoggerFactory
-import java.math.BigInteger
-import java.security.AlgorithmParameters
 import java.security.KeyFactory
 import java.security.PublicKey
 import java.security.Security
 import java.security.Signature
-import java.security.spec.*
+import java.security.spec.ECPublicKeySpec
 import java.util.*
 
 private val logger = LoggerFactory.getLogger(SignedMessage::class.java)

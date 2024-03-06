@@ -4,7 +4,6 @@ import com.ithersta.anketa.auth.OAuthProvider
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
-import java.io.Serializable
 import java.util.*
 
 @Table(name = "oauth_connections")
