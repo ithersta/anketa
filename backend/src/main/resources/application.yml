@@ -10,7 +10,8 @@ spring:
 oauth:
   yandex:
     client-id: "4ab33cd575a54a2aa3617fddabff8388"
-gigachat:
-  auth-secret-file: "gigachat-auth"
+yandex-gpt:
+  iam-file: "yandex-iam"
+  folder-id: "b1goq8mnc2251i4o0o5l"
 secrets:
   jwt-secret-file: "test-jwt-secret"
