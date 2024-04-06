@@ -3,6 +3,7 @@ package com.ithersta.anketa.survey.dashboard.services
 import arrow.core.Either
 import arrow.core.EitherNel
 import arrow.core.toNonEmptyListOrNull
+import com.ithersta.anketa.exception.ForbiddenException
 import com.ithersta.anketa.survey.dashboard.dto.DashboardSurveyDto
 import com.ithersta.anketa.survey.dashboard.dto.toDashboardSurveyDto
 import com.ithersta.anketa.survey.data.repositories.SurveyRepository
@@ -31,8 +32,8 @@ class DashboardSurveyService(
     suspend fun getAll(createdBy: UUID): List<DashboardSurveyDto> =
         surveyRepository.findByCreatedBy(createdBy).map(SurveyEntity::toDashboardSurveyDto)
 
-    suspend fun get(id: UUID, userId: UUID): DashboardSurveyDto? =
+    suspend fun get(id: UUID, userId: UUID): DashboardSurveyDto =
         surveyRepository.findById(id)
             ?.takeIf { it.createdBy == userId }
-            ?.toDashboardSurveyDto()
+            ?.toDashboardSurveyDto() ?: throw ForbiddenException()
 }

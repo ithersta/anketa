@@ -1,4 +1,4 @@
-package com.ithersta.anketa.survey.exporters.xlsx
+package com.ithersta.anketa.survey.report
 
 import com.ithersta.anketa.auth.userId
 import org.springframework.http.ContentDisposition
@@ -9,21 +9,26 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
-import java.util.*
+import org.springframework.web.bind.annotation.RequestBody
+import java.util.UUID
 
 @Controller
-class XlsxExportController(
-    private val xlsxExportService: XlsxExportService,
+class ReportController(
+    private val reportService: ReportService,
 ) {
-    @GetMapping("/dashboard/survey/{id}/export/xlsx")
-    suspend fun export(@PathVariable id: UUID, token: UsernamePasswordAuthenticationToken): ResponseEntity<ByteArray> {
-        val xlsx = xlsxExportService.generateXlsx(id, token.userId)
+    @GetMapping("/dashboard/survey/{id}/export/report")
+    suspend fun report(
+        @PathVariable("id") id: UUID,
+        @RequestBody reportContent: ReportContent,
+        token: UsernamePasswordAuthenticationToken,
+    ): ResponseEntity<ByteArray> {
+        val report = reportService.generateDocx(id, token.userId, reportContent)
         val headers = HttpHeaders()
         headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE)
         headers.set(
             HttpHeaders.CONTENT_DISPOSITION,
-            ContentDisposition.attachment().filename("$id.xlsx").build().toString(),
+            ContentDisposition.attachment().filename(report.first).build().toString(),
         )
-        return ResponseEntity.ok().headers(headers).body(xlsx)
+        return ResponseEntity.ok().headers(headers).body(report.second)
     }
 }

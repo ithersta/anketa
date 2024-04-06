@@ -6,9 +6,11 @@ import org.apache.poi.ss.util.CellRangeAddress
 import org.apache.poi.xddf.usermodel.chart.*
 import org.apache.poi.xwpf.usermodel.XWPFChart
 import org.apache.poi.xwpf.usermodel.XWPFDocument
+import org.springframework.stereotype.Component
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 
+@Component
 class DocxReportExporter : ReportExporter {
     override fun generateFile(dividedReport: DividedReport): ByteArray {
         return generateFile(dividedReport, this::class.java.getResourceAsStream("/template.docx")!!)

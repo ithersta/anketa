@@ -10,6 +10,11 @@ import java.util.*
 class SurveyService(
     private val surveyRepository: SurveyRepository,
 ) {
-    suspend fun getContentById(id: UUID): SurveyContent? =
+    suspend fun getContentById(id: UUID, userId: UUID): SurveyContent? =
+        surveyRepository.findById(id)
+            ?.takeIf { it.createdBy == userId }
+            ?.toSurveyContent()
+
+    suspend fun getPublicContentById(id: UUID): SurveyContent? =
         surveyRepository.findById(id)?.toSurveyContent()
 }

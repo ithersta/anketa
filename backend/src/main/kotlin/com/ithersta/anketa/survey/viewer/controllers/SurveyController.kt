@@ -16,5 +16,5 @@ class SurveyController(
 ) {
     @GetMapping("/{id}")
     suspend fun get(@PathVariable id: UUID): ResponseEntity<SurveyContent> =
-        ResponseEntity.ofNullable(surveyService.getContentById(id))
+        ResponseEntity.ofNullable(surveyService.getPublicContentById(id))
 }
