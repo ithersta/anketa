@@ -6,12 +6,10 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.http.HttpEntity
-import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpMethod
 import org.springframework.stereotype.Component
 import org.springframework.stereotype.Service
-import org.springframework.web.client.RestTemplate
+import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.reactive.function.client.awaitBody
 
 @Serializable
 private class YandexOAuthResponse(
@@ -35,23 +33,25 @@ class YandexOAuthService(
     private val oAuthService: OAuthService,
     private val yandexOauthProperties: YandexOauthProperties,
 ) {
-    private val restTemplate = RestTemplate()
+    private val webClient = WebClient.create()
     private val json = Json { ignoreUnknownKeys = true }
 
     suspend fun getToken(yandexToken: String): String {
-        val oAuthResponse = getProviderUserId(yandexToken)
-        return oAuthService.getToken(OAuthProvider.Yandex, oAuthResponse.id) {
-            UserEntity(oAuthResponse.displayName, oAuthResponse.defaultEmail)
+        val providerUserData = getProviderUserData(yandexToken)
+        return oAuthService.getToken(OAuthProvider.Yandex, providerUserData.id) {
+            UserEntity(providerUserData.displayName, providerUserData.defaultEmail)
         }
     }
 
-    private fun getProviderUserId(yandexToken: String): YandexOAuthResponse {
-        val headers = HttpHeaders()
-        headers.set("Authorization", "OAuth $yandexToken")
-        val request = HttpEntity<String>(headers)
-        val responseEntity =
-            restTemplate.exchange("https://login.yandex.ru/info", HttpMethod.GET, request, String::class.java)
-        val response = json.decodeFromString<YandexOAuthResponse>(responseEntity.body!!)
+    private suspend fun getProviderUserData(yandexToken: String): YandexOAuthResponse {
+        val responseBody = webClient.get()
+            .uri("https://login.yandex.ru/info")
+            .headers {
+                it.set("Authorization", "OAuth $yandexToken")
+            }
+            .retrieve()
+            .awaitBody<String>()
+        val response = json.decodeFromString<YandexOAuthResponse>(responseBody)
         require(response.clientId == yandexOauthProperties.clientId)
         return response
     }

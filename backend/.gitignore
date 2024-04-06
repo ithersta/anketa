@@ -38,6 +38,7 @@ out/
 
 ### Secrets ###
 secrets.json
+yandex-iam
 
 ### Samples ###
 Sample.docx
