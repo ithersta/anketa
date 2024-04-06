@@ -9,7 +9,7 @@ import java.util.*
 class MultiChoiceReportEntry(
     override var id: @Serializable(with = UuidSerializer::class) UUID,
     override val forEntryWithId: @Serializable(with = UuidSerializer::class) UUID,
-    val text: String,
+    val template: String,
 ) : ReportEntry {
     override fun validate(surveyEntry: SurveyEntry?): List<ReportEntry.ValidationError> {
         TODO("Not yet implemented")

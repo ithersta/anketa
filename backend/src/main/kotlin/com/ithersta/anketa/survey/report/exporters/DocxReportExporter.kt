@@ -44,6 +44,8 @@ class DocxReportExporter : ReportExporter {
         } else {
             createPieChart(summary)
         }
+        val description = createParagraph()
+        description.createRun().setText(summary.formattedText)
     }
 
     private fun XDDFChartData.addSeries(chart: XWPFChart, summary: ReportEntrySummary.MultiChoice): XDDFChartData.Series {

@@ -1,5 +1,6 @@
 package com.ithersta.anketa.survey.report
 
+import com.ithersta.anketa.formatting.KotlinFormatEngine
 import com.ithersta.anketa.survey.domain.entries.*
 import com.ithersta.anketa.survey.report.entries.*
 
@@ -101,9 +102,10 @@ private fun generatePolarChoiceReportSummary(
             count = count,
         )
     }
+    val properties = generateFormattingProperties(options, answers.size, noAnswerCount)
     return ReportEntrySummary.MultiChoice(
         question = surveyEntry.question,
-        formattedText = reportEntry.text, // TODO: Implement
+        formattedText = KotlinFormatEngine().format(properties, reportEntry.template),
         options = options,
         answerCount = answers.size,
         noAnswerCount = noAnswerCount,
@@ -139,12 +141,26 @@ private fun generateMultiChoiceReportSummary(
             count = count,
         )
     }
+    val properties = generateFormattingProperties(options, answers.size, noAnswerCount)
     return ReportEntrySummary.MultiChoice(
         question = surveyEntry.question,
-        formattedText = reportEntry.text, // TODO: Implement
+        formattedText = KotlinFormatEngine().format(properties, reportEntry.template),
         options = options,
         answerCount = answers.size,
         noAnswerCount = noAnswerCount,
         isSingleChoice = surveyEntry.maxSelected == 1,
     )
+}
+
+private fun generateFormattingProperties(
+    options: List<ReportEntrySummary. MultiChoice.Option>,
+    answerCount: Int,
+    noAnswerCount: Int,
+): Map<String, Any> = buildMap {
+    for ((i, option) in options.withIndex()) {
+        put("c${i + 1}", option.count)
+        put("t${i + 1}", option.text)
+    }
+    put("ac", answerCount)
+    put("nac", noAnswerCount)
 }

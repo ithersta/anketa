@@ -40,6 +40,7 @@ dependencies {
     implementation("org.apache.poi:poi-ooxml:5.2.5")
     runtimeOnly("org.postgresql:postgresql:42.6.0")
     runtimeOnly("org.postgresql:r2dbc-postgresql:1.0.2.RELEASE")
+    runtimeOnly("org.jetbrains.kotlin:kotlin-scripting-jsr223:1.8.22")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
