@@ -1,5 +1,6 @@
 import type { ValidationHint } from "$lib/survey/validation";
 import { derived, type Readable, writable, type Writable } from "svelte/store";
+import { MultiChoice } from "$lib/survey/multichoice";
 
 export namespace MultiChoiceReport {
     export type Entry = {
@@ -15,6 +16,14 @@ export namespace MultiChoiceReport {
         template: Writable<string>,
         entry: Readable<Entry>,
         hints: Readable<Hint[]>,
+    }
+
+    export function fromSurveyEntry(entry: MultiChoice.Entry): Entry {
+        return {
+            type: "MultiChoice",
+            forEntryWithId: entry.id,
+            template: "",
+        }
     }
 
     export function toUiState(initial: Entry): UiState {

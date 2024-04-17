@@ -1,5 +1,6 @@
 import type { ValidationHint } from "$lib/survey/validation";
 import { derived, type Readable, writable, type Writable } from "svelte/store";
+import { PolarChoice } from "$lib/survey/polarchoice";
 
 export namespace PolarChoiceReport {
     export type Entry = {
@@ -15,6 +16,14 @@ export namespace PolarChoiceReport {
         template: Writable<string>,
         entry: Readable<Entry>,
         hints: Readable<Hint[]>,
+    }
+
+    export function fromSurveyEntry(entry: PolarChoice.Entry): Entry {
+        return {
+            type: "PolarChoice",
+            forEntryWithId: entry.id,
+            template: "",
+        }
     }
 
     export function toUiState(initial: Entry): UiState {

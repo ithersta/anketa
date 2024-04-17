@@ -1,5 +1,6 @@
 import type { ValidationHint } from "$lib/survey/validation";
 import { derived, type Readable } from "svelte/store";
+import { TextField } from "$lib/survey/textfield";
 
 export namespace TextFieldReport {
     export type Entry = {
@@ -13,6 +14,13 @@ export namespace TextFieldReport {
         type: "TextField",
         entry: Readable<Entry>,
         hints: Readable<Hint[]>,
+    }
+
+    export function fromSurveyEntry(entry: TextField.Entry): Entry {
+        return {
+            type: "TextField",
+            forEntryWithId: entry.id,
+        }
     }
 
     export function toUiState(initial: Entry): UiState {

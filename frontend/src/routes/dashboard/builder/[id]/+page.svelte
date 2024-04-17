@@ -18,6 +18,20 @@
 
     const id = Number.parseInt($page.params.id)
 
+    const draftExists = liveQuery(async () => {
+        let count = await db.surveyDrafts
+            .where("id")
+            .equals(id)
+            .count()
+        return count > 0
+    })
+
+    $: {
+        if ($draftExists === false) {
+            goto("/dashboard")
+        }
+    }
+
     const draft = liveQuery(async () => {
         return db.surveyDrafts.get(id)
     })
@@ -85,18 +99,13 @@
         })
     }
 
-    async function deleteAndExit() {
-        await deleteDraft()
-        await goto("/dashboard")
-    }
-
 </script>
 
 <svelte:head>
     <title>{$draft?.title ?? "Новая анкета"}</title>
 </svelte:head>
 
-<DeleteDialog bind:dialogOpen={isDeleteDialogOpen} deleteDraft={deleteAndExit}/>
+<DeleteDialog bind:dialogOpen={isDeleteDialogOpen} deleteDraft={deleteDraft}/>
 
 {#if $draft}
     <EntryEditorDialog bind:state={entryEditorState} surveyId={id} close={closeEditor}/>
