@@ -8,6 +8,7 @@ import com.ithersta.anketa.survey.report.exporters.DocxReportExporter
 import com.ithersta.anketa.survey.viewer.services.SurveyService
 import org.apache.commons.io.output.ByteArrayOutputStream
 import org.springframework.stereotype.Service
+import java.time.Instant
 import java.util.*
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
@@ -31,14 +32,15 @@ class ReportService(
             surveyContent = surveyContent,
             answers = answerMaps,
         )
+        val bigName = "${surveyContent.title}-${Instant.now()}"
         val files = dividedReports.map { dividedReport ->
             "${dividedReport.name}.docx" to docxReportExporter.generateFile(dividedReport)
         }
-        return compressIfMoreThanOne(surveyContent.title, files)
+        return compressIfMoreThanOne(bigName, files)
     }
 
     private fun compressIfMoreThanOne(name: String, files: List<Pair<String, ByteArray>>): Pair<String, ByteArray> {
-        if (files.size == 1) return files.first()
+        if (files.size == 1) return "${name}.docx" to files.first().second
         return compress(name, files)
     }
 

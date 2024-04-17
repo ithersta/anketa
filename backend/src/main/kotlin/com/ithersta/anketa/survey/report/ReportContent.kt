@@ -8,5 +8,5 @@ import java.util.*
 @Serializable
 class ReportContent(
     val entries: List<ReportEntry>,
-    val divideBy: @Serializable(with = UuidSerializer::class) UUID?,
+    val divideBy: @Serializable(with = UuidSerializer::class) UUID? = null,
 )

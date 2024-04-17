@@ -42,9 +42,9 @@ class DocxReportExporter : ReportExporter {
         paragraph.createRun().setText(summary.question)
         paragraph.style = "1"
         if (summary.isSingleChoice) {
-            createBarChart(summary)
-        } else {
             createPieChart(summary)
+        } else {
+            createBarChart(summary)
         }
         val description = createParagraph()
         description.createRun().setText(summary.formattedText)

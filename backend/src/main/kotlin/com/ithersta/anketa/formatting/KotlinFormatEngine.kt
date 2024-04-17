@@ -15,7 +15,7 @@ class KotlinFormatEngine {
         }
         engine.setBindings(bindings, ScriptContext.ENGINE_SCOPE)
         val fixedTemplate = template.trim()
-            .let { if (it.last() != '"') "\"$it\"" else it }
+            .let { if (it.lastOrNull() != '"') "\"$it\"" else it }
         val evalResult = engine.eval(fixedTemplate)
         check(evalResult is String) { "Expected String, got ${evalResult?.javaClass?.canonicalName}" }
         return evalResult

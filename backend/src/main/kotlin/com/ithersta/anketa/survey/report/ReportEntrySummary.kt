@@ -6,7 +6,7 @@ import com.ithersta.anketa.survey.report.entries.*
 
 sealed interface ReportEntrySummary {
     class Text(
-        val content: String
+        val content: String,
     ) : ReportEntrySummary
 
     class MultiChoice(
