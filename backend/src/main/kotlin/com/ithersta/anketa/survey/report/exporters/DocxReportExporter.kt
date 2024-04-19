@@ -67,44 +67,57 @@ class DocxReportExporter : ReportExporter {
         return addSeries(categoriesData, valuesData)
     }
 
+    private fun loadBarChartTemplate(): XWPFChart {
+        return this::class.java.getResourceAsStream("/bar_chart_template.docx").use { inputStream ->
+            val document = XWPFDocument(inputStream)
+            document.charts[0]
+        }
+    }
+
     private fun XWPFDocument.createBarChart(summary: ReportEntrySummary.MultiChoice) {
+        val template = loadBarChartTemplate()
         val chart = createChart(XDDFChart.DEFAULT_WIDTH * 12, XDDFChart.DEFAULT_HEIGHT * 7)
 
         val leftAxis = chart.createCategoryAxis(AxisPosition.LEFT)
         val bottomAxis = chart.createValueAxis(AxisPosition.BOTTOM)
+        bottomAxis.crosses = AxisCrosses.AUTO_ZERO
+        bottomAxis.majorTickMark = AxisTickMark.OUT
+        bottomAxis.crossBetween = AxisCrossBetween.BETWEEN
         val barChart = chart.createData(ChartTypes.BAR, leftAxis, bottomAxis) as XDDFBarChartData
         val series = barChart.addSeries(chart, summary)
         series.setTitle(summary.question)
         barChart.setVaryColors(false)
         barChart.barDirection = BarDirection.BAR
+        chart.setAutoTitleDeleted(false)
         chart.plot(barChart)
+        chart.setChartBottomMargin(XDDFChart.DEFAULT_HEIGHT.toLong())
         val ctChart = chart.ctChart
         val plotArea = ctChart.plotArea
         val barChartArray = plotArea.getBarChartArray(0)
-        val style = barChartArray.addNewDLbls()
-        style.addNewShowPercent()
-        style.addNewShowVal()
-        style.addNewShowCatName()
-        style.addNewShowSerName().setVal(false)
+        barChartArray.dLbls = template.ctChart.plotArea.getBarChartArray(0).dLbls
+        barChartArray.dLbls.showPercent.setVal(true)
+    }
+
+    private fun loadPieChartTemplate(): XWPFChart {
+        return this::class.java.getResourceAsStream("/pie_chart_template.docx").use { inputStream ->
+            val document = XWPFDocument(inputStream)
+            document.charts[0]
+        }
     }
 
     private fun XWPFDocument.createPieChart(summary: ReportEntrySummary.MultiChoice) {
+        val template = loadPieChartTemplate()
         val chart = createChart(XDDFChart.DEFAULT_WIDTH * 12, XDDFChart.DEFAULT_HEIGHT * 7)
         val pieChart = chart.createData(ChartTypes.PIE, null, null) as XDDFPieChartData
         pieChart.addSeries(chart, summary)
         val ctChart = chart.ctChart
         val plotArea = ctChart.plotArea
         val pieChartArray = plotArea.getPieChartArray(0)
-        val style = pieChartArray.addNewDLbls()
-        style.addNewShowPercent()
-        style.addNewShowVal()
-        style.addNewShowCatName()
-        style.addNewShowSerName().setVal(false)
+        pieChartArray.dLbls = template.ctChart.plotArea.getPieChartArray(0).dLbls
+        pieChartArray.dLbls.showCatName.setVal(true)
         val legend = chart.orAddLegend
         legend.position = LegendPosition.LEFT
         legend.isOverlay = false
-
-        pieChart.setVaryColors(true)
         chart.plot(pieChart)
     }
 

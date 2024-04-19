@@ -23,7 +23,11 @@ class DocxReportExporterTest {
                 MultiChoiceReportEntry(
                     forEntryWithId = UUID(0, 1),
                     template = "\$t1 = \$c1, \$t2 = \$c2, sum = \${c1 + c2}",
-                )
+                ),
+                MultiChoiceReportEntry(
+                    forEntryWithId = UUID(0, 2),
+                    template = "\$t1 = \$c1, \$t2 = \$c2, sum = \${c1 + c2}",
+                ),
             ),
             divideBy = null
         )
@@ -41,20 +45,32 @@ class DocxReportExporterTest {
                     isAcceptingOther = false,
                     minSelected = 1,
                     maxSelected = 1,
-                )
+                ),
+                MultiChoiceEntry(
+                    id = UUID(0, 2),
+                    isRequired = true,
+                    question = "Как дела?",
+                    options = listOf(
+                        "Хорошо",
+                        "Не очень",
+                    ),
+                    isAcceptingOther = false,
+                    minSelected = 1,
+                    maxSelected = 2,
+                ),
             )
         )
         val answers = listOf(
-            AnswerMap(mapOf(UUID(0, 1) to MultiChoiceEntry.Answer(setOf(1), null))),
-            AnswerMap(mapOf(UUID(0, 1) to MultiChoiceEntry.Answer(setOf(0), null))),
-            AnswerMap(mapOf(UUID(0, 1) to MultiChoiceEntry.Answer(setOf(0), null))),
-            AnswerMap(mapOf(UUID(0, 1) to MultiChoiceEntry.Answer(setOf(0), null))),
-            AnswerMap(mapOf(UUID(0, 1) to MultiChoiceEntry.Answer(setOf(0), null))),
-            AnswerMap(mapOf(UUID(0, 1) to MultiChoiceEntry.Answer(setOf(0), null))),
-            AnswerMap(mapOf(UUID(0, 1) to MultiChoiceEntry.Answer(setOf(0), null))),
-            AnswerMap(mapOf(UUID(0, 1) to MultiChoiceEntry.Answer(setOf(1), null))),
-            AnswerMap(mapOf(UUID(0, 1) to MultiChoiceEntry.Answer(setOf(1), null))),
-            AnswerMap(mapOf(UUID(0, 1) to MultiChoiceEntry.Answer(setOf(1), null))),
+            AnswerMap(mapOf(UUID(0, 1) to MultiChoiceEntry.Answer(setOf(1), null), UUID(0, 2) to MultiChoiceEntry.Answer(setOf(0, 1), null))),
+            AnswerMap(mapOf(UUID(0, 1) to MultiChoiceEntry.Answer(setOf(0), null), UUID(0, 2) to MultiChoiceEntry.Answer(setOf(0), null))),
+            AnswerMap(mapOf(UUID(0, 1) to MultiChoiceEntry.Answer(setOf(0), null), UUID(0, 2) to MultiChoiceEntry.Answer(setOf(0, 1), null))),
+            AnswerMap(mapOf(UUID(0, 1) to MultiChoiceEntry.Answer(setOf(0), null), UUID(0, 2) to MultiChoiceEntry.Answer(setOf(0), null))),
+            AnswerMap(mapOf(UUID(0, 1) to MultiChoiceEntry.Answer(setOf(0), null), UUID(0, 2) to MultiChoiceEntry.Answer(setOf(0, 1), null))),
+            AnswerMap(mapOf(UUID(0, 1) to MultiChoiceEntry.Answer(setOf(0), null), UUID(0, 2) to MultiChoiceEntry.Answer(setOf(0, 1), null))),
+            AnswerMap(mapOf(UUID(0, 1) to MultiChoiceEntry.Answer(setOf(0), null), UUID(0, 2) to MultiChoiceEntry.Answer(setOf(0), null))),
+            AnswerMap(mapOf(UUID(0, 1) to MultiChoiceEntry.Answer(setOf(1), null), UUID(0, 2) to MultiChoiceEntry.Answer(setOf(0, 1), null))),
+            AnswerMap(mapOf(UUID(0, 1) to MultiChoiceEntry.Answer(setOf(1), null), UUID(0, 2) to MultiChoiceEntry.Answer(setOf(0), null))),
+            AnswerMap(mapOf(UUID(0, 1) to MultiChoiceEntry.Answer(setOf(1), null), UUID(0, 2) to MultiChoiceEntry.Answer(setOf(1), null))),
         )
         val dividedReport = generateDividedReports(
             reportContent = reportContent,
