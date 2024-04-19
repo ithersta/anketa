@@ -13,6 +13,11 @@ export type ReportDraftEntry = {
     content: ReportEntry,
 }
 
+export type Summarization = {
+    entryId: string,
+    content: string,
+}
+
 export type ReportContent = {
     entries: ReportEntry[],
     divideBy: string | undefined,

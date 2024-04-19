@@ -9,4 +9,5 @@ import java.util.*
 @SerialName("TextField")
 class TextFieldReportEntry(
     override val forEntryWithId: @Serializable(with = UuidSerializer::class) UUID,
+    val doSummarise: Boolean,
 ) : ReportEntry

@@ -9,10 +9,10 @@ class SummarizationService(
 ) {
     suspend fun summarize(answers: List<String>): String {
         val id = gptApi.sendAsync(gptApi.createRequest(
-            systemMessage = "Кратко своими словами перескажи, какие проблемы или предложения перечислены в ответах на анкету студентами",
+            systemMessage = "Кратко своими словами перескажи ответы на анкету ниже. Пиши только ответ. Не используй markdown.",
             userMessage = answers.joinToString("\n")
         ))
-        for (i in 0..3) {
+        for (i in 0..30) {
             delay(500)
             val response = gptApi.getAsync(id).response
             if (response != null) {

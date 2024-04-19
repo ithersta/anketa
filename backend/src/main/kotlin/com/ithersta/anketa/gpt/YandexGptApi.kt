@@ -93,7 +93,7 @@ class YandexGptApi(
         systemMessage: String,
         userMessage: String,
         completionOptions: YandexGptRequest.CompletionOptions = YandexGptRequest.CompletionOptions(),
-        modelUri: String = "yandexgpt-lite",
+        modelUri: String = "yandexgpt",
     ): YandexGptRequest = YandexGptRequest(
         modelUri = "gpt://${folderId}/${modelUri}",
         completionOptions = completionOptions,

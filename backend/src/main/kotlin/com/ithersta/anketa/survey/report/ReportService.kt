@@ -1,7 +1,8 @@
 package com.ithersta.anketa.survey.report
 
-import com.ithersta.anketa.exception.ForbiddenException
+import com.ithersta.anketa.exception.NotFoundException
 import com.ithersta.anketa.survey.data.repositories.AnswerRepository
+import com.ithersta.anketa.survey.data.repositories.SummarizationRepository
 import com.ithersta.anketa.survey.data.tables.AnswerEntity
 import com.ithersta.anketa.survey.data.tables.toAnswerMap
 import com.ithersta.anketa.survey.report.exporters.DocxReportExporter
@@ -18,19 +19,21 @@ class ReportService(
     private val surveyService: SurveyService,
     private val answerRepository: AnswerRepository,
     private val docxReportExporter: DocxReportExporter,
+    private val summarizationRepository: SummarizationRepository,
 ) {
     suspend fun generateDocx(
         surveyId: UUID,
         userId: UUID,
         reportContent: ReportContent,
     ): Pair<String, ByteArray> {
-        val surveyContent = surveyService.getContentById(surveyId, userId) ?: throw ForbiddenException()
+        val surveyContent = surveyService.getContentById(surveyId, userId)
         val answerMaps = answerRepository.findBySurveyId(surveyId)
             .map(AnswerEntity::toAnswerMap)
         val dividedReports = generateDividedReports(
             reportContent = reportContent,
             surveyContent = surveyContent,
             answers = answerMaps,
+            getSummary = { summarizationRepository.findBySurveyEntryId(it)?.content }
         )
         val bigName = "${surveyContent.title}-${Instant.now()}"
         val files = dividedReports.map { dividedReport ->

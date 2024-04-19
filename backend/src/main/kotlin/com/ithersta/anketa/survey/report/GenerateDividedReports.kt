@@ -4,11 +4,13 @@ import com.ithersta.anketa.survey.domain.AnswerMap
 import com.ithersta.anketa.survey.domain.SurveyContent
 import com.ithersta.anketa.survey.domain.entries.RequiresAnswer
 import com.ithersta.anketa.survey.exporters.xlsx.toCellText
+import java.util.UUID
 
-fun generateDividedReports(
+suspend fun generateDividedReports(
     reportContent: ReportContent,
     surveyContent: SurveyContent,
     answers: List<AnswerMap>,
+    getSummary: suspend (UUID) -> String?,
 ): List<DividedReport> {
     val surveyEntries = surveyContent.entries.associateBy { it.id }
     val divideBy = reportContent.divideBy?.let { surveyEntries[it] } as? RequiresAnswer
@@ -25,6 +27,7 @@ fun generateDividedReports(
                     reportEntry = reportEntry,
                     surveyEntry = surveyEntries[reportEntry.forEntryWithId],
                     answers = dividedAnswers.map { it.answers[reportEntry.forEntryWithId] },
+                    getSummary = getSummary,
                 )
             }
         )

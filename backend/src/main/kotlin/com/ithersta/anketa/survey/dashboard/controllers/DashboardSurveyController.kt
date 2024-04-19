@@ -31,8 +31,4 @@ class DashboardSurveyController(
     @GetMapping
     suspend fun getAll(token: UsernamePasswordAuthenticationToken): List<DashboardSurveyDto> =
         surveyService.getAll(token.userId)
-
-    @GetMapping("/{id}")
-    suspend fun get(@PathVariable id: UUID, token: UsernamePasswordAuthenticationToken) =
-        ResponseEntity.ofNullable(surveyService.get(id, token.userId))
 }

@@ -46,8 +46,7 @@ class DocxReportExporter : ReportExporter {
         } else {
             createBarChart(summary)
         }
-        val description = createParagraph()
-        description.createRun().setText(summary.formattedText)
+        writeText(summary.formattedText)
     }
 
     private fun XDDFChartData.addSeries(chart: XWPFChart, summary: ReportEntrySummary.MultiChoice): XDDFChartData.Series {
@@ -110,14 +109,20 @@ class DocxReportExporter : ReportExporter {
     }
 
     private fun XWPFDocument.writeTextSummary(summary: ReportEntrySummary.Text) {
-        val paragraph = createParagraph()
-        val run = paragraph.createRun()
-        run.setText(summary.content)
+        writeText(summary.content)
     }
 
     private fun XWPFDocument.writeTextFieldSummary(summary: ReportEntrySummary.TextField) {
         val paragraph = createParagraph()
         paragraph.createRun().setText(summary.question)
         paragraph.style = "1"
+        writeText(summary.answers)
+    }
+
+    private fun XWPFDocument.writeText(text: String) {
+        text.lineSequence().forEach { line ->
+            val paragraph = createParagraph()
+            paragraph.createRun().setText(line)
+        }
     }
 }

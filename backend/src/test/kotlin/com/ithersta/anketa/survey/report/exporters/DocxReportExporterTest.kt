@@ -8,6 +8,7 @@ import com.ithersta.anketa.survey.report.ReportContent
 import com.ithersta.anketa.survey.report.ReportEntrySummary
 import com.ithersta.anketa.survey.report.entries.MultiChoiceReportEntry
 import com.ithersta.anketa.survey.report.generateDividedReports
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 import java.io.File
 import java.util.*
@@ -16,11 +17,10 @@ class DocxReportExporterTest {
     private val docxReportExporter = DocxReportExporter()
 
     @Test
-    fun exportSample() {
+    fun exportSample() = runBlocking {
         val reportContent = ReportContent(
             entries = listOf(
                 MultiChoiceReportEntry(
-                    id = UUID.randomUUID(),
                     forEntryWithId = UUID(0, 1),
                     template = "\$t1 = \$c1, \$t2 = \$c2, sum = \${c1 + c2}",
                 )
@@ -60,6 +60,7 @@ class DocxReportExporterTest {
             reportContent = reportContent,
             surveyContent = surveyContent,
             answers = answers,
+            getSummary = { null },
         ).single()
         File("Sample.docx").writeBytes(docxReportExporter.generateFile(dividedReport))
     }

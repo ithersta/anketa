@@ -3,6 +3,7 @@ package com.ithersta.anketa.survey.report
 import com.ithersta.anketa.formatting.KotlinFormatEngine
 import com.ithersta.anketa.survey.domain.entries.*
 import com.ithersta.anketa.survey.report.entries.*
+import java.util.UUID
 
 sealed interface ReportEntrySummary {
     class Text(
@@ -25,21 +26,22 @@ sealed interface ReportEntrySummary {
 
     class TextField(
         val question: String,
-        val answers: List<String>,
+        val answers: String,
         val answerCount: Int,
         val noAnswerCount: Int,
     ) : ReportEntrySummary
 }
 
-fun generateSummary(
+suspend fun generateSummary(
     reportEntry: ReportEntry,
     surveyEntry: SurveyEntry?,
     answers: List<SurveyAnswer?>,
+    getSummary: suspend (UUID) -> String?,
 ): ReportEntrySummary {
     return when (reportEntry) {
         is MultiChoiceReportEntry -> generateMultiChoiceReportSummary(reportEntry, surveyEntry, answers)
         is PolarChoiceReportEntry -> generatePolarChoiceReportSummary(reportEntry, surveyEntry, answers)
-        is TextFieldReportEntry -> generateTextFieldReportSummary(reportEntry, surveyEntry, answers)
+        is TextFieldReportEntry -> generateTextFieldReportSummary(reportEntry, surveyEntry, answers, getSummary)
         is TextReportEntry -> generateTextReportSummary(reportEntry)
     }
 }
@@ -52,10 +54,11 @@ private fun generateTextReportSummary(
     )
 }
 
-private fun generateTextFieldReportSummary(
+private suspend fun generateTextFieldReportSummary(
     reportEntry: TextFieldReportEntry,
     surveyEntry: SurveyEntry?,
     answers: List<SurveyAnswer?>,
+    getSummary: suspend (UUID) -> String?,
 ): ReportEntrySummary.TextField {
     require(surveyEntry is TextFieldEntry) {
         "Expected survey entry of type TextField for report entry with id=${reportEntry.forEntryWithId}"
@@ -67,10 +70,12 @@ private fun generateTextFieldReportSummary(
             noAnswerCount++
             continue
         }
+        textAnswers.add((answer as TextFieldEntry.Answer).text)
     }
+    val summary = if (reportEntry.doSummarise) getSummary(surveyEntry.id) else null
     return ReportEntrySummary.TextField(
         question = surveyEntry.question,
-        answers = textAnswers,
+        answers = summary ?: textAnswers.joinToString(separator = "\n") { "• $it" },
         answerCount = answers.size,
         noAnswerCount = noAnswerCount,
     )
