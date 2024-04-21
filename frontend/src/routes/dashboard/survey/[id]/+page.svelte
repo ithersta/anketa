@@ -83,10 +83,16 @@
             </div>
         </Card.Header>
         <Card.Content>
-            <Button variant="outline" class="w-full" href="/dashboard/survey/{data.id}/export/xlsx">
-                <TableIcon class="mr-2 h-4 w-4"/>
-                Таблица XLSX
-            </Button>
+            <div class="flex flex-col gap-2">
+                <Button variant="outline" class="w-full" href="/dashboard/survey/{data.id}/export/xlsx">
+                    <TableIcon class="mr-2 h-4 w-4"/>
+                    Таблица XLSX
+                </Button>
+                <Button variant="outline" class="w-full" href="/dashboard/survey/{data.id}/export/csv">
+                    <TableIcon class="mr-2 h-4 w-4"/>
+                    Таблица CSV
+                </Button>
+            </div>
         </Card.Content>
     </Card.Root>
 </div>

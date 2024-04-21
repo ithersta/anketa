@@ -38,6 +38,7 @@ dependencies {
     implementation("io.arrow-kt:arrow-core:1.2.0")
     implementation("org.bouncycastle:bcprov-jdk18on:1.77")
     implementation("org.apache.poi:poi-ooxml:5.2.5")
+    implementation("org.apache.commons:commons-csv:1.10.0")
     runtimeOnly("org.postgresql:postgresql:42.6.0")
     runtimeOnly("org.postgresql:r2dbc-postgresql:1.0.2.RELEASE")
     runtimeOnly("org.jetbrains.kotlin:kotlin-scripting-jsr223:1.8.22")

@@ -7,6 +7,7 @@
     import EntryEditorDialog from "./EntryEditorDialog.svelte";
     import type { EntryEditorDialogState } from "./EntryEditorDialogState";
     import {
+        getShortName,
         type SurveyEntry,
         type SurveyEntryBuilderUiState,
         toBuilderUiState,
@@ -19,7 +20,7 @@
     import { slide } from "svelte/transition";
     import type { SurveyDraftEntry } from "$lib/builder/draft";
     import type { ReportContent, ReportDraftEntry } from "$lib/report/draft";
-    import { get } from "svelte/store";
+    import { derived, get } from "svelte/store";
     import ReportComponent from "./ReportComponent.svelte";
     import NewEntry from "./NewEntry.svelte";
     import SurveyEntryChooser from "./SurveyEntryChooser.svelte";
@@ -46,7 +47,7 @@
 
     const draft = liveQuery(async () => {
         return db.reportDrafts.get(id);
-    })
+    })!
 
     const entries = liveQuery(async () => {
         return db.reportDraftEntries
@@ -55,9 +56,11 @@
             .sortBy("order")
     })
 
+    let divideByEntry = survey.entries.find(e => e.id === ($draft)?.divideBy)
     let entryEditorState: EntryEditorDialogState = undefined
     let isDeleteDialogOpen = false
     let isChooseNewEntryDialogOpen = false
+    let isDivideByDialogOpen = false
 
     function openDeleteDialog() {
         isDeleteDialogOpen = true
@@ -67,9 +70,26 @@
         isChooseNewEntryDialogOpen = true
     }
 
+    function openDivideByDialog() {
+        isDivideByDialogOpen = true
+    }
+
     function openNewEditor(surveyEntry: SurveyEntry) {
         isChooseNewEntryDialogOpen = false
         openEditor(toUiState(fromSurveyEntry(surveyEntry)!!))
+    }
+
+    async function setDivideBy(surveyEntry: SurveyEntry) {
+        isDivideByDialogOpen = false
+        await db.reportDrafts.update(id, {
+            divideBy: surveyEntry.id,
+        })
+    }
+
+    async function resetDivideBy() {
+        await db.reportDrafts.update(id, {
+            divideBy: undefined,
+        })
     }
 
     async function deleteDraft() {
@@ -126,6 +146,7 @@
 
 <DeleteDialog bind:dialogOpen={isDeleteDialogOpen} deleteDraft={deleteDraft}/>
 <SurveyEntryChooser bind:dialogOpen={isChooseNewEntryDialogOpen} entries={survey.entries.filter(e => fromSurveyEntry(e) !== undefined)} onSelect={openNewEditor}/>
+<SurveyEntryChooser bind:dialogOpen={isDivideByDialogOpen} entries={survey.entries.filter(e => fromSurveyEntry(e) !== undefined)} onSelect={setDivideBy}/>
 
 {#if $draft}
     <EntryEditorDialog bind:state={entryEditorState} draftId={id} close={closeEditor} {survey}/>
@@ -150,6 +171,16 @@
         {/each}
         <div class="py-2 pe-12">
             <NewEntry {openEditor} {openChooseNewEntryDialog}/>
+        </div>
+        <span class="text-lg font-semibold leading-none tracking-tight">Дробление</span>
+        <div>
+            <Button on:click={openDivideByDialog}>
+                {#if divideByEntry !== undefined}
+                    Дробить по ответу на «{getShortName(divideByEntry)}»
+                {:else}
+                    Не делить
+                {/if}
+            </Button>
         </div>
         <div class="py-2 pe-12 flex flex-row justify-end">
             <Button on:click={generate}>Сгенерировать отчёт</Button>

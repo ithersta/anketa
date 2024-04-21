@@ -4,6 +4,7 @@ export type ReportDraft = {
     id?: number,
     surveyId: string,
     title: string,
+    divideBy?: string,
 }
 
 export type ReportDraftEntry = {

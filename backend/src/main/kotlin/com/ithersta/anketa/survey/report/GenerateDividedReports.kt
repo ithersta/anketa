@@ -3,7 +3,7 @@ package com.ithersta.anketa.survey.report
 import com.ithersta.anketa.survey.domain.AnswerMap
 import com.ithersta.anketa.survey.domain.SurveyContent
 import com.ithersta.anketa.survey.domain.entries.RequiresAnswer
-import com.ithersta.anketa.survey.exporters.xlsx.toCellText
+import com.ithersta.anketa.survey.exporters.toCellText
 import java.util.UUID
 
 suspend fun generateDividedReports(
