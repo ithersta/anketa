@@ -19,7 +19,7 @@ data class TextFieldEntry(
     @SerialName("TextField")
     data class Answer(
         val text: String,
-    ) : SurveyAnswer {
+    ) : SurveyAnswer, SuitableForSummarization {
         sealed interface ValidationError : SurveyAnswer.ValidationError {
             object InvalidType : SurveyAnswer.ValidationError.InvalidType(), ValidationError
             object TextLengthNotInRange : ValidationError {
@@ -27,6 +27,9 @@ data class TextFieldEntry(
                     get() = "Text length isn't in the range"
             }
         }
+
+        override val contentForSummarization: String
+            get() = text
     }
 
     sealed interface ValidationError : SurveyEntry.ValidationError {

@@ -14,6 +14,7 @@ sealed interface ReportEntrySummary {
         val question: String,
         val formattedText: String,
         val options: List<Option>,
+        val otherAnswers: String?,
         val answerCount: Int,
         val noAnswerCount: Int,
         val isSingleChoice: Boolean,
@@ -39,7 +40,7 @@ suspend fun generateSummary(
     getSummary: suspend (UUID) -> String?,
 ): ReportEntrySummary {
     return when (reportEntry) {
-        is MultiChoiceReportEntry -> generateMultiChoiceReportSummary(reportEntry, surveyEntry, answers)
+        is MultiChoiceReportEntry -> generateMultiChoiceReportSummary(reportEntry, surveyEntry, answers, getSummary)
         is PolarChoiceReportEntry -> generatePolarChoiceReportSummary(reportEntry, surveyEntry, answers)
         is TextFieldReportEntry -> generateTextFieldReportSummary(reportEntry, surveyEntry, answers, getSummary)
         is TextReportEntry -> generateTextReportSummary(reportEntry)
@@ -115,19 +116,22 @@ private fun generatePolarChoiceReportSummary(
         answerCount = answers.size,
         noAnswerCount = noAnswerCount,
         isSingleChoice = true,
+        otherAnswers = null,
     )
 }
 
-private fun generateMultiChoiceReportSummary(
+private suspend fun generateMultiChoiceReportSummary(
     reportEntry: MultiChoiceReportEntry,
     surveyEntry: SurveyEntry?,
     answers: List<SurveyAnswer?>,
+    getSummary: suspend (UUID) -> String?,
 ): ReportEntrySummary.MultiChoice {
     require(surveyEntry is MultiChoiceEntry) {
         "Expected survey entry of type MultiChoice for report entry with id=${reportEntry.forEntryWithId}"
     }
     val answerCounts = Array(surveyEntry.options.size) { 0 }
     var noAnswerCount = 0
+    val otherAnswers = mutableListOf<String>()
     for (answer in answers) {
         if (answer == null) {
             noAnswerCount++
@@ -136,10 +140,15 @@ private fun generateMultiChoiceReportSummary(
         check(answer is MultiChoiceEntry.Answer) {
             "Expected answer of type MultiChoice for report entry with id=${reportEntry.forEntryWithId}"
         }
+        answer.other?.let {
+            otherAnswers.add(it)
+        }
         answer.selected.forEach {
             answerCounts[it]++
         }
     }
+    val summary = if (reportEntry.doSummarise) getSummary(surveyEntry.id) else null
+    val formattedSummary = summary ?: otherAnswers.joinToString(separator = "\n") { "• $it" }
     val options = surveyEntry.options.zip(answerCounts) { option, count ->
         ReportEntrySummary.MultiChoice.Option(
             text = option,
@@ -150,6 +159,7 @@ private fun generateMultiChoiceReportSummary(
     return ReportEntrySummary.MultiChoice(
         question = surveyEntry.question,
         formattedText = KotlinFormatEngine().format(properties, reportEntry.template),
+        otherAnswers = if (formattedSummary.isBlank()) null else formattedSummary,
         options = options,
         answerCount = answers.size,
         noAnswerCount = noAnswerCount,

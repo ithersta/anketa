@@ -15,6 +15,7 @@
     import type { SurveyContent } from "$lib/survey/survey";
     import { goto } from "$app/navigation";
     import DeleteDialog from "./DeleteDialog.svelte";
+    import { safeFetch } from "$lib/safeFetch";
 
     const id = Number.parseInt($page.params.id)
 
@@ -77,7 +78,7 @@
             title: title,
             entries: entries,
         } satisfies SurveyContent
-        const response = await fetch("/dashboard/builder", {
+        const response = await safeFetch("/dashboard/builder", {
             method: "POST",
             body: JSON.stringify(survey),
         })

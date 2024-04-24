@@ -26,7 +26,7 @@ data class MultiChoiceEntry @OptIn(ExperimentalSerializationApi::class) construc
     data class Answer(
         val selected: Set<Int>,
         val other: String?
-    ) : SurveyAnswer {
+    ) : SurveyAnswer, SuitableForSummarization {
         sealed interface ValidationError : SurveyAnswer.ValidationError {
             object InvalidType : SurveyAnswer.ValidationError.InvalidType(), ValidationError
             object InvalidSelection : ValidationError {
@@ -49,6 +49,9 @@ data class MultiChoiceEntry @OptIn(ExperimentalSerializationApi::class) construc
                     get() = "Max length of other answer exceeded"
             }
         }
+
+        override val contentForSummarization: String?
+            get() = other
     }
 
     sealed interface ValidationError : SurveyEntry.ValidationError {

@@ -25,6 +25,7 @@
     import NewEntry from "./NewEntry.svelte";
     import SurveyEntryChooser from "./SurveyEntryChooser.svelte";
     import DivideByButton from "./DivideByButton.svelte";
+    import { safeFetch } from "$lib/safeFetch";
 
     export let data
     const survey = data.survey
@@ -125,7 +126,7 @@
             entries: entriesValue?.map(e => e.content),
             divideBy: undefined,
         }
-        let response = await fetch(`/dashboard/survey/${draftValue?.surveyId}/export/report`, {
+        let response = await safeFetch(`/dashboard/survey/${draftValue?.surveyId}/export/report`, {
             method: "POST",
             body: JSON.stringify(reportContent),
         })

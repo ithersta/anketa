@@ -7,6 +7,7 @@ export namespace MultiChoiceReport {
         type: "MultiChoice",
         forEntryWithId: string,
         template: string,
+        doSummarise: boolean,
     }
 
     export type Hint = ValidationHint
@@ -14,6 +15,7 @@ export namespace MultiChoiceReport {
     export type UiState = {
         type: "MultiChoice",
         template: Writable<string>,
+        doSummarise: Writable<boolean>
         entry: Readable<Entry>,
         hints: Readable<Hint[]>,
     }
@@ -23,18 +25,21 @@ export namespace MultiChoiceReport {
             type: "MultiChoice",
             forEntryWithId: entry.id,
             template: "",
+            doSummarise: false,
         }
     }
 
     export function toUiState(initial: Entry): UiState {
         const template = writable(initial.template)
+        const doSummarise = writable(initial.doSummarise)
         const entry = derived(
-            template,
-            ($template) => {
+            [template, doSummarise],
+            ([$template, $doSummarise]) => {
                 return {
                     type: "MultiChoice",
                     forEntryWithId: initial.forEntryWithId,
                     template: $template,
+                    doSummarise: $doSummarise,
                 } satisfies Entry
             },
         )
@@ -42,6 +47,7 @@ export namespace MultiChoiceReport {
         return {
             type: "MultiChoice",
             template: template,
+            doSummarise: doSummarise,
             entry: entry,
             hints: hints,
         }

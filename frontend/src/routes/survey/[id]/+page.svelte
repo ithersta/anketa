@@ -8,6 +8,7 @@
     import { signSurveyAnswers } from "$lib/crypto/sign";
     import SuccessDialog from "./SuccessDialog.svelte";
     import { derived, get, type Readable } from "svelte/store";
+    import { safeFetch } from "$lib/safeFetch";
 
     export let data: {
         id: string,
@@ -34,7 +35,7 @@
                 }
             })
             let signedMessage = await signSurveyAnswers(JSON.stringify(Object.fromEntries(answers)))
-            let response = await fetch(`/survey/${data.id}`, {
+            let response = await safeFetch(`/survey/${data.id}`, {
                 method: "POST",
                 body: JSON.stringify(signedMessage),
             })

@@ -47,6 +47,12 @@ class DocxReportExporter : ReportExporter {
             createBarChart(summary)
         }
         writeText(summary.formattedText)
+        summary.otherAnswers?.let { otherAnswers ->
+            val subheader = createParagraph()
+            subheader.createRun().setText("Другие ответы")
+            subheader.style = "2"
+            writeText(otherAnswers)
+        }
     }
 
     private fun XDDFChartData.addSeries(chart: XWPFChart, summary: ReportEntrySummary.MultiChoice): XDDFChartData.Series {
