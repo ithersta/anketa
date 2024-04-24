@@ -13,6 +13,8 @@ export namespace PolarChoice {
         isRequired: boolean,
         question: string,
         range: number,
+        minText: string | undefined,
+        maxText: string | undefined,
     }
 
     export type Answer = {
@@ -81,6 +83,8 @@ export namespace PolarChoice {
             isRequired: Writable<boolean>,
             question: Writable<string>,
             range: Writable<string>,
+            minText: Writable<string>,
+            maxText: Writable<string>,
             entry: Readable<Entry>,
             hints: Readable<Hint[]>,
         }
@@ -89,14 +93,18 @@ export namespace PolarChoice {
             const isRequired = writable(initial?.isRequired ?? true)
             const question = writable(initial?.question ?? "")
             const range = writable(initial?.range?.toString() ?? "2")
+            const minText = writable(initial?.minText ?? "")
+            const maxText = writable(initial?.maxText ?? "")
             const entry = derived(
-                [isRequired, question, range],
-                ([$isRequired, $question, $range]) => {
+                [isRequired, question, range, minText, maxText],
+                ([$isRequired, $question, $range, $minText, $maxText]) => {
                     return {
                         type: "PolarChoice",
                         id: NilUUID,
                         isRequired: $isRequired,
                         question: $question,
+                        minText: $minText,
+                        maxText: $maxText,
                         range: parseIntStrict($range),
                     } satisfies Entry
                 },
@@ -106,6 +114,8 @@ export namespace PolarChoice {
                 type: "PolarChoice",
                 isRequired: isRequired,
                 question: question,
+                minText: minText,
+                maxText: maxText,
                 range: range,
                 entry: entry,
                 hints: hints,

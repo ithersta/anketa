@@ -15,8 +15,23 @@
     import type { SurveyContent } from "$lib/survey/survey";
     import { goto } from "$app/navigation";
     import DeleteDialog from "./DeleteDialog.svelte";
+    import { safeFetch } from "$lib/safeFetch";
 
     const id = Number.parseInt($page.params.id)
+
+    const draftExists = liveQuery(async () => {
+        let count = await db.surveyDrafts
+            .where("id")
+            .equals(id)
+            .count()
+        return count > 0
+    })
+
+    $: {
+        if ($draftExists === false) {
+            goto("/dashboard")
+        }
+    }
 
     const draft = liveQuery(async () => {
         return db.surveyDrafts.get(id)
@@ -63,7 +78,7 @@
             title: title,
             entries: entries,
         } satisfies SurveyContent
-        const response = await fetch("/dashboard/builder", {
+        const response = await safeFetch("/dashboard/builder", {
             method: "POST",
             body: JSON.stringify(survey),
         })
@@ -85,18 +100,13 @@
         })
     }
 
-    async function deleteAndExit() {
-        await deleteDraft()
-        await goto("/dashboard")
-    }
-
 </script>
 
 <svelte:head>
     <title>{$draft?.title ?? "Новая анкета"}</title>
 </svelte:head>
 
-<DeleteDialog bind:dialogOpen={isDeleteDialogOpen} deleteDraft={deleteAndExit}/>
+<DeleteDialog bind:dialogOpen={isDeleteDialogOpen} deleteDraft={deleteDraft}/>
 
 {#if $draft}
     <EntryEditorDialog bind:state={entryEditorState} surveyId={id} close={closeEditor}/>

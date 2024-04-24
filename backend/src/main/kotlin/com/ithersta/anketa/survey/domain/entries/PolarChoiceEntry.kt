@@ -11,8 +11,10 @@ data class PolarChoiceEntry(
     @Serializable(with = UuidSerializer::class)
     override var id: UUID,
     override val isRequired: Boolean,
-    val question: String,
+    override val question: String,
     val range: Int,
+    val minText: String? = null,
+    val maxText: String? = null,
 ) : SurveyEntry, RequiresAnswer {
     @Serializable
     @SerialName("PolarChoice")

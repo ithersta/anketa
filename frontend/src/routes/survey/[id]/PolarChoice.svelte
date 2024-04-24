@@ -17,6 +17,12 @@
         <Card.Title>{entry.question}</Card.Title>
     </Card.Header>
     <Card.Content>
+        {#if entry.minText || entry.maxText}
+            <div class="flex flex-row justify-between text-muted-foreground text-sm">
+                <span>{entry.minText}</span>
+                <span>{entry.maxText}</span>
+            </div>
+        {/if}
         <ToggleGroup.Root bind:value={$selected} type="single">
             {#each options as option (option)}
                 <ToggleGroup.Item class="w-12 h-12" value={option.toString()}>

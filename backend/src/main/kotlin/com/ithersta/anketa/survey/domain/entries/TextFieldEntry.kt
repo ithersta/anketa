@@ -11,7 +11,7 @@ data class TextFieldEntry(
     @Serializable(with = UuidSerializer::class)
     override var id: UUID,
     override val isRequired: Boolean,
-    val question: String,
+    override val question: String,
     val minLength: Int,
     val maxLength: Int,
 ) : SurveyEntry, RequiresAnswer {
@@ -19,7 +19,7 @@ data class TextFieldEntry(
     @SerialName("TextField")
     data class Answer(
         val text: String,
-    ) : SurveyAnswer {
+    ) : SurveyAnswer, SuitableForSummarization {
         sealed interface ValidationError : SurveyAnswer.ValidationError {
             object InvalidType : SurveyAnswer.ValidationError.InvalidType(), ValidationError
             object TextLengthNotInRange : ValidationError {
@@ -27,6 +27,9 @@ data class TextFieldEntry(
                     get() = "Text length isn't in the range"
             }
         }
+
+        override val contentForSummarization: String
+            get() = text
     }
 
     sealed interface ValidationError : SurveyEntry.ValidationError {
@@ -34,6 +37,7 @@ data class TextFieldEntry(
             override val message: String
                 get() = "Min length cannot be larger than max length"
         }
+
         object InvalidLength : ValidationError {
             override val message: String
                 get() = "Invalid length constraints"

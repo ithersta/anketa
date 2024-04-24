@@ -2,6 +2,7 @@
     import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
     import * as Avatar from "$lib/components/ui/avatar";
     import { Button } from "$lib/components/ui/button";
+    import { safeFetch } from "$lib/safeFetch";
 
     export let profile: {
         displayName: string,
@@ -9,7 +10,7 @@
     }
 
     async function logOut() {
-        const response = await fetch("/oauth/logout", { method: "POST" })
+        const response = await safeFetch("/oauth/logout", { method: "POST" })
         if (response.ok) {
             location.assign("/oauth")
         }

@@ -10,7 +10,7 @@ import com.ithersta.anketa.survey.domain.validateAnswers
 import kotlinx.serialization.json.Json
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.UUID
+import java.util.*
 
 @Service
 class AnswerService(
@@ -30,7 +30,7 @@ class AnswerService(
     suspend fun add(surveyId: UUID, signedAnswers: SignedMessage): AddResult {
         val answersString = signedAnswers.getVerifiedContent() ?: return AddResult.InvalidSignature
         val answerMap: AnswerMap = Json.decodeFromString(answersString)
-        val surveyContent = surveyService.getContentById(surveyId) ?: return AddResult.InvalidSurveyId
+        val surveyContent = surveyService.getPublicContentById(surveyId) ?: return AddResult.InvalidSurveyId
         val errors = surveyContent.validateAnswers(answerMap).toNonEmptyListOrNull()
         if (errors != null) {
             return AddResult.InvalidAnswers(errors)

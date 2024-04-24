@@ -7,12 +7,12 @@ import org.springframework.stereotype.Service
 class SummarizationService(
     private val gptApi: YandexGptApi,
 ) {
-    suspend fun summarize(answers: List<String>): String {
+    suspend fun summarize(question: String, answers: List<String>): String {
         val id = gptApi.sendAsync(gptApi.createRequest(
-            systemMessage = "Кратко своими словами перескажи, какие проблемы или предложения перечислены в ответах на анкету студентами",
-            userMessage = answers.joinToString("\n")
+            systemMessage = "Проанализируй ответы на вопрос анкеты. На основании этого анализа сделай вывод о тональности всех ответов в целом: позитивная, негативная, нейтральная. После этого, если они есть, перечисли список пожеланий респондентов.",
+            userMessage = "Вопрос:\n$question\n\nОтветы:\n${answers.joinToString("\n")}"
         ))
-        for (i in 0..3) {
+        for (i in 0..30) {
             delay(500)
             val response = gptApi.getAsync(id).response
             if (response != null) {

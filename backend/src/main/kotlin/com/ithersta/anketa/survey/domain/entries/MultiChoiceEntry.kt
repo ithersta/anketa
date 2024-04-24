@@ -13,7 +13,7 @@ data class MultiChoiceEntry @OptIn(ExperimentalSerializationApi::class) construc
     @Serializable(with = UuidSerializer::class)
     override var id: UUID,
     override val isRequired: Boolean,
-    val question: String,
+    override val question: String,
     val options: List<String>,
     val isAcceptingOther: Boolean,
     val minSelected: Int,
@@ -26,26 +26,32 @@ data class MultiChoiceEntry @OptIn(ExperimentalSerializationApi::class) construc
     data class Answer(
         val selected: Set<Int>,
         val other: String?
-    ) : SurveyAnswer {
+    ) : SurveyAnswer, SuitableForSummarization {
         sealed interface ValidationError : SurveyAnswer.ValidationError {
             object InvalidType : SurveyAnswer.ValidationError.InvalidType(), ValidationError
             object InvalidSelection : ValidationError {
                 override val message: String
                     get() = "Selected answers don't match options"
             }
+
             object InvalidSelectionCount : ValidationError {
                 override val message: String
                     get() = "Selected answers count doesn't match the range"
             }
+
             object ExtraOtherAnswer : ValidationError {
                 override val message: String
                     get() = "Other answer isn't accepted but is present"
             }
+
             object OtherMaxLengthExceeded : ValidationError {
                 override val message: String
                     get() = "Max length of other answer exceeded"
             }
         }
+
+        override val contentForSummarization: String?
+            get() = other
     }
 
     sealed interface ValidationError : SurveyEntry.ValidationError {
@@ -53,6 +59,7 @@ data class MultiChoiceEntry @OptIn(ExperimentalSerializationApi::class) construc
             override val message: String
                 get() = "Option list cannot be empty"
         }
+
         object InvalidOptionsRange : ValidationError {
             override val message: String
                 get() = "Invalid selected options range"

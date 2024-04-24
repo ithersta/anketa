@@ -3,6 +3,7 @@
     import { onMount } from "svelte";
     import { PUBLIC_BASE_URL, PUBLIC_YANDEX_OAUTH_CLIENT_ID } from "$env/static/public";
     import { page } from "$app/stores";
+    import { safeFetch } from "$lib/safeFetch";
 
     onMount(() => {
         window.YaAuthSuggest.init({
@@ -23,7 +24,7 @@
                 return result.handler()
             })
             .then(async function (data: { access_token: string }) {
-                let response = await fetch("oauth/yandex", {
+                let response = await safeFetch("oauth/yandex", {
                     method: "POST",
                     body: JSON.stringify({ token: data.access_token }),
                     headers: { "Content-Type": "application/json" },

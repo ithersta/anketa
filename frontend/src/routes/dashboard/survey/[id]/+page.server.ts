@@ -3,7 +3,7 @@ import { error } from "@sveltejs/kit";
 import type { DashboardSurvey } from "../../DashboardSurvey";
 
 export const load: PageServerLoad = async ({ params, fetch }) => {
-    let response = await fetch(`https://api/dashboard/survey/${params.id}`)
+    let response = await fetch(`https://api/survey/${params.id}`)
     if (response.ok) {
         return {
             id: params.id,
