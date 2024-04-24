@@ -13,7 +13,7 @@ data class MultiChoiceEntry @OptIn(ExperimentalSerializationApi::class) construc
     @Serializable(with = UuidSerializer::class)
     override var id: UUID,
     override val isRequired: Boolean,
-    val question: String,
+    override val question: String,
     val options: List<String>,
     val isAcceptingOther: Boolean,
     val minSelected: Int,

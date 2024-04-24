@@ -3,7 +3,10 @@ package com.ithersta.anketa.survey.report
 import com.ithersta.anketa.formatting.KotlinFormatEngine
 import com.ithersta.anketa.survey.domain.entries.*
 import com.ithersta.anketa.survey.report.entries.*
+import java.math.BigDecimal
+import java.math.RoundingMode
 import java.util.UUID
+import kotlin.math.roundToInt
 
 sealed interface ReportEntrySummary {
     class Text(
@@ -159,7 +162,7 @@ private suspend fun generateMultiChoiceReportSummary(
     return ReportEntrySummary.MultiChoice(
         question = surveyEntry.question,
         formattedText = KotlinFormatEngine().format(properties, reportEntry.template),
-        otherAnswers = if (formattedSummary.isBlank()) null else formattedSummary,
+        otherAnswers = formattedSummary.ifBlank { null },
         options = options,
         answerCount = answers.size,
         noAnswerCount = noAnswerCount,
@@ -174,6 +177,8 @@ private fun generateFormattingProperties(
 ): Map<String, Any> = buildMap {
     for ((i, option) in options.withIndex()) {
         put("c${i + 1}", option.count)
+        val percent = option.count.toBigDecimal().divide(answerCount.toBigDecimal()).multiply(BigDecimal.valueOf(100)).toDouble().roundToInt()
+        put("pc${i + 1}", percent)
         put("t${i + 1}", option.text)
     }
     put("ac", answerCount)

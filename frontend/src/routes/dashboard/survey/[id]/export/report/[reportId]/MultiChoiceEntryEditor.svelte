@@ -13,7 +13,7 @@
     const { template, doSummarise, hints } = uiState
 
     let formattingProperties = surveyEntry.options
-        .map((o, index) => `t${index + 1} – "${o}", c${index + 1} – количество ответов`)
+        .map((o, index) => `t${index + 1} – "${o}", c${index + 1} – количество ответов, pc${index + 1} – в процентах`)
         .join("\n")
 </script>
 

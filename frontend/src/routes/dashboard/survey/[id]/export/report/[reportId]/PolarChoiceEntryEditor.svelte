@@ -15,7 +15,7 @@
 
     let options = new Array(surveyEntry.range * 2 + 1).fill(null).map((_, i) => i - surveyEntry.range)
     let formattingProperties = options
-        .map((o, index) => `t${index + 1} – "${o}", c${index + 1} – количество ответов`)
+        .map((o, index) => `t${index + 1} – "${o}", c${index + 1} – количество ответов, pc${index + 1} – в процентах`)
         .join("\n")
 </script>
 

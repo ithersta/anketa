@@ -130,10 +130,10 @@
             method: "POST",
             body: JSON.stringify(reportContent),
         })
-        if (response.ok) {
+        if (response && response.ok) {
             const fileURL = URL.createObjectURL(await response.blob())
             const fileLink = document.createElement('a')
-            const filename = response.headers.get("x-filename")!
+            const filename = `${survey.title}-${new Date().toISOString()}.docx`
             fileLink.href = fileURL
             fileLink.download = filename
             fileLink.click()

@@ -26,10 +26,11 @@
         const response = await safeFetch(`/dashboard/survey/${surveyId}/export/summarise/${surveyEntry.id}`, {
             method: "POST",
         })
-        if (response && response.ok) {
-            await db.summarizations.update(surveyEntry.id, {
+        if (response !== undefined && response.ok) {
+            let text = await response.text()
+            await db.summarizations.put({
                 entryId: surveyEntry.id,
-                content: await response.text(),
+                content: text,
             })
         }
         requestCount--

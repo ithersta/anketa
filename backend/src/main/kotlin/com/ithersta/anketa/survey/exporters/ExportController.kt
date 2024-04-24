@@ -17,25 +17,25 @@ class ExportController(
 ) {
     @GetMapping("/dashboard/survey/{id}/export/xlsx")
     suspend fun exportXlsx(@PathVariable id: UUID, token: UsernamePasswordAuthenticationToken): ResponseEntity<ByteArray> {
-        val xlsx = exportService.generateXlsx(id, token.userId)
+        val (title, xlsx) = exportService.generateXlsx(id, token.userId)
         val headers = HttpHeaders()
         headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE)
         headers.set(
             HttpHeaders.CONTENT_DISPOSITION,
-            ContentDisposition.attachment().filename("$id.xlsx").build().toString(),
+            ContentDisposition.attachment().filename("$title.xlsx", Charsets.UTF_8).build().toString(),
         )
         return ResponseEntity.ok().headers(headers).body(xlsx)
     }
 
     @GetMapping("/dashboard/survey/{id}/export/csv")
     suspend fun exportCsv(@PathVariable id: UUID, token: UsernamePasswordAuthenticationToken): ResponseEntity<ByteArray> {
-        val xlsx = exportService.generateCsv(id, token.userId)
+        val (title, csv) = exportService.generateCsv(id, token.userId)
         val headers = HttpHeaders()
         headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE)
         headers.set(
             HttpHeaders.CONTENT_DISPOSITION,
-            ContentDisposition.attachment().filename("$id.csv").build().toString(),
+            ContentDisposition.attachment().filename("$title.csv", Charsets.UTF_8).build().toString(),
         )
-        return ResponseEntity.ok().headers(headers).body(xlsx)
+        return ResponseEntity.ok().headers(headers).body(csv)
     }
 }

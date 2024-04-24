@@ -1,6 +1,7 @@
 package com.ithersta.anketa.survey.report
 
 import com.ithersta.anketa.auth.userId
+import org.springframework.http.ContentDisposition
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -22,11 +23,14 @@ class ReportController(
         @RequestBody reportContent: ReportContent,
         token: UsernamePasswordAuthenticationToken,
     ): ResponseEntity<ByteArray> {
-        val report = reportService.generateDocx(id, token.userId, reportContent)
+        val (title, bytes) = reportService.generateDocx(id, token.userId, reportContent)
         val headers = HttpHeaders()
         headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE)
-        headers.set("x-filename", report.first)
-        return ResponseEntity.ok().headers(headers).body(report.second)
+        headers.set(
+            HttpHeaders.CONTENT_DISPOSITION,
+            ContentDisposition.attachment().filename("$title.xlsx", Charsets.UTF_8).build().toString(),
+        )
+        return ResponseEntity.ok().headers(headers).body(bytes)
     }
 
     @PostMapping("/dashboard/survey/{id}/export/summarise/{entryId}")

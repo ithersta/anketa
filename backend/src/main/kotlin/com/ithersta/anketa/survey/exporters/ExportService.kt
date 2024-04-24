@@ -14,11 +14,11 @@ class ExportService(
     private val surveyService: SurveyService,
     private val answerRepository: AnswerRepository,
 ) {
-    suspend fun generateXlsx(surveyId: UUID, userId: UUID): ByteArray {
+    suspend fun generateXlsx(surveyId: UUID, userId: UUID): Pair<String, ByteArray> {
         return generate(surveyId, userId, ::generateXlsx)
     }
 
-    suspend fun generateCsv(surveyId: UUID, userId: UUID): ByteArray {
+    suspend fun generateCsv(surveyId: UUID, userId: UUID): Pair<String, ByteArray> {
         return generate(surveyId, userId, ::generateCsv)
     }
 
@@ -26,10 +26,10 @@ class ExportService(
         surveyId: UUID,
         userId: UUID,
         format: (SurveyContent, Collection<AnswerMap>) -> ByteArray,
-    ): ByteArray {
+    ): Pair<String, ByteArray> {
         val surveyContent = surveyService.getContentById(surveyId, userId)
         val answerMaps = answerRepository.findBySurveyId(surveyId)
             .map(AnswerEntity::toAnswerMap)
-        return format(surveyContent, answerMaps)
+        return surveyContent.title to format(surveyContent, answerMaps)
     }
 }

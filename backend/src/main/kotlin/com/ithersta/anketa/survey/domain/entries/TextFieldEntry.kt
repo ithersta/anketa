@@ -11,7 +11,7 @@ data class TextFieldEntry(
     @Serializable(with = UuidSerializer::class)
     override var id: UUID,
     override val isRequired: Boolean,
-    val question: String,
+    override val question: String,
     val minLength: Int,
     val maxLength: Int,
 ) : SurveyEntry, RequiresAnswer {

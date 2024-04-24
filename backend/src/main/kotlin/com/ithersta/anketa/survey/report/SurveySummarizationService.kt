@@ -6,6 +6,7 @@ import com.ithersta.anketa.survey.data.repositories.AnswerRepository
 import com.ithersta.anketa.survey.data.repositories.SummarizationRepository
 import com.ithersta.anketa.survey.data.tables.AnswerEntity
 import com.ithersta.anketa.survey.data.tables.toAnswerMap
+import com.ithersta.anketa.survey.domain.entries.RequiresAnswer
 import com.ithersta.anketa.survey.domain.entries.SuitableForSummarization
 import com.ithersta.anketa.survey.viewer.services.SurveyService
 import org.springframework.stereotype.Service
@@ -22,10 +23,10 @@ class SurveySummarizationService(
         val survey = surveyService.getContentById(surveyId, userId)
         val answerMaps = answerRepository.findBySurveyId(surveyId)
             .map(AnswerEntity::toAnswerMap)
-        survey.entries.find { it.id == entryId } ?: throw NotFoundException()
+        val entry = survey.entries.find { it.id == entryId } as? RequiresAnswer ?: throw NotFoundException()
         val answers = answerMaps.mapNotNull { answerMap -> (answerMap.answers[entryId] as? SuitableForSummarization)?.contentForSummarization }
         if (answers.isEmpty()) return ""
-        val summarization = summarizationService.summarize(answers)
+        val summarization = summarizationService.summarize(entry.question, answers)
         summarizationRepository.upsert(entryId, summarization)
         return summarization
     }
