@@ -11,7 +11,7 @@
 
     export let uiState: PolarChoice.Builder.UiState
     export let forceError: boolean
-    const { question, range, hints, isRequired } = uiState
+    const { question, range, minText, maxText, hints, isRequired } = uiState
 </script>
 
 <Dialog.Header>
@@ -24,6 +24,16 @@
 <div class="grid w-full gap-2">
     <Label for="range">Максимальное значение шкалы</Label>
     <Input bind:value={$range} id="range"></Input>
+</div>
+<div class="grid w-full grid-cols-2 gap-4">
+    <div class="grid w-full gap-2">
+        <Label for="min-text">Описание минимального значения шкалы</Label>
+        <Input bind:value={$minText} id="min-text"></Input>
+    </div>
+    <div class="grid w-full gap-2">
+        <Label for="max-text">Описание максимального значения шкалы</Label>
+        <Input bind:value={$maxText} id="max-text"></Input>
+    </div>
 </div>
 <IsRequired bind:isRequired={$isRequired}/>
 <ValidationResult hints={$hints} {forceError} let:hint>

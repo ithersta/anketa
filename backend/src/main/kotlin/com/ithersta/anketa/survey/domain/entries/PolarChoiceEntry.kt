@@ -13,6 +13,8 @@ data class PolarChoiceEntry(
     override val isRequired: Boolean,
     val question: String,
     val range: Int,
+    val minText: String? = null,
+    val maxText: String? = null,
 ) : SurveyEntry, RequiresAnswer {
     @Serializable
     @SerialName("PolarChoice")

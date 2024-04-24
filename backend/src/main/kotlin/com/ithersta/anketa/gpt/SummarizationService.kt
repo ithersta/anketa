@@ -9,7 +9,7 @@ class SummarizationService(
 ) {
     suspend fun summarize(answers: List<String>): String {
         val id = gptApi.sendAsync(gptApi.createRequest(
-            systemMessage = "Кратко своими словами перескажи ответы на анкету ниже. Пиши только ответ. Не используй markdown.",
+            systemMessage = "Проанализируй отзывы. На основании этого анализа сделай вывод о тональности всего обсуждения: позитивная, негативная, нейтральная.\nПосле этого перечисли список пожеланий пользователей.",
             userMessage = answers.joinToString("\n")
         ))
         for (i in 0..30) {
