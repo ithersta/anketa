@@ -24,6 +24,7 @@
     import ReportComponent from "./ReportComponent.svelte";
     import NewEntry from "./NewEntry.svelte";
     import SurveyEntryChooser from "./SurveyEntryChooser.svelte";
+    import DivideByButton from "./DivideByButton.svelte";
 
     export let data
     const survey = data.survey
@@ -56,7 +57,6 @@
             .sortBy("order")
     })
 
-    let divideByEntry = survey.entries.find(e => e.id === ($draft)?.divideBy)
     let entryEditorState: EntryEditorDialogState = undefined
     let isDeleteDialogOpen = false
     let isChooseNewEntryDialogOpen = false
@@ -172,16 +172,7 @@
         <div class="py-2 pe-12">
             <NewEntry {openEditor} {openChooseNewEntryDialog}/>
         </div>
-        <span class="text-lg font-semibold leading-none tracking-tight">Дробление</span>
-        <div>
-            <Button on:click={openDivideByDialog}>
-                {#if divideByEntry !== undefined}
-                    Дробить по ответу на «{getShortName(divideByEntry)}»
-                {:else}
-                    Не делить
-                {/if}
-            </Button>
-        </div>
+        <DivideByButton openDivideByDialog={openDivideByDialog} clear={resetDivideBy} draft={$draft} survey={survey}/>
         <div class="py-2 pe-12 flex flex-row justify-end">
             <Button on:click={generate}>Сгенерировать отчёт</Button>
         </div>
