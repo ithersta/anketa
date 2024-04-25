@@ -8,6 +8,7 @@ import java.time.Instant
 import java.util.*
 
 private const val ID_CLAIM = "id"
+private const val EMAIL_CLAIM = "email"
 
 @Service
 class JwtService(
@@ -18,14 +19,16 @@ class JwtService(
     private val verifier = JWT.require(algorithm)
         .build()
 
-    fun generateToken(userId: UUID): String = JWT.create()
+    fun generateToken(userId: UUID, email: String): String = JWT.create()
         .withClaim(ID_CLAIM, userId.toString())
+        .withClaim(EMAIL_CLAIM, email)
         .withExpiresAt(Instant.now() + durationUntilExpiration)
         .sign(algorithm)
 
-    fun getUserIdFromToken(token: String): UUID {
-        val idClaim = verifier.verify(token)
-            .getClaim(ID_CLAIM)
-        return UUID.fromString(idClaim.asString())
+    fun getIdAndEmailFromToken(token: String): Pair<UUID, String> {
+        val verifiedToken = verifier.verify(token)
+        val idClaim = verifiedToken.getClaim(ID_CLAIM)
+        val emailClaim = verifiedToken.getClaim(EMAIL_CLAIM)
+        return UUID.fromString(idClaim.asString()) to emailClaim.asString()
     }
 }

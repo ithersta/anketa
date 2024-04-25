@@ -1,6 +1,7 @@
 package com.ithersta.anketa.auth.filter
 
 import com.ithersta.anketa.auth.services.JwtService
+import com.ithersta.anketa.auth.services.WhitelistService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -15,6 +16,7 @@ import reactor.core.publisher.Mono
 class SecurityConfig(
     private val jwtService: JwtService,
     private val authManager: AuthManager,
+    private val whitelistService: WhitelistService,
 ) {
     @Bean
     fun filterChain(http: ServerHttpSecurity): SecurityWebFilterChain {
@@ -40,8 +42,12 @@ class SecurityConfig(
                     ?.firstOrNull { it.startsWith("Bearer ") } ?: return@setServerAuthenticationConverter Mono.empty()
                 val token = header.drop(7)
                 val authentication = runCatching {
-                    val userId = jwtService.getUserIdFromToken(token)
-                    UsernamePasswordAuthenticationToken(userId, null, emptyList())
+                    val (userId, email) = jwtService.getIdAndEmailFromToken(token)
+                    if (whitelistService.isAllowed(email)) {
+                        UsernamePasswordAuthenticationToken(userId, null, emptyList())
+                    } else {
+                        null
+                    }
                 }.getOrNull()
                 Mono.justOrEmpty(authentication)
             }
