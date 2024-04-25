@@ -15,3 +15,6 @@ yandex-gpt:
   folder-id: "b1goq8mnc2251i4o0o5l"
 secrets:
   jwt-secret-file: "test-jwt-secret"
+whitelist:
+  emails:
+    - "ithersta@yandex.ru"
