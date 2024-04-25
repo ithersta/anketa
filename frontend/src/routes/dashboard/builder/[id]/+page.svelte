@@ -82,7 +82,7 @@
             method: "POST",
             body: JSON.stringify(survey),
         })
-        if (response.ok) {
+        if (response && response.ok) {
             await deleteDraft()
             const createdSurveyId = await response.text()
             await goto(`/dashboard/survey/${createdSurveyId}`)

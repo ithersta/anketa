@@ -30,7 +30,7 @@ class AnswerService(
     suspend fun add(surveyId: UUID, signedAnswers: SignedMessage): AddResult {
         val answersString = signedAnswers.getVerifiedContent() ?: return AddResult.InvalidSignature
         val answerMap: AnswerMap = Json.decodeFromString(answersString)
-        val surveyContent = surveyService.getPublicContentById(surveyId) ?: return AddResult.InvalidSurveyId
+        val surveyContent = surveyService.getPublicContentById(surveyId)
         val errors = surveyContent.validateAnswers(answerMap).toNonEmptyListOrNull()
         if (errors != null) {
             return AddResult.InvalidAnswers(errors)

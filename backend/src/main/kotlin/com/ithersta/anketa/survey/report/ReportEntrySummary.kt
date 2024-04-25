@@ -1,10 +1,9 @@
 package com.ithersta.anketa.survey.report
 
-import com.ithersta.anketa.formatting.KotlinFormatEngine
+import com.ithersta.anketa.formatting.FormatEngine
 import com.ithersta.anketa.survey.domain.entries.*
 import com.ithersta.anketa.survey.report.entries.*
 import java.math.BigDecimal
-import java.math.RoundingMode
 import java.util.UUID
 import kotlin.math.roundToInt
 
@@ -114,7 +113,7 @@ private fun generatePolarChoiceReportSummary(
     val properties = generateFormattingProperties(options, answers.size, noAnswerCount)
     return ReportEntrySummary.MultiChoice(
         question = surveyEntry.question,
-        formattedText = KotlinFormatEngine().format(properties, reportEntry.template),
+        formattedText = FormatEngine.format(properties, reportEntry.template),
         options = options,
         answerCount = answers.size,
         noAnswerCount = noAnswerCount,
@@ -161,7 +160,7 @@ private suspend fun generateMultiChoiceReportSummary(
     val properties = generateFormattingProperties(options, answers.size, noAnswerCount)
     return ReportEntrySummary.MultiChoice(
         question = surveyEntry.question,
-        formattedText = KotlinFormatEngine().format(properties, reportEntry.template),
+        formattedText = FormatEngine.format(properties, reportEntry.template),
         otherAnswers = formattedSummary.ifBlank { null },
         options = options,
         answerCount = answers.size,

@@ -12,7 +12,7 @@ class SummarizationServiceTest {
 
     @Test
     fun `SummarizationService should return the correct result`() = runBlocking {
-        val summary = summarizationService.summarize(listOf(
+        val summary = summarizationService.summarize("Чего не хватает в образовательном процессе?", listOf(
             "Хочу математикууууу!",
             "Я УСТАЛ",
             "Я думаю, мне не хватает физики",
