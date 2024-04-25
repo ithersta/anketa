@@ -23,13 +23,10 @@ class ReportController(
         @RequestBody reportContent: ReportContent,
         token: UsernamePasswordAuthenticationToken,
     ): ResponseEntity<ByteArray> {
-        val (title, bytes) = reportService.generateDocx(id, token.userId, reportContent)
+        val (extension, bytes) = reportService.generateDocx(id, token.userId, reportContent)
         val headers = HttpHeaders()
         headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE)
-        headers.set(
-            HttpHeaders.CONTENT_DISPOSITION,
-            ContentDisposition.attachment().filename("$title.xlsx", Charsets.UTF_8).build().toString(),
-        )
+        headers.set("x-extension", extension)
         return ResponseEntity.ok().headers(headers).body(bytes)
     }
 

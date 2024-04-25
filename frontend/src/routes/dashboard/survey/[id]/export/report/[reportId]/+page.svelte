@@ -133,7 +133,8 @@
         if (response && response.ok) {
             const fileURL = URL.createObjectURL(await response.blob())
             const fileLink = document.createElement('a')
-            const filename = `${survey.title}-${new Date().toISOString()}.docx`
+            const extension = response.headers.get("x-extension")!
+            const filename = `${survey.title}-${new Date().toISOString()}.${extension}`
             fileLink.href = fileURL
             fileLink.download = filename
             fileLink.click()
