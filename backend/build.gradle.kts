@@ -39,9 +39,9 @@ dependencies {
     implementation("org.bouncycastle:bcprov-jdk18on:1.77")
     implementation("org.apache.poi:poi-ooxml:5.2.5")
     implementation("org.apache.commons:commons-csv:1.10.0")
+    implementation("org.freemarker:freemarker:2.3.32")
     runtimeOnly("org.postgresql:postgresql:42.6.0")
     runtimeOnly("org.postgresql:r2dbc-postgresql:1.0.2.RELEASE")
-    runtimeOnly("org.jetbrains.kotlin:kotlin-scripting-jsr223:1.8.22")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
