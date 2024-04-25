@@ -38,9 +38,7 @@ class DocxReportExporter : ReportExporter {
     }
 
     private fun XWPFDocument.writeMultiChoiceSummary(summary: ReportEntrySummary.MultiChoice) {
-        val paragraph = createParagraph()
-        paragraph.createRun().setText(summary.question)
-        paragraph.style = "1"
+        writeHeader(summary.question)
         if (summary.isSingleChoice) {
             createPieChart(summary)
         } else {
@@ -48,9 +46,7 @@ class DocxReportExporter : ReportExporter {
         }
         writeText(summary.formattedText)
         summary.otherAnswers?.let { otherAnswers ->
-            val subheader = createParagraph()
-            subheader.createRun().setText("Другие ответы")
-            subheader.style = "2"
+            writeSubHeader("Другие ответы")
             writeText(otherAnswers)
         }
     }
@@ -132,10 +128,22 @@ class DocxReportExporter : ReportExporter {
     }
 
     private fun XWPFDocument.writeTextFieldSummary(summary: ReportEntrySummary.TextField) {
-        val paragraph = createParagraph()
-        paragraph.createRun().setText(summary.question)
-        paragraph.style = "1"
+        writeHeader(summary.question)
         writeText(summary.answers)
+    }
+
+    private fun XWPFDocument.writeHeader(text: String) {
+        writeParagraph(text, "1")
+    }
+
+    private fun XWPFDocument.writeSubHeader(text: String) {
+        writeParagraph(text, "2")
+    }
+
+    private fun XWPFDocument.writeParagraph(text: String, style: String) {
+        val paragraph = createParagraph()
+        paragraph.createRun().setText(text)
+        paragraph.style = style
     }
 
     private fun XWPFDocument.writeText(text: String) {
