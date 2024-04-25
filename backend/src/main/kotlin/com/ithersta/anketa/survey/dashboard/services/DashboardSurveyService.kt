@@ -29,5 +29,5 @@ class DashboardSurveyService(
     }
 
     suspend fun getAll(createdBy: UUID): List<DashboardSurveyDto> =
-        surveyRepository.findByCreatedBy(createdBy).map(SurveyEntity::toDashboardSurveyDto)
+        surveyRepository.findByCreatedByOrderByCreatedAtDesc(createdBy).map(SurveyEntity::toDashboardSurveyDto)
 }
