@@ -140,6 +140,47 @@
             fileLink.click()
         }
     }
+
+    let dragStartIndex: number
+    let dragEnterIndex: number
+    let dropIndex: number
+
+    async function handleDrop() {
+        if (dragStartIndex === dropIndex) return
+        const entriesValue = entries.getValue!()
+        const draggedItem = entriesValue[dragStartIndex]
+        const newEntries = [...entriesValue]
+        newEntries.splice(dragStartIndex, 1)
+        newEntries.splice(dropIndex, 0, draggedItem)
+        const updates = newEntries.map((e, index) => {
+            return {
+                key: e.id,
+                changes: {
+                    order: index,
+                },
+            }
+        })
+        await db.reportDraftEntries.bulkUpdate(updates)
+    }
+
+    function handleDragOver(e) {
+        const targetTop = e.target.getBoundingClientRect().top
+        const targetHeight = e.target.getBoundingClientRect().height
+        const yLoc = e.clientY - targetTop
+        if (yLoc < targetHeight / 2) {
+            dropIndex = dragEnterIndex
+        } else {
+            dropIndex = dragEnterIndex + 1
+        }
+    }
+
+    function handleDragStart(index: number) {
+        dragStartIndex = index
+    }
+
+    function handleDragEnter(index: number) {
+        dragEnterIndex = index
+    }
 </script>
 
 <svelte:head>
@@ -159,18 +200,25 @@
                 <Trash class="h-4 w-4"/>
             </Button>
         </div>
-        {#each ($entries || []) as entry (JSON.stringify(entry))}
-            <div class="py-2 flex flex-row space-x-2" transition:slide>
-                <div class="pointer-events-none cursor-default flex-grow">
-                    <ReportComponent entry={entry} survey={survey}/>
+        <div
+            on:drop={handleDrop}
+            on:dragover|preventDefault={handleDragOver}>
+            {#each ($entries || []) as entry, index (JSON.stringify(entry.content))}
+                <div draggable="true"
+                     on:dragstart={() => handleDragStart(index)}
+                     on:dragenter={() => handleDragEnter(index)}
+                     class="py-2 flex flex-row space-x-2" transition:slide>
+                    <div class="pointer-events-none cursor-default flex-grow">
+                        <ReportComponent entry={entry} survey={survey}/>
+                    </div>
+                    <div class="flex flex-col">
+                        <Button variant="ghost" size="icon" on:click={() => openEditorExisting(entry)}>
+                            <Pencil class="h-4 w-4"/>
+                        </Button>
+                    </div>
                 </div>
-                <div class="flex flex-col">
-                    <Button variant="ghost" size="icon" on:click={() => openEditorExisting(entry)}>
-                        <Pencil class="h-4 w-4"/>
-                    </Button>
-                </div>
-            </div>
-        {/each}
+            {/each}
+        </div>
         <div class="py-2 pe-12">
             <NewEntry {openEditor} {openChooseNewEntryDialog}/>
         </div>
