@@ -1,6 +1,6 @@
 <script lang="ts">
     import * as Table from "$lib/components/ui/table";
-    import { ArrowRight, Clipboard, Download, Eye, Plus, TableIcon } from "lucide-svelte";
+    import { ArrowRight, Clipboard, CopyIcon, Download, Eye, Plus, TableIcon } from "lucide-svelte";
     import { Button } from "$lib/components/ui/button";
     import * as Card from "$lib/components/ui/card";
     import { db } from "$lib/db/db";
@@ -9,6 +9,7 @@
     import { liveQuery } from "dexie";
     import { fromSurveyEntry, type ReportEntry } from "$lib/report/entries";
     import type { ReportDraftEntry } from "$lib/report/draft";
+    import type { SurveyDraftEntry } from "$lib/builder/draft";
 
     export let data
     const surveyId = $page.params.id
@@ -44,6 +45,22 @@
         })
         await goto(`/dashboard/survey/${surveyId}/export/report/${id}`)
     }
+
+    async function createCopy() {
+        let id = await db.transaction("rw", [db.surveyDrafts, db.surveyDraftEntries], async () => {
+            let id = await db.surveyDrafts.add({ title: `${survey.title} – Копия` })
+            let draftEntries = survey.entries.map((e, index) => {
+                return {
+                    surveyId: id,
+                    order: index,
+                    content: e,
+                } satisfies SurveyDraftEntry
+            })
+            await db.surveyDraftEntries.bulkAdd(draftEntries)
+            return id
+        })
+        await goto(`/dashboard/builder/${id}`)
+    }
 </script>
 
 <svelte:head>
@@ -59,17 +76,23 @@
         <Card.Header>
             <div class="flex flex-row center justify-between space-y-0 pb-2">
                 <div class="flex flex-col space-y-1.5">
-                    <Card.Title>Просмотр анкеты</Card.Title>
+                    <Card.Title>Управление анкетой</Card.Title>
                     <Card.Description>Анкета открыта</Card.Description>
                 </div>
                 <Eye class="h-4 w-4 text-muted-foreground" />
             </div>
         </Card.Header>
         <Card.Content>
-            <Button variant="outline" class="w-full" href="/survey/{data.id}" target="_blank">
-                <ArrowRight class="mr-2 h-4 w-4"/>
-                Перейти
-            </Button>
+            <div class="flex flex-col gap-2">
+                <Button variant="outline" class="w-full" href="/survey/{data.id}" target="_blank">
+                    <ArrowRight class="mr-2 h-4 w-4"/>
+                    Перейти к анкете
+                </Button>
+                <Button variant="outline" class="w-full" on:click={createCopy}>
+                    <CopyIcon class="mr-2 h-4 w-4"/>
+                    Создать копию анкеты
+                </Button>
+            </div>
         </Card.Content>
     </Card.Root>
     <Card.Root>
