@@ -22,7 +22,7 @@ class SummarizationService(
             systemMessage = SystemMessage,
             userMessage = "Вопрос:\n$question\n\nОтветы:\n${answers.joinToString("\n")}"
         ))
-        for (i in 0..30) {
+        for (i in 0..120) {
             delay(500)
             val response = gptApi.getAsync(id).response
             if (response != null) {

@@ -64,12 +64,12 @@
             </Button>
         </div>
     {/each}
-    <div class="flex flex-row gap-2 pt-2">
-        <form on:submit={addOption}>
-            <Input class="flex-grow" bind:value={newOption}/>
+    <div class="flex flex-row items-center gap-2 pt-2">
+        <form on:submit={addOption} class="flex-grow">
+            <Input bind:value={newOption}/>
         </form>
-        <Button variant="secondary" size="icon" on:click={addOption}>
-            <Plus class="h-4 w-4"/>
+        <Button variant="secondary" on:click={addOption}>
+            Добавить вариант ответа
         </Button>
     </div>
 </div>

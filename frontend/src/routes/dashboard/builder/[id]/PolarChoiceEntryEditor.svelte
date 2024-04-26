@@ -24,6 +24,7 @@
 <div class="grid w-full gap-2">
     <Label for="range">Максимальное значение шкалы</Label>
     <Input bind:value={$range} id="range"></Input>
+    <span class="text-muted-foreground text-sm">Шкала от −{$range} до {$range}</span>
 </div>
 <div class="grid w-full grid-cols-2 gap-4">
     <div class="grid w-full gap-2">

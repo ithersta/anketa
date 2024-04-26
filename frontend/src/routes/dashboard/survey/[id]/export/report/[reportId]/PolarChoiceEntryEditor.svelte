@@ -7,6 +7,8 @@
     import { MultiChoiceReport } from "$lib/report/multichoice";
     import { PolarChoiceReport } from "$lib/report/polarchoice";
     import { PolarChoice } from "$lib/survey/polarchoice";
+    import { ScrollArea } from "$lib/components/ui/scroll-area";
+    import { Label } from "$lib/components/ui/label";
 
     export let uiState: PolarChoiceReport.UiState
     export let forceError: boolean
@@ -25,11 +27,16 @@
 </Dialog.Header>
 <Textarea bind:value={$template}></Textarea>
 <span class="text-lg font-semibold leading-none tracking-tight">Форматирование</span>
-<span class="format-hint text-muted-foreground text-sm">
-    {formattingProperties}
-    ac – общее количество ответов
-    nac – количество воздержавшихся
-</span>
+
+<ScrollArea class="h-48 rounded-md border">
+    <div class="p-4">
+        <span class="format-hint text-muted-foreground text-sm">
+            {formattingProperties}
+            ac – общее количество ответов
+            nac – количество воздержавшихся
+        </span>
+    </div>
+</ScrollArea>
 <!--<ValidationResult hints={$hints} {forceError} let:hint>-->
 <!--    {#if (hint.type === "CannotBeEmpty")}-->
 <!--        <span>Текст не может быть пустым</span>-->
