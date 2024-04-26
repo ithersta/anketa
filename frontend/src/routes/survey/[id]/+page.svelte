@@ -6,9 +6,9 @@
     import { toggleMode } from "mode-watcher";
     import { type SurveyAnswer, toUiState } from "$lib/survey/entries";
     import { signSurveyAnswers } from "$lib/crypto/sign";
-    import SuccessDialog from "./SuccessDialog.svelte";
     import { derived, get, type Readable } from "svelte/store";
     import { safeFetch } from "$lib/safeFetch";
+    import { goto } from "$app/navigation";
 
     export let data: {
         id: string,
@@ -21,7 +21,6 @@
         uiStates.map((uiState) => uiState.hints),
         (allHints) => allHints.every((hints) => hints.every((hint) => hint.isError === false))
     )
-    let openSuccessDialog = false
     let forceError = false
     let requestCount = 0
 
@@ -45,7 +44,7 @@
             body: JSON.stringify(signedMessage),
         })
         if (response && response.ok) {
-            openSuccessDialog = true
+            await goto("/survey/success")
         }
         requestCount -= 1
     }
@@ -55,7 +54,6 @@
     <title>{data.survey.title}</title>
 </svelte:head>
 
-<SuccessDialog bind:dialogOpen={openSuccessDialog}/>
 <div class="max-w-prose mx-auto p-4">
     <div class="flex pt-16 pb-4">
         <div class="flex-grow">
