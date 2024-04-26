@@ -4,6 +4,7 @@ import com.ithersta.anketa.formatting.FormatEngine
 import com.ithersta.anketa.survey.domain.entries.*
 import com.ithersta.anketa.survey.report.entries.*
 import java.math.BigDecimal
+import java.math.RoundingMode
 import java.util.UUID
 import kotlin.math.roundToInt
 
@@ -176,7 +177,7 @@ private fun generateFormattingProperties(
 ): Map<String, Any> = buildMap {
     for ((i, option) in options.withIndex()) {
         put("c${i + 1}", option.count)
-        val percent = option.count.toBigDecimal().divide(answerCount.toBigDecimal()).multiply(BigDecimal.valueOf(100)).toDouble().roundToInt()
+        val percent = option.count.toBigDecimal().divide(answerCount.toBigDecimal(), 2, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100)).toDouble().roundToInt()
         put("pc${i + 1}", percent)
         put("t${i + 1}", option.text)
     }

@@ -15,6 +15,7 @@ services:
     restart: unless-stopped
     secrets:
       - jwt
+      - yandex
     depends_on:
       - db
     environment:
@@ -26,6 +27,7 @@ services:
       - SPRING_FLYWAY_PASSWORD=postgres
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - SECRETS_JWT-SECRET-FILE=/run/secrets/jwt
+      - YANDEX-GPT_IAM-FILE=/run/secrets/yandex
 
   frontend:
     image: ithersta/projects:anketa-frontend
@@ -61,3 +63,5 @@ volumes:
 secrets:
   jwt:
     file: /root/anketa/jwt
+  yandex:
+    file: /root/anketa/yandex
