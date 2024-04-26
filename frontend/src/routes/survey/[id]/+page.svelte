@@ -23,28 +23,31 @@
     )
     let openSuccessDialog = false
     let forceError = false
+    let requestCount = 0
 
     async function submit() {
+        if (requestCount > 0) return
         forceError = true
-        if ($answersValid) {
-            const answers: Map<string, SurveyAnswer> = new Map()
-            uiStates.forEach((uiState) => {
-                const answer: SurveyAnswer | undefined = get(uiState.answer)
-                if (answer !== undefined) {
-                    answers.set(uiState.entry.id, answer)
-                }
-            })
-            let signedMessage = await signSurveyAnswers(JSON.stringify(Object.fromEntries(answers)))
-            let response = await safeFetch(`/survey/${data.id}`, {
-                method: "POST",
-                body: JSON.stringify(signedMessage),
-            })
-            if (response.ok) {
-                openSuccessDialog = true
-                uiStates.forEach((uiState) => uiState.clear())
-                forceError = false
-            }
+        if (!$answersValid) {
+            return
         }
+        requestCount += 1
+        const answers: Map<string, SurveyAnswer> = new Map()
+        uiStates.forEach((uiState) => {
+            const answer: SurveyAnswer | undefined = get(uiState.answer)
+            if (answer !== undefined) {
+                answers.set(uiState.entry.id, answer)
+            }
+        })
+        let signedMessage = await signSurveyAnswers(JSON.stringify(Object.fromEntries(answers)))
+        let response = await safeFetch(`/survey/${data.id}`, {
+            method: "POST",
+            body: JSON.stringify(signedMessage),
+        })
+        if (response && response.ok) {
+            openSuccessDialog = true
+        }
+        requestCount -= 1
     }
 </script>
 
@@ -68,6 +71,6 @@
         {#if (!$answersValid && forceError)}
             <span class="text-destructive">Исправьте ошибки</span>
         {/if}
-        <Button variant={$answersValid ? "default" : "secondary"} on:click={submit}>Отправить</Button>
+        <Button variant={$answersValid ? "default" : "secondary"} on:click={submit} disabled={requestCount > 0}>Отправить</Button>
     </div>
 </div>

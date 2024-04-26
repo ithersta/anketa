@@ -4,7 +4,6 @@ import { derived, readable, type Readable, writable, type Writable } from "svelt
 import { persisted } from "svelte-persisted-store";
 import { NilUUID } from "$lib/uuid";
 import { parseIntStrict } from "$lib/parseIntStrict";
-import { read } from "$app/server";
 
 export namespace TextField {
     export type Entry = {

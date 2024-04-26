@@ -124,7 +124,7 @@
         const entriesValue = entries.getValue?.()
         const reportContent: ReportContent = {
             entries: entriesValue?.map(e => e.content),
-            divideBy: undefined,
+            divideBy: draftValue?.divideBy,
         }
         let response = await safeFetch(`/dashboard/survey/${draftValue?.surveyId}/export/report`, {
             method: "POST",

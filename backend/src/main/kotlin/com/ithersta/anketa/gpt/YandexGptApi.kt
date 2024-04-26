@@ -80,7 +80,7 @@ class YandexGptApi(
     private val webClient = WebClient.builder()
         .filter(fixContentType())
         .baseUrl("https://llm.api.cloud.yandex.net")
-        .defaultHeader("Authorization", "Bearer $token")
+        .defaultHeader("Authorization", "Api-Key $token")
         .defaultHeader("Content-Type", "application/json")
         .defaultHeader("Accept", "application/json")
         .build()
