@@ -23,7 +23,7 @@
 </Dialog.Header>
 <Textarea bind:value={$template}></Textarea>
 <span class="text-lg font-semibold leading-none tracking-tight">Форматирование</span>
-<ScrollArea class="h-72 rounded-md border">
+<ScrollArea class="h-48 rounded-md border">
     <div class="p-4">
         <span class="format-hint text-muted-foreground text-sm">
             {formattingProperties}

@@ -45,7 +45,7 @@
     <SparklesIcon class="mr-2 h-4 w-4"/>
     Сгенерировать краткий пересказ
 </Button>
-<ScrollArea class="h-72 rounded-md border">
+<ScrollArea class="h-60 rounded-md border">
     <div class="p-4">
         {#if $summarization !== undefined}
             <span class="summary">{$summarization.content}</span>
