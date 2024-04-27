@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { SurveyAnswer, SurveyEntry, SurveyEntryUiState } from "$lib/survey/entries";
+    import type { SurveyEntryUiState } from "$lib/survey/entries";
     import Text from "./Text.svelte";
     import TextField from "./TextField.svelte";
     import MultiChoice from "./MultiChoice.svelte";

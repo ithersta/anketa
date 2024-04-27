@@ -45,15 +45,13 @@
     <SparklesIcon class="mr-2 h-4 w-4"/>
     Сгенерировать краткий пересказ
 </Button>
-<ScrollArea class="h-60 rounded-md border">
+{#if $summarization !== undefined}
+<ScrollArea class="h-48 rounded-md border">
     <div class="p-4">
-        {#if $summarization !== undefined}
-            <span class="summary">{$summarization.content}</span>
-        {:else}
-
-        {/if}
+        <span class="summary">{$summarization.content}</span>
     </div>
 </ScrollArea>
+{/if}
 
 <style>
     .summary {

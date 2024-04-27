@@ -3,13 +3,8 @@
 
     import { Button } from "$lib/components/ui/button";
     import {
-        CheckCheck, CircleDot, HelpCircle, Ruler, TextCursorInput, TextIcon,
+        HelpCircle, TextIcon,
     } from "lucide-svelte";
-    import type { SurveyEntryBuilderUiState } from "$lib/survey/entries";
-    import { Text } from "$lib/survey/text";
-    import { TextField } from "$lib/survey/textfield";
-    import { MultiChoice } from "$lib/survey/multichoice";
-    import { PolarChoice } from "$lib/survey/polarchoice";
     import type { ReportEntryUiState } from "$lib/report/entries";
     import { TextReport } from "$lib/report/text";
 

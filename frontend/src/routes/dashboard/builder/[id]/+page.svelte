@@ -157,11 +157,12 @@
                 <Trash class="h-4 w-4"/>
             </Button>
         </div>
-        <div
+        <div role="list"
           on:drop={handleDrop}
           on:dragover|preventDefault={handleDragOver}>
             {#each ($entries || []) as entry, index (JSON.stringify(entry.content))}
                 <div draggable="true"
+                     role="listitem"
                      on:dragstart={() => handleDragStart(index)}
                      on:dragenter={() => handleDragEnter(index)}
                      class="py-2 flex flex-row space-x-2" transition:slide>

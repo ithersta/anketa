@@ -1,6 +1,6 @@
 <script lang="ts">
-    import {CheckIcon, Pencil} from "lucide-svelte";
-    import {Button} from "$lib/components/ui/button";
+    import { CheckIcon, Pencil } from "lucide-svelte";
+    import { Button } from "$lib/components/ui/button";
     import { db } from "$lib/db/db";
     import { Input } from "$lib/components/ui/input";
     import type { ReportDraft } from "$lib/report/draft";

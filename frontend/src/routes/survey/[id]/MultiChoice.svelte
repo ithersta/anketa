@@ -7,7 +7,6 @@
     import { MultiChoice } from "$lib/survey/multichoice";
     import ValidationResult from "./ValidationResult.svelte";
     import UnknownHint from "./UnknownHint.svelte";
-    import { Check } from "lucide-svelte";
 
     export let uiState: MultiChoice.UiState
     export let forceError: boolean

@@ -1,9 +1,7 @@
 <script lang="ts">
     import { Button } from "$lib/components/ui/button";
-    import { Sun, Moon } from "lucide-svelte";
     import { type SurveyContent } from "$lib/survey/survey";
     import SurveyEntryComponent from "./SurveyEntryComponent.svelte";
-    import { toggleMode } from "mode-watcher";
     import { type SurveyAnswer, toUiState } from "$lib/survey/entries";
     import { signSurveyAnswers } from "$lib/crypto/sign";
     import { derived, get, type Readable } from "svelte/store";

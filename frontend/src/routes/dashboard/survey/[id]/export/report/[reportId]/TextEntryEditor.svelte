@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { Text } from "$lib/survey/text";
     import { Textarea } from "$lib/components/ui/textarea";
     import * as Dialog from "$lib/components/ui/dialog";
     import ValidationResult from "../../../../../../survey/[id]/ValidationResult.svelte";

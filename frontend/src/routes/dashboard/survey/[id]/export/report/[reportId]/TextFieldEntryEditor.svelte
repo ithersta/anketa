@@ -8,6 +8,7 @@
     export let surveyEntry: TextField.Entry
     export let forceError: boolean
     const { content, doSummarise, hints } = uiState
+    forceError
 </script>
 
 <Dialog.Header>

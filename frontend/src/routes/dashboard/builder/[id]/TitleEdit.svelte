@@ -1,6 +1,6 @@
 <script lang="ts">
-    import {CheckIcon, Pencil} from "lucide-svelte";
-    import {Button} from "$lib/components/ui/button/index.js";
+    import { CheckIcon, Pencil } from "lucide-svelte";
+    import { Button } from "$lib/components/ui/button/index.js";
     import type { SurveyDraft } from "$lib/builder/draft";
     import { db } from "$lib/db/db";
     import { Input } from "$lib/components/ui/input";

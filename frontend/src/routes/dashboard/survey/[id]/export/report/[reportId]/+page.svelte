@@ -6,21 +6,13 @@
     import DeleteDialog from "./DeleteDialog.svelte";
     import EntryEditorDialog from "./EntryEditorDialog.svelte";
     import type { EntryEditorDialogState } from "./EntryEditorDialogState";
-    import {
-        getShortName,
-        type SurveyEntry,
-        type SurveyEntryBuilderUiState,
-        toBuilderUiState,
-        toPreviewUiState,
-    } from "$lib/survey/entries";
+    import { type SurveyEntry } from "$lib/survey/entries";
     import { Pencil, Trash } from "lucide-svelte";
     import { fromSurveyEntry, type ReportEntryUiState, toUiState } from "$lib/report/entries";
     import TitleEdit from "./TitleEdit.svelte";
     import { Button } from "$lib/components/ui/button";
     import { slide } from "svelte/transition";
-    import type { SurveyDraftEntry } from "$lib/builder/draft";
     import type { ReportContent, ReportDraftEntry } from "$lib/report/draft";
-    import { derived, get } from "svelte/store";
     import ReportComponent from "./ReportComponent.svelte";
     import NewEntry from "./NewEntry.svelte";
     import SurveyEntryChooser from "./SurveyEntryChooser.svelte";
@@ -200,11 +192,12 @@
                 <Trash class="h-4 w-4"/>
             </Button>
         </div>
-        <div
+        <div role="list"
             on:drop={handleDrop}
             on:dragover|preventDefault={handleDragOver}>
             {#each ($entries || []) as entry, index (JSON.stringify(entry.content))}
                 <div draggable="true"
+                     role="listitem"
                      on:dragstart={() => handleDragStart(index)}
                      on:dragenter={() => handleDragEnter(index)}
                      class="py-2 flex flex-row space-x-2" transition:slide>
