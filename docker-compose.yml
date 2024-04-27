@@ -64,4 +64,4 @@ secrets:
   jwt:
     file: /root/anketa/jwt
   yandex:
-    file: /root/anketa/yandex
+    file: /root/anketa/yandex-key

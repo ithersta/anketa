@@ -5,7 +5,7 @@ RUN mkdir -p /temp/dep
 COPY package.json bun.lockb /temp/dep/
 RUN cd /temp/dep && bun install --frozen-lockfile
 
-FROM node:latest AS build
+FROM node:21 AS build
 WORKDIR /usr/src/app
 COPY --from=dependencies /temp/dep/node_modules node_modules
 COPY . .
@@ -13,7 +13,7 @@ COPY . .
 ENV NODE_ENV=production
 RUN npm run build
 
-FROM node:latest AS release
+FROM node:21 AS release
 WORKDIR /usr/src/app
 COPY --from=dependencies /temp/dep/node_modules node_modules
 COPY --from=build /usr/src/app/build ./build
