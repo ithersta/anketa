@@ -1,6 +1,6 @@
 <script lang="ts">
     import * as Table from "$lib/components/ui/table";
-    import { ArrowRight, Clipboard, CopyIcon, Download, Eye, Plus, TableIcon } from "lucide-svelte";
+    import { ArrowRight, Clipboard, CopyIcon, Download, Eye, Plus, ShareIcon, TableIcon } from "lucide-svelte";
     import { Button } from "$lib/components/ui/button";
     import * as Card from "$lib/components/ui/card";
     import { db } from "$lib/db/db";
@@ -10,6 +10,7 @@
     import { fromSurveyEntry, type ReportEntry } from "$lib/report/entries";
     import type { ReportDraftEntry } from "$lib/report/draft";
     import type { SurveyDraftEntry } from "$lib/builder/draft";
+    import ShareDialog from "./ShareDialog.svelte";
 
     export let data
     const surveyId = $page.params.id
@@ -61,11 +62,19 @@
         })
         await goto(`/dashboard/builder/${id}`)
     }
+
+    let isShareDialogOpen = false
+
+    function openShareDialog() {
+        isShareDialogOpen = true
+    }
 </script>
 
 <svelte:head>
     <title>{survey.title}</title>
 </svelte:head>
+
+<ShareDialog bind:dialogOpen={isShareDialogOpen}/>
 
 <div class="flex items-center justify-between space-y-2 pb-6">
     <h2 class="text-3xl font-bold tracking-tight">{survey.title}</h2>
@@ -91,6 +100,10 @@
                 <Button variant="outline" class="w-full" on:click={createCopy}>
                     <CopyIcon class="mr-2 h-4 w-4"/>
                     Создать копию анкеты
+                </Button>
+                <Button variant="outline" class="w-full" on:click={openShareDialog}>
+                    <ShareIcon class="mr-2 h-4 w-4"/>
+                    Поделиться доступом
                 </Button>
             </div>
         </Card.Content>
