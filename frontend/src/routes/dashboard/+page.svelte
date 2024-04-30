@@ -7,7 +7,7 @@
     import { liveQuery } from "dexie";
 
     export let data
-    let surveys = data.surveys
+    const dashboard = data.dashboard
     const drafts = liveQuery(async () => {
         return db.surveyDrafts
             .orderBy("id")
@@ -46,7 +46,7 @@
                 <Table.Cell>Черновик</Table.Cell>
             </Table.Row>
         {/each}
-        {#each surveys as survey (survey.id)}
+        {#each dashboard.mySurveys as survey (survey.id)}
             <Table.Row class="cursor-pointer" on:click={() => {goto(`/dashboard/survey/${survey.id}`)}}>
                 <Table.Cell>{survey.title}</Table.Cell>
                 <Table.Cell>{(new Date(survey.createdAt)).toLocaleString("ru-RU")}</Table.Cell>
@@ -54,3 +54,25 @@
         {/each}
     </Table.Body>
 </Table.Root>
+
+{#if dashboard.sharedSurveys.length > 0}
+    <div class="flex items-center justify-between space-y-2 pb-6 pt-8">
+        <h2 class="text-3xl font-bold tracking-tight">Анкеты, которыми с вами поделились</h2>
+    </div>
+    <Table.Root>
+        <Table.Header>
+            <Table.Row>
+                <Table.Head>Название</Table.Head>
+                <Table.Head class="w-64">Создана</Table.Head>
+            </Table.Row>
+        </Table.Header>
+        <Table.Body>
+            {#each dashboard.sharedSurveys as survey (survey.id)}
+                <Table.Row class="cursor-pointer" on:click={() => {goto(`/dashboard/survey/${survey.id}`)}}>
+                    <Table.Cell>{survey.title}</Table.Cell>
+                    <Table.Cell>{(new Date(survey.createdAt)).toLocaleString("ru-RU")}</Table.Cell>
+                </Table.Row>
+            {/each}
+        </Table.Body>
+    </Table.Root>
+{/if}

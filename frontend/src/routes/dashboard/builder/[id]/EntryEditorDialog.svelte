@@ -51,7 +51,7 @@
     }
 </script>
 
-<Dialog.Root open={state !== undefined} onOpenChange={(isOpen) => {
+<Dialog.Root preventScroll={false} open={state !== undefined} onOpenChange={(isOpen) => {
     forceError = false
     if (!isOpen) {
         state = undefined
