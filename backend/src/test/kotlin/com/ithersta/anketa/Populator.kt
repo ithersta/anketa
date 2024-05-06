@@ -48,7 +48,7 @@ class Populator(
     }
 
     private suspend fun populateUsers() {
-        val user = userRepository.save(UserEntity("Display Name", "email@yandex.ru"))
+        val user = userRepository.save(UserEntity("Display Name", "e@yandex.ru"))
         userId = user.id!!
         token = jwtService.generateToken(user.id!!, user.email)
     }

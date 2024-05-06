@@ -11,8 +11,6 @@ import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
 
-@Testcontainers
-@SpringBootTest
 @ContextConfiguration(initializers = [DatabaseTest.Initializer::class])
 abstract class DatabaseTest {
     @Autowired
@@ -24,8 +22,9 @@ abstract class DatabaseTest {
     }
 
     companion object {
-        @Container
-        val database = PostgreSQLContainer<Nothing>("postgres:latest")
+        val database = PostgreSQLContainer<Nothing>("postgres:16.2").also {
+            it.start()
+        }
     }
 
     object Initializer : ApplicationContextInitializer<ConfigurableApplicationContext> {
