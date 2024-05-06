@@ -26,6 +26,7 @@ private class YandexOAuthResponse(
 @ConfigurationProperties("oauth.yandex")
 class YandexOauthProperties {
     var clientId: String = ""
+    var endpoint: String = "https://login.yandex.ru/info"
 }
 
 @Service
@@ -45,7 +46,7 @@ class YandexOAuthService(
 
     private suspend fun getProviderUserData(yandexToken: String): YandexOAuthResponse {
         val responseBody = webClient.get()
-            .uri("https://login.yandex.ru/info")
+            .uri(yandexOauthProperties.endpoint)
             .headers {
                 it.set("Authorization", "OAuth $yandexToken")
             }
