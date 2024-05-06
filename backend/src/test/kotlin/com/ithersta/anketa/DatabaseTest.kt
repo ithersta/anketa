@@ -1,6 +1,8 @@
 package com.ithersta.anketa
 
-import com.ithersta.anketa.DatabaseTest
+import org.junit.jupiter.api.BeforeEach
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.ApplicationContextInitializer
 import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.test.context.ContextConfiguration
@@ -10,8 +12,17 @@ import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
 
 @Testcontainers
+@SpringBootTest
 @ContextConfiguration(initializers = [DatabaseTest.Initializer::class])
 abstract class DatabaseTest {
+    @Autowired
+    lateinit var populator: Populator
+
+    @BeforeEach
+    fun populate() {
+        populator.populate()
+    }
+
     companion object {
         @Container
         val database = PostgreSQLContainer<Nothing>("postgres:latest")

@@ -46,7 +46,7 @@ class OAuthControllerTest : DatabaseTest() {
     }
 
     @Test
-    fun `given yandex token when oauth-yandex then token is returned`() {
+    fun `given yandex token when POST oauth-yandex then token is returned`() {
         val requestBody = TokenBody("sample")
 
         webTestClient.post()
