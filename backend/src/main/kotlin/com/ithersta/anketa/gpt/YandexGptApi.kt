@@ -20,6 +20,7 @@ import java.io.File
 class YandexGptProperties {
     var iamFile: String = ""
     var folderId: String = ""
+    var baseUrl: String = "https://llm.api.cloud.yandex.net"
 }
 
 @Serializable
@@ -79,7 +80,7 @@ class YandexGptApi(
     private val folderId = properties.folderId
     private val webClient = WebClient.builder()
         .filter(fixContentType())
-        .baseUrl("https://llm.api.cloud.yandex.net")
+        .baseUrl(properties.baseUrl)
         .defaultHeader("Authorization", "Api-Key $token")
         .defaultHeader("Content-Type", "application/json")
         .defaultHeader("Accept", "application/json")

@@ -14,6 +14,7 @@ oauth:
 yandex-gpt:
   iam-file: "yandex-iam"
   folder-id: "b1goq8mnc2251i4o0o5l"
+  base-url: "http://localhost:8089"
 secrets:
   jwt-secret-file: "test-jwt-secret"
 whitelist:
