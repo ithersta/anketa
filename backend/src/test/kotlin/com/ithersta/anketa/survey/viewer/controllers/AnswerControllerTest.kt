@@ -32,18 +32,9 @@ class AnswerControllerTest : DatabaseTest() {
     @Autowired
     lateinit var webTestClient: WebTestClient
 
-    @Autowired
-    lateinit var surveyService: SurveyService
-
     @Test
     fun `given valid answers when POST answer then answer is saved`() {
-        val surveyContent = runBlocking {
-            surveyService.getPublicContentById(populator.surveyId)
-        }
-        val answerMap = AnswerMap(mapOf(
-            surveyContent.entries.first().id to MultiChoiceEntry.Answer(selected = setOf(1), other = null)
-        ))
-        val requestBody = sign(Json.encodeToString(answerMap))
+        val requestBody = sign(Json.encodeToString(populator.sampleAnswer))
 
         webTestClient.post()
             .uri("/answer/${populator.surveyId}")
