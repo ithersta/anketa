@@ -21,6 +21,7 @@ sealed interface ReportEntrySummary {
         val answerCount: Int,
         val noAnswerCount: Int,
         val isSingleChoice: Boolean,
+        val chartType: MultiChoiceReportEntry.ChartType,
     ) : ReportEntrySummary {
         class Option(
             val text: String,
@@ -120,6 +121,7 @@ private fun generatePolarChoiceReportSummary(
         noAnswerCount = noAnswerCount,
         isSingleChoice = true,
         otherAnswers = null,
+        chartType = reportEntry.chartType ?: MultiChoiceReportEntry.ChartType.Pie
     )
 }
 
@@ -159,6 +161,7 @@ private suspend fun generateMultiChoiceReportSummary(
         )
     }
     val properties = generateFormattingProperties(options, answers.size, noAnswerCount)
+    val isSingleChoice = surveyEntry.maxSelected == 1
     return ReportEntrySummary.MultiChoice(
         question = surveyEntry.question,
         formattedText = FormatEngine.format(properties, reportEntry.template),
@@ -166,7 +169,12 @@ private suspend fun generateMultiChoiceReportSummary(
         options = options,
         answerCount = answers.size,
         noAnswerCount = noAnswerCount,
-        isSingleChoice = surveyEntry.maxSelected == 1,
+        isSingleChoice = isSingleChoice,
+        chartType = reportEntry.chartType ?: if (isSingleChoice) {
+            MultiChoiceReportEntry.ChartType.Pie
+        } else {
+            MultiChoiceReportEntry.ChartType.Bar
+        }
     )
 }
 

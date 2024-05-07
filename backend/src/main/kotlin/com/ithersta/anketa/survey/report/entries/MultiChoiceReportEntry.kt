@@ -11,4 +11,9 @@ class MultiChoiceReportEntry(
     override val forEntryWithId: @Serializable(with = UuidSerializer::class) UUID,
     val template: String,
     val doSummarise: Boolean,
-) : ReportEntry
+    val chartType: ChartType? = null,
+) : ReportEntry {
+    enum class ChartType {
+        Bar, Pie
+    }
+}

@@ -4,11 +4,12 @@
     import { PolarChoiceReport } from "$lib/report/polarchoice";
     import { PolarChoice } from "$lib/survey/polarchoice";
     import FormattingSection from "./FormattingSection.svelte";
+    import ChartTypeSelect from "./ChartTypeSelect.svelte";
 
     export let uiState: PolarChoiceReport.UiState
     export let forceError: boolean
     export let surveyEntry: PolarChoice.Entry
-    const { template, hints } = uiState
+    const { template, chartType, hints } = uiState
     forceError
 
     let options = new Array(surveyEntry.range * 2 + 1).fill(null).map((_, i) => i - surveyEntry.range)
@@ -23,6 +24,7 @@
 </Dialog.Header>
 <Textarea bind:value={$template}></Textarea>
 <FormattingSection {formattingProperties}/>
+<ChartTypeSelect chartType={chartType} />
 <!--<ValidationResult hints={$hints} {forceError} let:hint>-->
 <!--    {#if (hint.type === "CannotBeEmpty")}-->
 <!--        <span>Текст не может быть пустым</span>-->

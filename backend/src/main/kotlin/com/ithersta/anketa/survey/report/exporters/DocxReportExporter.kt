@@ -2,6 +2,7 @@ package com.ithersta.anketa.survey.report.exporters
 
 import com.ithersta.anketa.survey.report.DividedReport
 import com.ithersta.anketa.survey.report.ReportEntrySummary
+import com.ithersta.anketa.survey.report.entries.MultiChoiceReportEntry
 import org.apache.poi.ss.util.CellRangeAddress
 import org.apache.poi.xddf.usermodel.chart.*
 import org.apache.poi.xwpf.usermodel.XWPFChart
@@ -39,10 +40,11 @@ class DocxReportExporter : ReportExporter {
 
     private fun XWPFDocument.writeMultiChoiceSummary(summary: ReportEntrySummary.MultiChoice) {
         writeHeader(summary.question)
-        if (summary.isSingleChoice) {
-            createPieChart(summary)
-        } else {
-            createBarChart(summary)
+        if (summary.options.any { it.count > 0 }) {
+            when (summary.chartType) {
+                MultiChoiceReportEntry.ChartType.Pie -> createPieChart(summary)
+                MultiChoiceReportEntry.ChartType.Bar -> createBarChart(summary)
+            }
         }
         writeText(summary.formattedText)
         summary.otherAnswers?.let { otherAnswers ->
@@ -52,16 +54,17 @@ class DocxReportExporter : ReportExporter {
     }
 
     private fun XDDFChartData.addSeries(chart: XWPFChart, summary: ReportEntrySummary.MultiChoice): XDDFChartData.Series {
-        val numOfPoints = summary.options.size
+        val options = summary.options.filter { it.count > 0 }
+        val numOfPoints = options.size
         val categoryDataRange = chart.formatRange(CellRangeAddress(1, numOfPoints, 0, 0))
         val valuesDataRange = chart.formatRange(CellRangeAddress(1, numOfPoints, 1, 1))
         val categoriesData = XDDFDataSourcesFactory.fromArray(
-            summary.options.map { it.text }.toTypedArray(),
+            options.map { it.text }.toTypedArray(),
             categoryDataRange,
             0,
         )
         val valuesData = XDDFDataSourcesFactory.fromArray(
-            summary.options.map { it.count }.toTypedArray(),
+            options.map { it.count }.toTypedArray(),
             valuesDataRange,
             1,
         )

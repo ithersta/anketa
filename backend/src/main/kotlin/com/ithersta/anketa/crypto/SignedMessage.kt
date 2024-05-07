@@ -46,12 +46,12 @@ class SignedMessage(
     }
 
     companion object {
-        val spec = ECNamedCurveTable.getParameterSpec("secp256r1")
-        val params = ECNamedCurveSpec("secp256r1", spec.curve, spec.g, spec.n)
-        val keyFactory = KeyFactory.getInstance("EC", "BC")
-
         init {
             Security.addProvider(BouncyCastleProvider())
         }
+
+        val spec = ECNamedCurveTable.getParameterSpec("secp256r1")
+        val params = ECNamedCurveSpec("secp256r1", spec.curve, spec.g, spec.n)
+        val keyFactory = KeyFactory.getInstance("EC", "BC")
     }
 }

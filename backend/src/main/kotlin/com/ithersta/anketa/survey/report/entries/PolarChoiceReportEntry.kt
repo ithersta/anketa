@@ -10,4 +10,5 @@ import java.util.*
 class PolarChoiceReportEntry(
     override val forEntryWithId: @Serializable(with = UuidSerializer::class) UUID,
     val template: String,
+    val chartType: MultiChoiceReportEntry.ChartType? = null,
 ) : ReportEntry
