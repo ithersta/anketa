@@ -40,15 +40,16 @@ class SignedMessage(
 
     private fun loadPublicKey(): PublicKey {
         val data = Base64.getDecoder().decode(publicKey)
-        val spec = ECNamedCurveTable.getParameterSpec("secp256r1")
-        val params = ECNamedCurveSpec("secp256r1", spec.curve, spec.g, spec.n)
         val point = ECPointUtil.decodePoint(params.curve, data)
         val publicKeySpec = ECPublicKeySpec(point, params)
-        val keyFactory = KeyFactory.getInstance("EC", "BC")
         return keyFactory.generatePublic(publicKeySpec)
     }
 
     companion object {
+        val spec = ECNamedCurveTable.getParameterSpec("secp256r1")
+        val params = ECNamedCurveSpec("secp256r1", spec.curve, spec.g, spec.n)
+        val keyFactory = KeyFactory.getInstance("EC", "BC")
+
         init {
             Security.addProvider(BouncyCastleProvider())
         }
