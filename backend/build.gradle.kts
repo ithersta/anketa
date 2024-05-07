@@ -9,6 +9,7 @@ plugins {
     kotlin("plugin.jpa") version "1.8.22"
     kotlin("plugin.serialization") version "1.8.22"
     kotlin("plugin.allopen") version "1.8.22"
+    id("org.jetbrains.kotlinx.kover") version "0.7.6"
 }
 
 jib.to.image = "ithersta/projects:anketa-backend"
@@ -45,6 +46,9 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.amshove.kluent:kluent:1.72")
+    testImplementation("org.wiremock:wiremock-standalone:3.5.4")
+    testImplementation("org.testcontainers:junit-jupiter:1.19.6")
+    testImplementation("org.testcontainers:postgresql:1.19.6")
 }
 
 tasks.withType<KotlinCompile> {

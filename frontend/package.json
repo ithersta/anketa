@@ -26,10 +26,10 @@
   },
   "type": "module",
   "dependencies": {
-    "bits-ui": "^0.21.4",
+    "bits-ui": "^0.21.7",
     "clsx": "^2.0.0",
     "dexie": "next",
-    "lucide-svelte": "^0.293.0",
+    "lucide-svelte": "^0.378.0",
     "mode-watcher": "^0.3.0",
     "svelte-persisted-store": "^0.7.0",
     "svelte-sonner": "^0.3.22",

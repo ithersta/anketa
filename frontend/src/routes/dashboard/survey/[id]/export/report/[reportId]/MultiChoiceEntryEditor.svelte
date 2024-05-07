@@ -5,11 +5,12 @@
     import { MultiChoice } from "$lib/survey/multichoice";
     import Summarization from "./Summarization.svelte";
     import FormattingSection from "./FormattingSection.svelte";
+    import ChartTypeSelect from "./ChartTypeSelect.svelte";
 
     export let uiState: MultiChoiceReport.UiState
     export let forceError: boolean
     export let surveyEntry: MultiChoice.Entry
-    const { template, doSummarise, hints } = uiState
+    const { template, doSummarise, chartType, hints } = uiState
     forceError
 
     let formattingProperties = surveyEntry.options
@@ -26,6 +27,7 @@
 {#if surveyEntry.isAcceptingOther}
     <Summarization surveyEntry={surveyEntry} doSummarise={doSummarise}/>
 {/if}
+<ChartTypeSelect chartType={chartType} />
 <!--<ValidationResult hints={$hints} {forceError} let:hint>-->
 <!--    {#if (hint.type === "CannotBeEmpty")}-->
 <!--        <span>Текст не может быть пустым</span>-->

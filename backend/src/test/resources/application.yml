@@ -1,0 +1,23 @@
+spring:
+  r2dbc:
+    url: "r2dbc:postgresql://localhost:5432/test"
+    username: test
+    password: test
+  flyway:
+    url: "jdbc:postgresql://localhost:5432/test"
+    user: test
+    password: test
+oauth:
+  yandex:
+    client-id: "123"
+    endpoint: "http://localhost:8089/info"
+yandex-gpt:
+  iam-file: "yandex-iam"
+  folder-id: "b1goq8mnc2251i4o0o5l"
+  base-url: "http://localhost:8089"
+secrets:
+  jwt-secret-file: "test-jwt-secret"
+whitelist:
+  emails:
+    - "e@yandex.ru"
+    - "other@yandex.ru"

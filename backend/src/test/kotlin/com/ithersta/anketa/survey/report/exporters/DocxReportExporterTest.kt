@@ -22,12 +22,12 @@ class DocxReportExporterTest {
             entries = listOf(
                 MultiChoiceReportEntry(
                     forEntryWithId = UUID(0, 1),
-                    template = "\$t1 = \$c1, \$t2 = \$c2, sum = \${c1 + c2}",
+                    template = "\${t1} = \${c1}, \${t2} = \${c2}, sum = \${c1 + c2}",
                     doSummarise = false,
                 ),
                 MultiChoiceReportEntry(
                     forEntryWithId = UUID(0, 2),
-                    template = "\$t1 = \$c1, \$t2 = \$c2, sum = \${c1 + c2}",
+                    template = "\${t1} = \${c1}, \${t2} = \${c2}, sum = \${c1 + c2}",
                     doSummarise = false,
                 ),
             ),

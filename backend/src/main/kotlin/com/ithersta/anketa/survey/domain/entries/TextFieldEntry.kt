@@ -58,7 +58,7 @@ data class TextFieldEntry(
         if (minLength > maxLength) {
             add(ValidationError.MinLengthGreaterThanMaxLength)
         }
-        if (minLength < 0 || maxLength < 0) {
+        if (minLength < 0) {
             add(ValidationError.InvalidLength)
         }
     }
