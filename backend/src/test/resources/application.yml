@@ -20,3 +20,4 @@ secrets:
 whitelist:
   emails:
     - "e@yandex.ru"
+    - "other@yandex.ru"

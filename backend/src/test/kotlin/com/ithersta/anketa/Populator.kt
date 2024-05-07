@@ -34,6 +34,8 @@ class Populator(
     lateinit var token: String
     lateinit var userId: UUID
     lateinit var surveyId: UUID
+    lateinit var otherUserEmail: String
+    lateinit var otherToken: String
     private val multiChoiceEntry = MultiChoiceEntry(
         id = UUID(0, 1),
         isRequired = true,
@@ -101,6 +103,9 @@ class Populator(
         val user = userRepository.save(UserEntity("Display Name", "e@yandex.ru"))
         userId = user.id!!
         token = jwtService.generateToken(user.id!!, user.email)
+        val otherUser = userRepository.save(UserEntity("Other", "other@yandex.ru"))
+        otherUserEmail = otherUser.email
+        otherToken = jwtService.generateToken(otherUser.id!!, otherUser.email)
     }
 
     private suspend fun populateSurvey() {
